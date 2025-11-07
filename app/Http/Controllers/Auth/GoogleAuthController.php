@@ -31,6 +31,8 @@ class GoogleAuthController extends Controller
                 'password' => bcrypt('password') // You can set a random password
             ]);
 
+            $newUser->markEmailAsVerified();
+
             Auth::login($newUser);
         }
 
