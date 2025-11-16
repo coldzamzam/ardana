@@ -24,8 +24,14 @@ class GoogleAuthController extends Controller
         if ($user) {
             Auth::login($user);
         } else {
+            $name = $googleUser->getName();
+            // Remove " Mahasiswa PNJ" if it exists at the end of the name
+            if (str_ends_with($name, ' Mahasiswa PNJ')) {
+                $name = str_replace(' Mahasiswa PNJ', '', $name);
+            }
+
             $newUser = User::create([
-                'name' => $googleUser->getName(),
+                'name' => $name,
                 'email' => $googleUser->getEmail(),
                 'google_id' => $googleUser->getId(),
                 'password' => bcrypt('password') // You can set a random password

@@ -1,7 +1,9 @@
 import AppLogoIcon from '@/components/app-logo-icon';
 import { home } from '@/routes';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { type PropsWithChildren } from 'react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { CheckCircle2 } from 'lucide-react';
 
 interface AuthLayoutProps {
     name?: string;
@@ -14,6 +16,8 @@ export default function AuthSimpleLayout({
     title,
     description,
 }: PropsWithChildren<AuthLayoutProps>) {
+    const { flash } = usePage().props as { flash?: { success?: string } };
+
     return (
         <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-background p-6 md:p-10">
             <div className="w-full max-w-sm">
@@ -36,6 +40,13 @@ export default function AuthSimpleLayout({
                             </p>
                         </div>
                     </div>
+                    {flash?.success && (
+                        <Alert variant="success">
+                            <CheckCircle2 className="h-4 w-4" />
+                            <AlertTitle>Success!</AlertTitle>
+                            <AlertDescription>{flash.success}</AlertDescription>
+                        </Alert>
+                    )}
                     {children}
                 </div>
             </div>

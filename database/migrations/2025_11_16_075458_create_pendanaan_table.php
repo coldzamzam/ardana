@@ -1,0 +1,31 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('pendanaan', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->decimal('jumlah_uang', 15, 3);
+            $table->foreignUuid('kajur_id')->constrained('users');
+            $table->foreignUuid('submisi_id')->constrained('submisi');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('pendanaan');
+    }
+};
