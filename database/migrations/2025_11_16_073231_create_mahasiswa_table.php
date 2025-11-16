@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('mahasiswa', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->integer('nim')->unique();
+            $table->string('nim')->unique();
             $table->string('prodi', 30);
             $table->foreignUuid('user_id')->constrained('users');
             $table->timestamps();

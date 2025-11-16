@@ -38,17 +38,30 @@ class HandleInertiaRequests extends Middleware
     {
         [$message, $author] = str(Inspiring::quotes()->random())->explode('-');
 
+        $user = $request->user();
+        $onboardingRole = null;
+
+        if ($user) {
+            $user->load('roles', 'mahasiswa', 'dosen');
+            if ($user->hasRole('mahasiswa') && !$user->mahasiswa) {
+                $onboardingRole = 'mahasiswa';
+            } elseif (($user->hasRole('dosen') || $user->hasRole('sekjur') || $user->hasRole('kajur')) && !$user->dosen) {
+                $onboardingRole = 'dosen';
+            }
+        }
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
             'quote' => ['message' => trim($message), 'author' => trim($author)],
             'auth' => [
-                'user' => $request->user() ? $request->user()->load('roles') : null,
+                'user' => $user,
             ],
             'flash' => [
                 'success' => fn () => $request->session()->get('success'),
                 'error' => fn () => $request->session()->get('error'),
             ],
+            'onboarding' => $onboardingRole,
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('dosen', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->integer('nip');
+            $table->string('nip');
             $table->foreignUuid('user_id')->constrained('users');
             $table->timestamps();
             $table->softDeletes();

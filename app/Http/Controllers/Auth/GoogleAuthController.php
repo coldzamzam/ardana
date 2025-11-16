@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\RoleType;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 
 class GoogleAuthController extends Controller
@@ -34,8 +36,15 @@ class GoogleAuthController extends Controller
                 'name' => $name,
                 'email' => $googleUser->getEmail(),
                 'google_id' => $googleUser->getId(),
-                'password' => bcrypt('password') // You can set a random password
+                'password' => bcrypt('password'), // You can set a random password
+                'email_verified_at' => now(),
             ]);
+
+            // Assign 'mahasiswa' role
+            $mahasiswaRole = RoleType::where('role_name', 'mahasiswa')->first();
+            if ($mahasiswaRole) {
+                $newUser->roles()->attach($mahasiswaRole->id, ['id' => Str::uuid()]);
+            }
 
             $newUser->markEmailAsVerified();
 
