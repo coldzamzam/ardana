@@ -11,6 +11,12 @@ class RoleType extends Model
 {
     use HasFactory, HasUuids;
 
+    protected $table = 'role_types';
+
+    protected $fillable = [
+        'role_name',
+    ];
+
     public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'user_roles', 'role_id', 'user_id');

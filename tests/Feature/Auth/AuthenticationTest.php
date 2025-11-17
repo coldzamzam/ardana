@@ -1,8 +1,13 @@
 <?php
 
 use App\Models\User;
+use App\Models\Mahasiswa;
+use App\Models\RoleType;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Fortify\Features;
+
+uses(RefreshDatabase::class);
 
 test('login screen can be rendered', function () {
     $response = $this->get(route('login'));
@@ -11,7 +16,10 @@ test('login screen can be rendered', function () {
 });
 
 test('users can authenticate using the login screen', function () {
-    $user = User::factory()->withoutTwoFactor()->create();
+    $mahasiswaRole = RoleType::create(['role_name' => 'mahasiswa']);
+    $user = User::factory()->create();
+    $user->roles()->attach($mahasiswaRole->id, ['id' => \Illuminate\Support\Str::uuid()]);
+    Mahasiswa::create(['user_id' => $user->id, 'nim' => '1234567890', 'prodi' => 'Teknik Informatika']);
 
     $response = $this->post(route('login.store'), [
         'email' => $user->email,
@@ -32,7 +40,11 @@ test('users with two factor enabled are redirected to two factor challenge', fun
         'confirmPassword' => true,
     ]);
 
+    $mahasiswaRole = RoleType::create(['role_name' => 'mahasiswa']);
     $user = User::factory()->create();
+    $user->roles()->attach($mahasiswaRole->id, ['id' => \Illuminate\Support\Str::uuid()]);
+    Mahasiswa::create(['user_id' => $user->id, 'nim' => '1234567890', 'prodi' => 'Teknik Informatika']);
+
 
     $user->forceFill([
         'two_factor_secret' => encrypt('test-secret'),
@@ -62,7 +74,10 @@ test('users can not authenticate with invalid password', function () {
 });
 
 test('users can logout', function () {
+    $mahasiswaRole = RoleType::create(['role_name' => 'mahasiswa']);
     $user = User::factory()->create();
+    $user->roles()->attach($mahasiswaRole->id, ['id' => \Illuminate\Support\Str::uuid()]);
+    Mahasiswa::create(['user_id' => $user->id, 'nim' => '1234567890', 'prodi' => 'Teknik Informatika']);
 
     $response = $this->actingAs($user)->post(route('logout'));
 
