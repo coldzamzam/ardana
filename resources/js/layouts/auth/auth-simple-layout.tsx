@@ -1,53 +1,44 @@
-import AppLogoIcon from '@/components/app-logo-icon';
-import { home } from '@/routes';
-import { Link, usePage } from '@inertiajs/react';
-import { type PropsWithChildren } from 'react';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
-import { CheckCircle2 } from 'lucide-react';
+import React from 'react';
 
-interface AuthLayoutProps {
-    name?: string;
+interface Props {
     title?: string;
     description?: string;
+    children: React.ReactNode;
 }
 
-export default function AuthSimpleLayout({
-    children,
-    title,
-    description,
-}: PropsWithChildren<AuthLayoutProps>) {
-    const { flash } = usePage().props as { flash?: { success?: string } };
-
+export default function AuthSimpleLayout({ title, description, children }: Props) {
     return (
-        <div className="flex min-h-svh flex-col items-center justify-center gap-6 bg-background p-6 md:p-10">
-            <div className="w-full max-w-sm">
-                <div className="flex flex-col gap-8">
-                    <div className="flex flex-col items-center gap-4">
-                        <Link
-                            href={home()}
-                            className="flex flex-col items-center gap-2 font-medium"
-                        >
-                            <div className="mb-1 flex h-9 w-9 items-center justify-center rounded-md">
-                                <AppLogoIcon className="size-9 fill-current text-[var(--foreground)] dark:text-white" />
-                            </div>
-                            <span className="sr-only">{title}</span>
-                        </Link>
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-900 via-emerald-600 to-lime-200">
+            <div className="max-w-md w-full px-4">
+                <div className="relative bg-white rounded-[32px] shadow-2xl overflow-hidden">
+                    
+                    {/* Header putih + logo + title */}
+                    <div className="bg-white py-6 flex flex-col items-center gap-2">
+                        {/* Dummy logo */}
+                        <div className="h-10 w-24 bg-emerald-100 rounded-full flex items-center justify-center text-xs font-semibold text-emerald-700">
+                            LOGO
+                        </div>
 
-                        <div className="space-y-2 text-center">
-                            <h1 className="text-xl font-medium">{title}</h1>
-                            <p className="text-center text-sm text-muted-foreground">
+                        {title && (
+                            <h1 className="text-2xl font-semibold text-emerald-800">
+                                {title}
+                            </h1>
+                        )}
+
+                        {description && (
+                            <p className="text-xs text-emerald-700/80 text-center max-w-xs">
                                 {description}
                             </p>
-                        </div>
+                        )}
                     </div>
-                    {flash?.success && (
-                        <Alert variant="success">
-                            <CheckCircle2 className="h-4 w-4" />
-                            <AlertTitle>Success!</AlertTitle>
-                            <AlertDescription>{flash.success}</AlertDescription>
-                        </Alert>
-                    )}
-                    {children}
+
+                    {/* Dekorasi “wave” kiri atas (opsional, biar mirip Figma) */}
+                    <div className="pointer-events-none absolute -left-24 -top-24 h-48 w-48 rounded-full bg-emerald-500/50 blur-3xl" />
+
+                    {/* Body form */}
+                    <div className="px-8 pb-8 pt-4">
+                        {children}
+                    </div>
                 </div>
             </div>
         </div>

@@ -11,14 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mahasiswa', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('nim')->unique();
-            $table->string('prodi', 30);
-            $table->foreignUuid('user_id')->constrained('users');
-            $table->timestamps();
-            $table->softDeletes();
-        });
+Schema::create('mahasiswa', function (Blueprint $table) {
+    $table->uuid('id')->primary();
+    $table->string('nim')->unique();
+    $table->string('prodi');
+    $table->string('angkatan');
+    $table->timestamps();
+
+    $table->foreignUuid('user_id')
+        ->constrained('users')
+        ->cascadeOnDelete();
+});
     }
 
     /**
