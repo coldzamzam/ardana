@@ -10,6 +10,7 @@ import AuthLayout from '@/layouts/auth-layout';
 import { register } from '@/routes';
 import { request } from '@/routes/password';
 import { Form, Head } from '@inertiajs/react';
+import { FcGoogle } from "react-icons/fc";
 
 interface LoginProps {
     status?: string;
@@ -28,8 +29,13 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                     className="w-full bg-[#427452] hover:bg-[#355C45] text-white font-semibold"
                     asChild
                 >
-                    <a href={'/auth/google/redirect'}>
-                        Sign in with Google
+                    <a 
+                        href={'/auth/google/redirect'} 
+                        className="flex items-center justify-center gap-2" 
+                    >
+                        <FcGoogle className="w-8 h-8" />
+                        
+                        <span className="text-md">Sign in with Google</span>
                     </a>
                 </Button>
             </div>
@@ -71,18 +77,6 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             </div>
 
                             <div className="grid gap-2">
-                                <div className="flex items-center">
-                                    <Label htmlFor="password">Password</Label>
-                                    {canResetPassword && (
-                                        <TextLink
-                                            href={request()}
-                                            className="ml-auto text-sm"
-                                            tabIndex={5}
-                                        >
-                                            Forgot password?
-                                        </TextLink>
-                                    )}
-                                </div>
                                 <Input
                                     id="password"
                                     type="password"
@@ -97,16 +91,28 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                 <InputError message={errors.password} />
                             </div>
 
-                            <div className="flex items-center space-x-3">
-                                <Checkbox
-                                    id="remember"
-                                    name="remember"
-                                    tabIndex={3}
-                                    className="border-white bg-transparent
-                                               data-[state=checked]:bg-white
-                                               data-[state=checked]:text-[#73AD86]"
-                                />
-                                <Label htmlFor="remember" className="text-white">Remember me</Label>
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-2">
+                                    <Checkbox
+                                        id="remember"
+                                        name="remember"
+                                        tabIndex={3}
+                                        className="border-white bg-transparent
+                                                    data-[state=checked]:bg-white
+                                                    data-[state=checked]:text-[#73AD86]"
+                                    />
+                                    <Label htmlFor="remember" className="text-white text-sm">Remember me</Label>
+                                </div>
+
+                                {canResetPassword && (
+                                    <TextLink
+                                        href={request()}
+                                        className="text-sm text-white hover:underline"
+                                        tabIndex={5}
+                                    >
+                                        Forgot password?
+                                    </TextLink>
+                                )}
                             </div>
 
                             <Button
@@ -122,12 +128,12 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             </Button>
                         </div>
 
-                        <div className="text-center text-sm">
+                        {/* <div className="text-center text-sm">
                             Don't have an account?{' '}
                             <TextLink href={register()} tabIndex={5}>
                                 Sign up
                             </TextLink>
-                        </div>
+                        </div> */}
                     </>
                 )}
             </Form>

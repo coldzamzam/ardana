@@ -41,7 +41,7 @@ export default function Register({ roles }: { roles: Role[] }) {
     return (
         <AuthLayout
             title="Create an account"
-            description="Enter your details below to create your account"
+            description="Enter your details below to create account"
         >
             <Head title="Register" />
             <form onSubmit={submit} className="flex flex-col gap-6">
@@ -149,7 +149,7 @@ export default function Register({ roles }: { roles: Role[] }) {
                     </Button>
                 </div>
 
-                <div className="text-center text-sm text-muted-foreground">
+                <div className="text-center text-sm">
                     Already have an account?{' '}
                     <TextLink href={login()} tabIndex={6}>
                         Log in
