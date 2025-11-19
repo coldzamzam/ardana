@@ -1,6 +1,8 @@
 <?php
 
 namespace Database\Seeders;
+
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
@@ -23,9 +25,8 @@ class RoleTypesSeeder extends Seeder
 
         foreach ($roles as $role) {
             DB::table('role_types')->insert([
-                'id'         => Str::uuid(),
-                'name'       => ucfirst($role),  // Human friendly
-                'slug'       => $role,           // Machine readable
+                'id' => Str::uuid(),
+                'role_name' => $role,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

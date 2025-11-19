@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('mahasiswa', function (Blueprint $table) {
+        Schema::create('role_types', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->string('nim')->unique();
-            $table->string('prodi', 30);
-            $table->foreignUuid('user_id')->constrained('users');
+            $table->char('role_name', 20);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -26,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('mahasiswa');
+        Schema::dropIfExists('role_types');
     }
 };

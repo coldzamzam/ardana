@@ -13,7 +13,7 @@ export default function AuthLayout({ title, description, children }: AuthLayoutP
                 <div className="relative bg-white rounded-[32px] shadow-2xl overflow-hidden">
                     {/* Header putih + logo saja */}
                     <div className="bg-white py-6 flex flex-col items-center">
-                        <div className="h-10 w-24 bg-white border-2 border-gray-900 rounded-md flex items-center justify-center text-xs font-bold text-gray-900">
+                        <div className="h-10 w-24 bg-white rounded-md flex items-center justify-center text-xs font-bold text-gray-900">
                             LOGO
                         </div>
                     </div>
