@@ -28,6 +28,9 @@ export interface SharedData {
     auth: Auth;
     onboarding: 'mahasiswa' | 'dosen' | null;
     sidebarOpen: boolean;
+    flash: {
+        success: string | null;
+    };
     [key: string]: unknown;
 }
 
@@ -48,3 +51,6 @@ export interface User {
     roles?: Role[];
     [key: string]: unknown; // This allows for additional properties...
 }
+
+export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T &
+    SharedData;
