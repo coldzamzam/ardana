@@ -76,10 +76,9 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
 			<Head title="TOR" />
 			<div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
 				<div className="flex items-center justify-between">
-					<h1 className="text-2xl font-semibold">Halaman TOR</h1>
 					<Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
 						<DialogTrigger asChild>
-							<Button>Tambah TOR</Button>
+							<Button>Tambah Pengajuan</Button>
 						</DialogTrigger>
 						<DialogContent>
 							<DialogHeader>
@@ -140,22 +139,22 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
 								<div>
 									<h2 className="font-semibold text-lg">{tor.judul}</h2>
 								</div>
-								<div className="mb- flex justify-between items-center">
-									<div className="text-sm text-muted-foreground">
-										<p>Dibuat</p>
-										<p>{format(new Date(tor.created_at), 'MMMM yyyy')}</p>
+								<div className="md:flex md:justify-between items-center gap-4 grid grid-cols-1 gap-2">
+									<div className="text-sm">
+										<p className="text-muted-foreground">Dibuat</p>
+										<p className="font-medium">{format(new Date(tor.created_at), 'MMMM yyyy')}</p>
 									</div>
 									<div className="text-sm">
-										<p>Jenis Kegiatan</p>
-										<p>{tor.jenis_kegiatan}</p>
+										<p className="text-muted-foreground">Jenis Kegiatan</p>
+										<p className="font-medium">{tor.jenis_kegiatan}</p>
 									</div>
 									<div className="text-sm">
-										<p>Dana Diajukan</p>
-										<p>Rp 0</p> { /* masih dummy */ }
+										<p className="text-muted-foreground">Dana Diajukan</p>
+										<p className="font-medium">Rp 0</p> { /* masih dummy */ }
 									</div>
-									<div className="text-sm font-medium">
-										<p>Status</p>
-										<p>{tor.status_submisi.length > 0 ? tor.status_submisi[tor.status_submisi.length - 1].status : 'Draft'}</p>
+									<div className="text-sm">
+										<p className="text-muted-foreground">Status</p>
+										<p className="font-medium">{tor.status_submisi.length > 0 ? tor.status_submisi[tor.status_submisi.length - 1].status : 'Draft'}</p>
 									</div>
 									<div className="flex flex-col gap-2">
 										<Button variant="outline" disabled>Buat LPJ</Button>
