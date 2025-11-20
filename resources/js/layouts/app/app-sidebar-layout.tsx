@@ -17,10 +17,13 @@ export default function AppSidebarLayout({
         <AppShell variant="sidebar">
             {onboarding && <OnboardingModal role={onboarding} />}
             <AppSidebar />
-            <AppContent variant="sidebar" className="overflow-x-hidden">
+            <AppContent
+                variant="sidebar"
+                className="overflow-x-hidden bg-[#BAEAC9] text-[#427452]"
+            >
                 <AppSidebarHeader breadcrumbs={breadcrumbs} />
                 {children}
             </AppContent>
         </AppShell>
     );
-}
+}   
