@@ -13,7 +13,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem, type User, type SharedData, type Role } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, UserPlus } from 'lucide-react';
+import { BookOpen, Folder, LayoutGrid, UserPlus, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const footerNavItems: NavItem[] = [
@@ -49,6 +49,16 @@ export function AppSidebar() {
             title: 'Register User',
             href: '/register',
             icon: UserPlus,
+        });
+        mainNavItems.push({
+            title: 'List Mahasiswa',
+            href: '/list-mahasiswa',
+            icon: Users,
+        });
+        mainNavItems.push({
+            title: 'List Pegawai',
+            href: '/list-pegawai',
+            icon: Users,
         });
     }
 
