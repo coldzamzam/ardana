@@ -9,7 +9,6 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -34,43 +33,70 @@ export default function PegawaiIndex({ users: userList }: PegawaiIndexProps) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="List Pegawai" />
-            <div className="flex h-full flex-1 flex-col gap-4 overflow-y-auto rounded-xl p-4">
-                <Heading
-                    title="List Pegawai"
-                    description="Manage pegawai accounts."
-                />
-                <div className="rounded-md border">
+
+            <div className="flex h-full flex-1 flex-col gap-6 overflow-y-auto rounded-xl p-6">
+                
+                {/* HEADER */}
+                <div className="flex items-center justify-between gap-4">
+                    <div className="space-y-1">
+                        <h1 className="text-2xl font-semibold text-[#427452]">
+                            List Pegawai
+                        </h1>
+                        <p className="text-sm text-[#427452]/80">
+                            Kelola akun pegawai yang terdaftar di sistem Ardana.
+                        </p>
+                    </div>
+                </div>
+
+                {/* TABLE CARD */}
+                <div className="w-full rounded-3xl bg-white shadow-lg p-6">
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead className="w-[50px]">No.</TableHead>
-                                <TableHead>Name</TableHead>
-                                <TableHead>Email</TableHead>
-                                <TableHead>Role</TableHead>
-                                <TableHead>Aksi</TableHead>
+                                <TableHead className="w-[60px] text-center">No.</TableHead>
+                                <TableHead className="text-center">Name</TableHead>
+                                <TableHead className="text-center">Email</TableHead>
+                                <TableHead className="text-center">Role</TableHead>
+                                <TableHead className="text-center w-[160px]">Aksi</TableHead>
                             </TableRow>
                         </TableHeader>
+
                         <TableBody>
                             {userList.length > 0 ? (
                                 userList.map((user, index) => (
                                     <TableRow key={user.id}>
-                                        <TableCell className="w-1/24">{index + 1}</TableCell>
-                                        <TableCell className="w-6/24">{user.name}</TableCell>
-                                        <TableCell className="w-6/24">{user.email}</TableCell>
-                                        <TableCell className="w-5/24 text-center">{user.role}</TableCell>
-                                        <TableCell className="w-6/24 text-center md:space-x-1 space-y-1">
-                                            <Button size="sm">Edit</Button>
-                                            <Button size="sm">Hapus</Button>
+                                        <TableCell className="text-center">{index + 1}</TableCell>
+                                        <TableCell>{user.name}</TableCell>
+                                        <TableCell>{user.email}</TableCell>
+                                        <TableCell className="text-center capitalize">{user.role}</TableCell>
+
+                                        <TableCell>
+                                            <div className="flex flex-wrap items-center justify-center gap-2">
+                                                <Button
+                                                    size="sm"
+                                                    variant="outline"
+                                                    className="rounded-full px-4"
+                                                >
+                                                    Edit
+                                                </Button>
+                                                <Button
+                                                    size="sm"
+                                                    variant="destructive"
+                                                    className="rounded-full px-4"
+                                                >
+                                                    Hapus
+                                                </Button>
+                                            </div>
                                         </TableCell>
                                     </TableRow>
                                 ))
                             ) : (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={4}
-                                        className="h-24 text-center"
+                                        colSpan={5}
+                                        className="h-24 text-center text-xs text-muted-foreground"
                                     >
-                                        No users found.
+                                        Belum ada pegawai yang terdaftar.
                                     </TableCell>
                                 </TableRow>
                             )}

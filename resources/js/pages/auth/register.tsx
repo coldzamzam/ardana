@@ -44,9 +44,14 @@ export default function Register({ roles }: { roles: Role[] }) {
             description="Enter your details below to create account"
         >
             <Head title="Register" />
-            <form onSubmit={submit} className="flex flex-col gap-6">
+
+            <form onSubmit={submit} className="flex flex-col gap-8">
+                
+                {/* FORM FIELDS */}
                 <div className="grid gap-6">
-                    <div className="grid gap-2">
+                    
+                    {/* NAME */}
+                    <div className="grid gap-1.5">
                         <Label htmlFor="name">Name</Label>
                         <Input
                             id="name"
@@ -55,15 +60,15 @@ export default function Register({ roles }: { roles: Role[] }) {
                             autoFocus
                             tabIndex={1}
                             autoComplete="name"
-                            name="name"
                             placeholder="Full name"
                             value={data.name}
                             onChange={(e) => setData('name', e.target.value)}
                         />
-                        <InputError message={errors.name} className="mt-2" />
+                        <InputError message={errors.name} />
                     </div>
 
-                    <div className="grid gap-2">
+                    {/* EMAIL */}
+                    <div className="grid gap-1.5">
                         <Label htmlFor="email">Email address</Label>
                         <Input
                             id="email"
@@ -71,7 +76,6 @@ export default function Register({ roles }: { roles: Role[] }) {
                             required
                             tabIndex={2}
                             autoComplete="email"
-                            name="email"
                             placeholder="email@example.com"
                             value={data.email}
                             onChange={(e) => setData('email', e.target.value)}
@@ -79,7 +83,8 @@ export default function Register({ roles }: { roles: Role[] }) {
                         <InputError message={errors.email} />
                     </div>
 
-                    <div className="grid gap-2">
+                    {/* PASSWORD */}
+                    <div className="grid gap-1.5">
                         <Label htmlFor="password">Password</Label>
                         <Input
                             id="password"
@@ -87,7 +92,6 @@ export default function Register({ roles }: { roles: Role[] }) {
                             required
                             tabIndex={3}
                             autoComplete="new-password"
-                            name="password"
                             placeholder="Password"
                             value={data.password}
                             onChange={(e) => setData('password', e.target.value)}
@@ -95,7 +99,8 @@ export default function Register({ roles }: { roles: Role[] }) {
                         <InputError message={errors.password} />
                     </div>
 
-                    <div className="grid gap-2">
+                    {/* CONFIRM PASSWORD */}
+                    <div className="grid gap-1.5">
                         <Label htmlFor="password_confirmation">
                             Confirm password
                         </Label>
@@ -105,7 +110,6 @@ export default function Register({ roles }: { roles: Role[] }) {
                             required
                             tabIndex={4}
                             autoComplete="new-password"
-                            name="password_confirmation"
                             placeholder="Confirm password"
                             value={data.password_confirmation}
                             onChange={(e) =>
@@ -115,10 +119,10 @@ export default function Register({ roles }: { roles: Role[] }) {
                         <InputError message={errors.password_confirmation} />
                     </div>
 
-                    <div className="grid gap-2">
+                    {/* ROLE */}
+                    <div className="grid gap-1.5">
                         <Label>Role</Label>
                         <Select
-                            name="role_id"
                             onValueChange={(value) => setData('role_id', value)}
                         >
                             <SelectTrigger>
@@ -137,6 +141,7 @@ export default function Register({ roles }: { roles: Role[] }) {
                         <InputError message={errors.role_id} />
                     </div>
 
+                    {/* BUTTON */}
                     <Button
                         type="submit"
                         className="mt-2 w-full"
@@ -149,6 +154,7 @@ export default function Register({ roles }: { roles: Role[] }) {
                     </Button>
                 </div>
 
+                {/* FOOTER LINK */}
                 <div className="text-center text-sm">
                     Already have an account?{' '}
                     <TextLink href={login()} tabIndex={6}>
