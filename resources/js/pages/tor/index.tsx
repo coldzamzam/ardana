@@ -48,9 +48,13 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
         jenis_kegiatan: '',
     });
 
-    // === NEW: state utk search dan filter tahun ===
+    // Search & filter tahun
     const [search, setSearch] = useState('');
     const [selectedYear, setSelectedYear] = useState<'all' | string>('all');
+
+    // Pagination
+    const [page, setPage] = useState(1);
+    const itemsPerPage = 5;
 
     // daftar tahun unik dari data TOR
     const years = useMemo(() => {
@@ -80,6 +84,23 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
         });
     }, [tors, search, selectedYear]);
 
+    // total halaman
+    const totalPages = Math.max(
+        1,
+        Math.ceil(filteredTors.length / itemsPerPage),
+    );
+
+    // data per halaman
+    const paginatedTors = useMemo(() => {
+        const start = (page - 1) * itemsPerPage;
+        return filteredTors.slice(start, start + itemsPerPage);
+    }, [filteredTors, page]);
+
+    // kalau filter/search berubah, reset ke halaman 1 biar ga nyangkut di halaman kosong
+    useEffect(() => {
+        setPage(1);
+    }, [search, selectedYear, tors.length]);
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         post('/tor', {
@@ -100,7 +121,6 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="TOR" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-
                 {/* HEADER: Title + Search */}
                 <div className="flex items-center justify-between gap-4">
                     <div>
@@ -118,7 +138,6 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
                             onChange={(e) => setSearch(e.target.value)}
                         />
                         <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                            {/* icon search simple */}
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 className="h-4 w-4"
@@ -222,7 +241,6 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
                         >
                             <SelectTrigger className="w-56 rounded-md bg-white border border-gray-300 shadow-sm text-[#427452]">
                                 <div className="flex items-center gap-2">
-                                    {/* icon filter simple */}
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         className="h-4 w-4"
@@ -237,15 +255,11 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
                                             d="M3 4h18M6 10h12M10 16h4"
                                         />
                                     </svg>
-                                    <SelectValue
-                                        placeholder="Pilih Berdasarkan Tahun"
-                                    />
+                                    <SelectValue placeholder="Pilih Berdasarkan Tahun" />
                                 </div>
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="all">
-                                    Semua Tahun
-                                </SelectItem>
+                                <SelectItem value="all">Semua Tahun</SelectItem>
                                 {years.map((year) => (
                                     <SelectItem
                                         key={year}
@@ -261,8 +275,9 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
 
                 {/* LIST TOR */}
                 {filteredTors.length > 0 ? (
-                    <div className="mt-4 rounded-2xl bg-[#73AD86]/40 p-4 space-y-4">
-                        {filteredTors.map((tor) => (
+                    <div className="mt-4 rounded-2xl bg-[#73AD86] p-4 space-y-4">
+                        {/* Item per halaman (pagination) */}
+                        {paginatedTors.map((tor) => (
                             <div
                                 key={tor.id}
                                 className="rounded-xl bg-white border border-gray-200 p-4 shadow-sm"
@@ -297,7 +312,6 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
                                         <p className="text-muted-foreground">
                                             Dana Diajukan
                                         </p>
-                                        {/* masih dummy */}
                                         <p className="font-medium">Rp 0</p>
                                     </div>
                                     <div className="text-sm">
@@ -334,6 +348,57 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
                                 </div>
                             </div>
                         ))}
+
+                        {/* PAGINATION */}
+                        {filteredTors.length > itemsPerPage && (
+                            <div className="flex justify-center items-center gap-2 mt-4">
+                                <Button
+                                    disabled={page === 1}
+                                    onClick={() =>
+                                        setPage((prev) => Math.max(1, prev - 1))
+                                    }
+                                    variant="outline"
+                                    className="rounded-md"
+                                >
+                                    Prev
+                                </Button>
+
+                                {[...Array(totalPages)].map((_, i) => {
+                                    const pg = i + 1;
+                                    return (
+                                        <Button
+                                            key={pg}
+                                            onClick={() => setPage(pg)}
+                                            variant={
+                                                page === pg
+                                                    ? 'default'
+                                                    : 'outline'
+                                            }
+                                            className={`rounded-md px-4 ${
+                                                page === pg
+                                                    ? 'bg-[#427452] text-white'
+                                                    : ''
+                                            }`}
+                                        >
+                                            {pg}
+                                        </Button>
+                                    );
+                                })}
+
+                                <Button
+                                    disabled={page === totalPages}
+                                    onClick={() =>
+                                        setPage((prev) =>
+                                            Math.min(totalPages, prev + 1),
+                                        )
+                                    }
+                                    variant="outline"
+                                    className="rounded-md"
+                                >
+                                    Next
+                                </Button>
+                            </div>
+                        )}
                     </div>
                 ) : (
                     <div className="py-10 text-center">
