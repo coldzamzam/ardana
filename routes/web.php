@@ -24,10 +24,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
                 ->where('type', 'TOR')
                 ->orderBy('created_at', 'desc')
                 ->get();
-            return Inertia::render('tor', ['tors' => $tors]);
+            return Inertia::render('tor/index', ['tors' => $tors]);
         })->name('tor');
 
         Route::post('tor', [\App\Http\Controllers\TorController::class, 'store'])->name('tor.store');
+        Route::get('tor/{submisi}', [\App\Http\Controllers\TorController::class, 'show'])->name('tor.show');
+        Route::put('tor/{submisi}', [\App\Http\Controllers\TorController::class, 'update'])->name('tor.update');
+        Route::post('tor/{submisi}/draft', [\App\Http\Controllers\TorController::class, 'saveDraft'])->name('tor.saveDraft');
 
         Route::get('lpj', function () {
             return Inertia::render('lpj');

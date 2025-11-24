@@ -1,6 +1,6 @@
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type PageProps, type SharedData } from '@/types';
-import { Head, useForm, usePage } from '@inertiajs/react';
+import { Head, useForm, usePage, Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -37,13 +37,7 @@ type Submisi = {
     status_submisi: { status: string }[];
 };
 
-const jenisKegiatanOptions = [
-    'Pelatihan dan Sertifikasi Kompetensi Dosen',
-    'Lomba Mahasiswa',
-    'Acara Pameran dan Kompetensi',
-    'Pengabdian Masyarakat',
-    'Acara Kompetisi',
-];
+import { jenisKegiatanOptions } from '@/lib/constants';
 
 export default function TorPage({ tors }: { tors: Submisi[] }) {
     const { flash } = usePage<PageProps<SharedData>>().props;
@@ -328,12 +322,14 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
                                         >
                                             Buat LPJ
                                         </Button>
-                                        <Button
-                                            variant="outline"
-                                            className="rounded-lg"
-                                        >
-                                            Detail TOR
-                                        </Button>
+                                        <Link href={`/tor/${tor.id}`}>
+                                            <Button
+                                                variant="outline"
+                                                className="rounded-lg"
+                                            >
+                                                Detail TOR
+                                            </Button>
+                                        </Link>
                                     </div>
                                 </div>
                             </div>

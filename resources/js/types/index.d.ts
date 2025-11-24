@@ -54,3 +54,25 @@ export interface User {
 
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T &
     SharedData;
+
+export interface Submisi {
+    id: number;
+    judul: string;
+    jenis_kegiatan: string;
+    created_at: string;
+    status_submisi: {
+        status: string;
+    }[];
+    [key: string]: unknown;
+}
+
+export interface Draft {
+    indikator_kinerja?: string;
+    tanggal_mulai?: string;
+    tanggal_selesai?: string;
+    gambaran_umum?: string;
+    tujuan?: string;
+    manfaat?: string;
+    metode_pelaksanaan?: string;
+    waktu_pelaksanaan?: string;
+}
