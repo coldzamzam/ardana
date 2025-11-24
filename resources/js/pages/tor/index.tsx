@@ -54,7 +54,7 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
 
     // Pagination
     const [page, setPage] = useState(1);
-    const itemsPerPage = 5;
+    const itemsPerPage = 3;
 
     // daftar tahun unik dari data TOR
     const years = useMemo(() => {
@@ -74,10 +74,7 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
             const year = new Date(tor.created_at).getFullYear().toString();
             const matchYear = selectedYear === 'all' || selectedYear === year;
 
-            const text =
-                (tor.judul ?? '') +
-                ' ' +
-                (tor.jenis_kegiatan ?? '');
+            const text = (tor.judul ?? '') + ' ' + (tor.jenis_kegiatan ?? '');
             const matchSearch = text.toLowerCase().includes(term);
 
             return matchYear && matchSearch;
@@ -96,7 +93,7 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
         return filteredTors.slice(start, start + itemsPerPage);
     }, [filteredTors, page]);
 
-    // kalau filter/search berubah, reset ke halaman 1 biar ga nyangkut di halaman kosong
+    // kalau filter/search berubah, reset ke halaman 1
     useEffect(() => {
         setPage(1);
     }, [search, selectedYear, tors.length]);
@@ -121,44 +118,16 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="TOR" />
             <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
-                {/* HEADER: Title + Search */}
-                <div className="flex items-center justify-between gap-4">
-                    <div>
-                        <h1 className="text-2xl font-semibold text-[#427452]">
-                            TOR
-                        </h1>
-                    </div>
-
-                    {/* Search bar ala Figma */}
-                    <div className="relative">
-                        <Input
-                            className="w-64 rounded-md bg-white pl-10 pr-4 border border-gray-300 shadow-sm"
-                            placeholder="Search"
-                            value={search}
-                            onChange={(e) => setSearch(e.target.value)}
-                        />
-                        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                className="h-4 w-4"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                strokeWidth={2}
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M21 21l-4.35-4.35M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"
-                                />
-                            </svg>
-                        </span>
-                    </div>
+                {/* TITLE */}
+                <div className="w-full">
+                    <h1 className="text-2xl font-semibold text-[#427452]">
+                        TOR
+                    </h1>
                 </div>
 
-                {/* ACTION BAR: Tambah + Filter Tahun */}
-                <div className="mt-2 flex items-center justify-between gap-3">
-                    {/* Dialog Tambah Pengajuan */}
+                {/* BARIS KONTROL: Tambah + Search + Filter Tahun */}
+                <div className="mt-2 flex w-full items-center gap-4">
+                    {/* KIRI: Dialog Tambah Pengajuan */}
                     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
                         <DialogTrigger asChild>
                             <Button className="rounded-md bg-[#73AD86] px-5 py-2 text-white hover:bg-[#5f9772]">
@@ -183,7 +152,7 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
                                         }
                                     />
                                     {errors.judul && (
-                                        <p className="text-xs mt-1 text-red-500">
+                                        <p className="mt-1 text-xs text-red-500">
                                             {errors.judul}
                                         </p>
                                     )}
@@ -215,7 +184,7 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
                                         </SelectContent>
                                     </Select>
                                     {errors.jenis_kegiatan && (
-                                        <p className="text-xs mt-1 text-red-500">
+                                        <p className="mt-1 text-xs text-red-500">
                                             {errors.jenis_kegiatan}
                                         </p>
                                     )}
@@ -231,7 +200,35 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
                         </DialogContent>
                     </Dialog>
 
-                    {/* Filter Tahun ala "Pilih Berdasarkan Tahun" */}
+                    {/* TENGAH: Search bar (turun & sejajar) */}
+                    <div className="flex-1 flex justify-center">
+                        <div className="relative w-full max-w-md">
+                            <Input
+                                className="w-full rounded-md bg-white pl-10 pr-4 border border-gray-300 shadow-sm"
+                                placeholder="Search"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                            />
+                            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-4 w-4"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                    strokeWidth={2}
+                                >
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        d="M21 21l-4.35-4.35M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z"
+                                    />
+                                </svg>
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* KANAN: Filter Tahun */}
                     <div className="flex items-center">
                         <Select
                             value={selectedYear}
@@ -275,8 +272,7 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
 
                 {/* LIST TOR */}
                 {filteredTors.length > 0 ? (
-                    <div className="mt-4 rounded-2xl bg-[#73AD86] p-4 space-y-4">
-                        {/* Item per halaman (pagination) */}
+                    <div className="mt-4 space-y-4 rounded-2xl bg-[#73AD86] p-4">
                         {paginatedTors.map((tor) => (
                             <div
                                 key={tor.id}
@@ -351,7 +347,7 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
 
                         {/* PAGINATION */}
                         {filteredTors.length > itemsPerPage && (
-                            <div className="flex justify-center items-center gap-2 mt-4">
+                            <div className="mt-4 flex items-center justify-center gap-2">
                                 <Button
                                     disabled={page === 1}
                                     onClick={() =>
