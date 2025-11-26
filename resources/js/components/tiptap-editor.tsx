@@ -18,7 +18,7 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
         },
         editorProps: {
             attributes: {
-                class: 'min-h-[150px] p-2 border rounded-md border-input focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
+                class: 'min-h-[150px] p-2 bg-gray-50 focus-visible:outline-none focus-visible:bg-white focus-visible:transition-colors focus-visible:duration-300',
             },
         },
     });
@@ -29,7 +29,7 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
 
     return (
         <div className="border rounded-md">
-            <div className="flex flex-wrap gap-1 p-2 border-b">
+            <div className="flex flex-wrap gap-1 p-2 border-b bg-gray-50">
                 <Button
                     onClick={() => editor.chain().focus().toggleBold().run()}
                     disabled={!editor.can().chain().focus().toggleBold().run()}

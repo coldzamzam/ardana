@@ -43,9 +43,9 @@ class HandleInertiaRequests extends Middleware
 
         if ($user) {
             $user->load('roles', 'mahasiswa', 'dosen');
-            if ($user->hasRole('mahasiswa') && !$user->mahasiswa) {
+            if ($user->hasRole('mahasiswa') && ! $user->mahasiswa) {
                 $onboardingRole = 'mahasiswa';
-            } elseif (($user->hasRole('dosen') || $user->hasRole('sekjur') || $user->hasRole('kajur')) && !$user->dosen) {
+            } elseif (($user->hasRole('dosen') || $user->hasRole('sekjur') || $user->hasRole('kajur')) && ! $user->dosen) {
                 $onboardingRole = 'dosen';
             }
         }

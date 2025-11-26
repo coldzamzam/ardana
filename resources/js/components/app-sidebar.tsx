@@ -62,6 +62,14 @@ export function AppSidebar() {
         });
     }
 
+    if (hasRole('admin') || hasRole('sekjur') || hasRole('kajur')) {
+        mainNavItems.push({
+            title: 'Verifikasi TOR',
+            href: '/verifikasi',
+            icon: BookOpen,
+        });
+    }
+
     if (hasRole('mahasiswa') || hasRole('dosen')) {
         mainNavItems.push({
             title: 'TOR',

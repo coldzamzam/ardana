@@ -1,8 +1,8 @@
 <?php
 
-use App\Models\User;
 use App\Models\Mahasiswa;
 use App\Models\RoleType;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\RateLimiter;
 use Laravel\Fortify\Features;
@@ -44,7 +44,6 @@ test('users with two factor enabled are redirected to two factor challenge', fun
     $user = User::factory()->create();
     $user->roles()->attach($mahasiswaRole->id, ['id' => \Illuminate\Support\Str::uuid()]);
     Mahasiswa::create(['user_id' => $user->id, 'nim' => '1234567890', 'prodi' => 'Teknik Informatika']);
-
 
     $user->forceFill([
         'two_factor_secret' => encrypt('test-secret'),

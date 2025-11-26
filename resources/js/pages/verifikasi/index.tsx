@@ -20,7 +20,7 @@ type Submisi = {
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Verifikasi TOR',
-        href: '/tor/verifikasi',
+        href: '/verifikasi',
     },
 ];
 
@@ -86,7 +86,7 @@ export default function TorVerificationPage({ tors }: { tors: Submisi[] }) {
     // kirim aksi verifikasi ke backend (route Laravel nanti kamu sesuaikan)
     const handleAction = (torId: string, action: 'approve' | 'reject') => {
         router.post(
-            `/tor/${torId}/verifikasi`,
+            route('verifikasi.approveOrReject', { submisi: torId }),
             { action },
             {
                 preserveScroll: true,

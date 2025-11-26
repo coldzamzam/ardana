@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\StatusSubmisi;
 use App\Models\Submisi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -54,5 +55,32 @@ class TorController extends Controller
         $request->session()->put('tor_draft_'.$submisi->id, $request->all());
 
         return Redirect::back()->with('success', 'Draft berhasil disimpan.');
+    }
+
+    public function verifikasi()
+    {
+        $tors = Submisi::with('statusSubmisi')
+            ->where('type', 'TOR')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return Inertia::render('verifikasi/index', ['tors' => $tors]);
+    }
+
+    public function approveOrReject(Request $request, Submisi $submisi)
+    {
+        $request->validate([
+            'action' => 'required|in:approve,reject',
+        ]);
+
+        $status = $request->action === 'approve' ? 'Disetujui' : 'Ditolak';
+
+        StatusSubmisi::create([
+            'submisi_id' => $submisi->id,
+            'status' => $status,
+            'created_by' => Auth::id(),
+        ]);
+
+        return Redirect::back()->with('success', 'Status TOR berhasil diperbarui.');
     }
 }

@@ -8,8 +8,6 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Inertia\Inertia;
@@ -23,6 +21,7 @@ class RegisteredUserController extends Controller
     public function create(): Response
     {
         $roles = RoleType::whereNotIn('role_name', ['superadmin', 'mahasiswa'])->get();
+
         return Inertia::render('auth/register', [
             'roles' => $roles,
         ]);
@@ -52,8 +51,10 @@ class RegisteredUserController extends Controller
         $selectedRole = RoleType::find($request->role_id);
         $user->roles()->attach($selectedRole->id, ['id' => Str::uuid()]);
 
+        $specialRoles = RoleType::whereIn('role_name', ['sekjur', 'kajur'])->pluck('id');
+
         // Automatically assign 'dosen' role if 'sekjur' or 'kajur' is selected
-        if (in_array($selectedRole->role_name, ['sekjur', 'kajur'])) {
+        if ($specialRoles->contains($selectedRole->id)) {
             $dosenRole = RoleType::where('role_name', 'dosen')->first();
             if ($dosenRole) {
                 $user->roles()->attach($dosenRole->id, ['id' => Str::uuid()]);
