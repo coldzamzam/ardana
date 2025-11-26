@@ -39,30 +39,57 @@ export interface Role {
     role_name: string;
 }
 
+export interface Mahasiswa {
+    id: number;
+    user_id: string;
+    nim: string;
+    prodi: string;
+}
+
 export interface User {
     id: number;
     name: string;
     email: string;
+    nip: string;
+    nim: string;
+    prodi: string;
     avatar?: string;
     email_verified_at: string | null;
     two_factor_enabled?: boolean;
     created_at: string;
     updated_at: string;
     roles?: Role[];
+    mahasiswa: Mahasiswa;
     [key: string]: unknown; // This allows for additional properties...
 }
 
 export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T &
     SharedData;
 
+export interface AnggotaTim {
+    id: string;
+    user: User;
+    created_at: string;
+    deleted_at?: string;
+}
+
+export interface IndikatorKinerja {
+    id: string;
+    bulan: string;
+    keberhasilan: string;
+    target: number;
+}
+
 export interface Submisi {
     id: number;
     judul: string;
     jenis_kegiatan: string;
     created_at: string;
+    anggota_tim: AnggotaTim[];
     status_submisi: {
         status: string;
     }[];
+    indikator_kinerja: IndikatorKinerja[];
     [key: string]: unknown;
 }
 
@@ -75,4 +102,7 @@ export interface Draft {
     manfaat?: string;
     metode_pelaksanaan?: string;
     waktu_pelaksanaan?: string;
+    pic_id?: string;
+    pic_name?: string;
+    pic_nip?: string;
 }

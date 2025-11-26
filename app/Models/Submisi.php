@@ -32,4 +32,14 @@ class Submisi extends Model
     {
         return $this->hasMany(StatusSubmisi::class);
     }
+
+    public function anggotaTim(): HasMany
+    {
+        return $this->hasMany(AnggotaTim::class);
+    }
+
+    public function indikatorKinerja(): HasMany
+    {
+        return $this->hasMany(IndikatorKinerja::class);
+    }
 }

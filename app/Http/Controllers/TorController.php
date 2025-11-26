@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\StatusSubmisi;
 use App\Models\Submisi;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
@@ -30,11 +32,29 @@ class TorController extends Controller
 
     public function show(Request $request, Submisi $submisi)
     {
-        $draft = $request->session()->get('tor_draft_'.$submisi->id, []);
+        $submisi->load('anggotaTim.user.mahasiswa', 'statusSubmisi', 'indikatorKinerja');
+        $draft = $request->session()->get('tor_draft_' . $submisi->id, []);
+
+        $dosens = User::whereHas('roles', function ($q) {
+            $q->where(DB::raw('TRIM(role_name)'), 'dosen');
+        })
+            ->with('dosen')
+            ->get()
+            ->map(function ($user) {
+                if ($user->dosen) {
+                    return [
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'nip' => $user->dosen->nip,
+                    ];
+                }
+                return null;
+            })->filter()->values();
 
         return Inertia::render('tor/detail', [
             'submisi' => $submisi,
             'draft' => $draft,
+            'dosens' => $dosens,
         ]);
     }
 
@@ -52,7 +72,7 @@ class TorController extends Controller
 
     public function saveDraft(Request $request, Submisi $submisi)
     {
-        $request->session()->put('tor_draft_'.$submisi->id, $request->all());
+        $request->session()->put('tor_draft_' . $submisi->id, $request->all());
 
         return Redirect::back()->with('success', 'Draft berhasil disimpan.');
     }

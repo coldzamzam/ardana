@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('indikator_kinerja', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->char('bulan', 10);
+            $table->string('bulan', 20);
             $table->string('keberhasilan', 100);
             $table->integer('target');
             $table->foreignUuid('submisi_id')->constrained('submisi');

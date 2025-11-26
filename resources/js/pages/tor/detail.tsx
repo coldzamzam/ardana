@@ -1,6 +1,4 @@
-import AppLayout from '@/layouts/app-layout';
-import { Head, useForm } from '@inertiajs/react';
-import { Submisi, Draft } from '@/types';
+import TiptapEditor from '@/components/tiptap-editor';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -12,18 +10,48 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import TiptapEditor from '@/components/tiptap-editor';
+import AppLayout from '@/layouts/app-layout';
 import { jenisKegiatanOptions } from '@/lib/constants';
+import { type BreadcrumbItem, type Draft, type Submisi, type User } from '@/types';
+import { Head, useForm } from '@inertiajs/react';
+import React from 'react';
+import DetailAnggota from './detail-anggota';
+import DetailIndikator from './detail-indikator';
 
 interface TorDetailProps {
     submisi: Submisi;
     draft: Draft;
+    dosens: User[];
 }
 
-export default function TorDetail({ submisi, draft }: TorDetailProps) {
+const breadcrumbs: BreadcrumbItem[] = [
+    {
+        title: 'TOR',
+        href: '/tor',
+    },
+    {
+        title: 'TOR Detail',
+        href: window.location.pathname,
+    },
+];
+
+export default function TorDetail({ submisi, draft, dosens }: TorDetailProps) {
     const { data, setData, put, post } = useForm({
-        ...submisi,
-        ...draft,
+        id: submisi.id,
+        judul: submisi.judul,
+        jenis_kegiatan: submisi.jenis_kegiatan,
+        created_at: submisi.created_at,
+        indikator_kinerja: draft.indikator_kinerja || '',
+        tanggal_mulai: draft.tanggal_mulai || '',
+        tanggal_selesai: draft.tanggal_selesai || '',
+        gambaran_umum: draft.gambaran_umum || '',
+        tujuan: draft.tujuan || '',
+        manfaat: draft.manfaat || '',
+        metode_pelaksanaan: draft.metode_pelaksanaan || '',
+        waktu_pelaksanaan: draft.waktu_pelaksanaan || '',
+        pic_id: draft.pic_id || '',
+        pic_name: draft.pic_name || '',
+        pic_nip: draft.pic_nip || '',
     });
 
     const IKU = [
@@ -46,35 +74,30 @@ export default function TorDetail({ submisi, draft }: TorDetailProps) {
     };
 
     return (
-        <AppLayout>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Detail TOR - ${submisi.judul}`} />
 
             <div className="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-4">
-                {/* CARD: Info dasar TOR */}
                 <Card className="overflow-hidden rounded-2xl border border-[#73AD86]/40 shadow-sm">
-                    <CardHeader className="">
-                        <CardTitle className="text-xl font-semibold text-[#427452]">
-                            Detail TOR
-                        </CardTitle>
-                    </CardHeader>
-
-                    <CardContent className="space-y-4 pt-4">
-                        {/* Judul full width */}
+                    <CardContent className="space-y-4">
                         <div className="space-y-1">
                             <Label htmlFor="judul">Judul</Label>
                             <Input
                                 id="judul"
                                 value={data.judul}
-                                onChange={(e) => setData('judul', e.target.value)}
+                                onChange={(e) =>
+                                    setData('judul', e.target.value)
+                                }
                                 onBlur={handleUpdate}
                                 className="bg-white"
                             />
                         </div>
 
-                        {/* 2 kolom: Jenis Kegiatan & Dibuat */}
                         <div className="grid gap-4 md:grid-cols-2">
                             <div className="space-y-1">
-                                <Label htmlFor="jenis_kegiatan">Jenis Kegiatan</Label>
+                                <Label htmlFor="jenis_kegiatan">
+                                    Jenis Kegiatan
+                                </Label>
                                 <Select
                                     onValueChange={(value) => {
                                         setData('jenis_kegiatan', value);
@@ -87,7 +110,10 @@ export default function TorDetail({ submisi, draft }: TorDetailProps) {
                                     </SelectTrigger>
                                     <SelectContent>
                                         {jenisKegiatanOptions.map((option) => (
-                                            <SelectItem key={option} value={option}>
+                                            <SelectItem
+                                                key={option}
+                                                value={option}
+                                            >
                                                 {option}
                                             </SelectItem>
                                         ))}
@@ -100,7 +126,7 @@ export default function TorDetail({ submisi, draft }: TorDetailProps) {
                                 <Input
                                     id="created_at"
                                     value={new Date(
-                                        submisi.created_at
+                                        submisi.created_at,
                                     ).toLocaleDateString()}
                                     readOnly
                                     className="bg-neutral-100"
@@ -108,7 +134,6 @@ export default function TorDetail({ submisi, draft }: TorDetailProps) {
                             </div>
                         </div>
 
-                        {/* Status */}
                         <div className="space-y-1 md:w-1/2">
                             <Label htmlFor="status">Status</Label>
                             <Input
@@ -128,18 +153,18 @@ export default function TorDetail({ submisi, draft }: TorDetailProps) {
                     </CardContent>
                 </Card>
 
-                {/* CARD: Detail Kegiatan */}
                 <Card className="overflow-hidden rounded-2xl border border-[#73AD86]/40 shadow-sm">
                     <CardHeader className="">
                         <CardTitle className="text-xl font-semibold text-[#427452]">
-                            Detail Kegiatan
+                            Detail TOR
                         </CardTitle>
                     </CardHeader>
 
                     <CardContent className="space-y-4 pt-4">
-                        {/* Indikator Kinerja */}
                         <div className="space-y-1 md:w-1/2">
-                            <Label htmlFor="indikator_kinerja">Indikator Kinerja</Label>
+                            <Label htmlFor="indikator_kinerja">
+                                Indikator Kinerja
+                            </Label>
                             <Select
                                 onValueChange={(value) =>
                                     setData('indikator_kinerja', value)
@@ -159,10 +184,11 @@ export default function TorDetail({ submisi, draft }: TorDetailProps) {
                             </Select>
                         </div>
 
-                        {/* Tanggal mulai & selesai */}
                         <div className="grid gap-4 md:grid-cols-2">
                             <div className="space-y-1">
-                                <Label htmlFor="tanggal_mulai">Tanggal Mulai</Label>
+                                <Label htmlFor="tanggal_mulai">
+                                    Tanggal Mulai
+                                </Label>
                                 <Input
                                     id="tanggal_mulai"
                                     type="date"
@@ -174,20 +200,24 @@ export default function TorDetail({ submisi, draft }: TorDetailProps) {
                                 />
                             </div>
                             <div className="space-y-1">
-                                <Label htmlFor="tanggal_selesai">Tanggal Selesai</Label>
+                                <Label htmlFor="tanggal_selesai">
+                                    Tanggal Selesai
+                                </Label>
                                 <Input
                                     id="tanggal_selesai"
                                     type="date"
                                     value={data.tanggal_selesai || ''}
                                     onChange={(e) =>
-                                        setData('tanggal_selesai', e.target.value)
+                                        setData(
+                                            'tanggal_selesai',
+                                            e.target.value,
+                                        )
                                     }
                                     className="bg-white"
                                 />
                             </div>
                         </div>
 
-                        {/* Editor sections */}
                         <div className="space-y-2">
                             <Label htmlFor="gambaran_umum">Gambaran Umum</Label>
                             <div className="rounded-lg border bg-white p-2">
@@ -252,7 +282,44 @@ export default function TorDetail({ submisi, draft }: TorDetailProps) {
                             </div>
                         </div>
 
-                        {/* Tombol simpan */}
+                        <div className="space-y-1 md:w-1/2">
+                            <Label htmlFor="pic">PIC</Label>
+                            <select
+                                id="pic"
+                                value={data.pic_id}
+                                onChange={(e) => {
+                                    const selectedDosen = dosens.find(
+                                        (d) => String(d.id) === e.target.value,
+                                    );
+                                    if (selectedDosen) {
+                                        setData({
+                                            ...data,
+                                            pic_id: String(selectedDosen.id),
+                                            pic_name: selectedDosen.name,
+                                            pic_nip: selectedDosen.nip,
+                                        });
+                                    }
+                                }}
+                                className="w-full rounded-md border border-gray-300 bg-white p-2"
+                            >
+                                <option value="">Pilih PIC</option>
+                                {dosens.map((dosen) => (
+                                    <option
+                                        key={dosen.id}
+                                        value={String(dosen.id)}
+                                    >
+                                        {dosen.name} - {dosen.nip}
+                                    </option>
+                                ))}
+                            </select>
+                            {data.pic_name && (
+                                <div className="mt-2 text-sm text-gray-600">
+                                    <p>Nama: {data.pic_name}</p>
+                                    <p>NIP: {data.pic_nip}</p>
+                                </div>
+                            )}
+                        </div>
+
                         <div className="flex justify-end pt-2">
                             <Button
                                 onClick={handleSaveDraft}
@@ -263,6 +330,9 @@ export default function TorDetail({ submisi, draft }: TorDetailProps) {
                         </div>
                     </CardContent>
                 </Card>
+
+                <DetailAnggota submisi={submisi} />
+                <DetailIndikator submisi={submisi} />
             </div>
         </AppLayout>
     );
