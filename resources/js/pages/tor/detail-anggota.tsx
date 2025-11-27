@@ -50,7 +50,7 @@ export default function DetailAnggota({ submisi }: DetailAnggotaProps) {
 
 		try {
 			const res = await fetch(
-				`/mahasiswa/search?nim=${mahasiswaSearch}&submisi_id=${submisi.id}`,
+				`/dashboard/mahasiswa/search?nim=${mahasiswaSearch}&submisi_id=${submisi.id}`,
 			);
 
 			if (!res.ok) {
@@ -70,7 +70,7 @@ export default function DetailAnggota({ submisi }: DetailAnggotaProps) {
 	const handleAddAnggota = () => {
 		if (mahasiswaResult) {
 			router.post(
-				'/anggota-tim',
+				'/dashboard/anggota-tim',
 				{
 					submisi_id: submisi.id,
 					anggota_id: mahasiswaResult.id,
@@ -86,7 +86,7 @@ export default function DetailAnggota({ submisi }: DetailAnggotaProps) {
 	};
 
 	const handleDeleteAnggota = (anggotaId: string) => {
-		router.delete(`/anggota-tim/${anggotaId}`, {
+		router.delete(`/dashboard/anggota-tim/${anggotaId}`, {
 			preserveScroll: true,
 		});
 	};

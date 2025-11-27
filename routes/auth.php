@@ -29,13 +29,15 @@ Route::middleware('guest')->group(function () {
         ->name('password.store');
 });
 
-Route::get('register', [RegisteredUserController::class, 'create'])
-    ->middleware(['auth', 'role:superadmin'])
-    ->name('register');
+Route::prefix('dashboard')->group(function () {
+    Route::get('register', [RegisteredUserController::class, 'create'])
+        ->middleware(['auth', 'role:superadmin'])
+        ->name('register');
 
-Route::post('register', [RegisteredUserController::class, 'store'])
-    ->middleware(['auth', 'role:superadmin'])
-    ->name('register.store');
+    Route::post('register', [RegisteredUserController::class, 'store'])
+        ->middleware(['auth', 'role:superadmin'])
+        ->name('register.store');
+});
 
 Route::middleware('auth')->group(function () {
     Route::get('verify-email', EmailVerificationPromptController::class)

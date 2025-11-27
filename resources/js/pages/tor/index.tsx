@@ -21,6 +21,7 @@ import {
 } from '@/components/ui/select';
 import { format } from 'date-fns';
 import { useEffect, useMemo, useState } from 'react';
+import { jenisKegiatanOptions } from '@/lib/constants';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -36,8 +37,6 @@ type Submisi = {
     created_at: string;
     status_submisi: { status: string }[];
 };
-
-import { jenisKegiatanOptions } from '@/lib/constants';
 
 export default function TorPage({ tors }: { tors: Submisi[] }) {
     const { flash } = usePage<PageProps<SharedData>>().props;

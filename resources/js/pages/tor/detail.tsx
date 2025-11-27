@@ -66,11 +66,11 @@ export default function TorDetail({ submisi, draft, dosens }: TorDetailProps) {
     ];
 
     const handleUpdate = () => {
-        put(`/tor/${submisi.id}`);
+        put(`/dashboard/tor/${submisi.id}`);
     };
 
     const handleSaveDraft = () => {
-        post(`/tor/${submisi.id}/draft`);
+        post(`/dashboard/tor/${submisi.id}/draft`);
     };
 
     return (

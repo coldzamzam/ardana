@@ -11,9 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class IndikatorKinerja extends Model
 {
     use HasFactory, HasUuids, SoftDeletes;
-
     protected $table = 'indikator_kinerja';
-
     public $incrementing = false;
     protected $keyType = 'string';
 

@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Mahasiswa extends Model
 {
     use HasFactory, HasUuids;
-
     protected $table = 'mahasiswa';
 
     protected $fillable = [
