@@ -13,7 +13,7 @@ import { Label } from '@/components/ui/label';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Password settings',
-        href: '/settings/password', // sesuaikan kalau kamu pakai typed route
+        href: '/dashboard/settings/password', // sesuaikan kalau kamu pakai typed route
     },
 ];
 
@@ -35,7 +35,7 @@ export default function PasswordSettings() {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        patch('/password', {
+        patch('/dashboard/settings/password', {
             preserveScroll: true,
             onSuccess: () => {
                 reset('current_password', 'password', 'password_confirmation');

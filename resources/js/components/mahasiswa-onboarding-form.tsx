@@ -30,7 +30,7 @@ export default function MahasiswaOnboardingForm() {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         if (window.confirm('Apakah Anda yakin semua informasi sudah benar? NIM tidak bisa diubah setelah disimpan.')) {
-            post('/onboarding/mahasiswa');
+            post('/dashboard/onboarding/mahasiswa');
         }
     };
 

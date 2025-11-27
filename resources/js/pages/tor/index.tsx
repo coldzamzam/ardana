@@ -25,7 +25,7 @@ import { useEffect, useMemo, useState } from 'react';
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'TOR',
-        href: '/tor',
+        href: '/dashboard/tor',
     },
 ];
 
@@ -100,7 +100,7 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        post('/tor', {
+        post('/dashboard/tor', {
             onSuccess: () => {
                 setIsModalOpen(false);
                 reset();
@@ -332,7 +332,7 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
                                         >
                                             Buat LPJ
                                         </Button>
-                                        <Link href={`/tor/${tor.id}`}>
+                                        <Link href={`/dashboard/tor/${tor.id}`}>
                                             <Button
                                                 variant="outline"
                                                 className="rounded-lg"

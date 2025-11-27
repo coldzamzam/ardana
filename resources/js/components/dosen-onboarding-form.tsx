@@ -15,7 +15,7 @@ export default function DosenOnboardingForm() {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
         if (window.confirm('Apakah Anda yakin semua informasi sudah benar? NIP tidak bisa diubah setelah disimpan.')) {
-            post('/onboarding/dosen');
+            post('/dashboard/onboarding/dosen');
         }
     };
 

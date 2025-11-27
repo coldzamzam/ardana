@@ -62,7 +62,7 @@ export default function DetailIndikator({ submisi }: DetailIndikatorProps) {
             return;
         }
         setValidationError(null);
-        post('/indikator-kinerja', {
+        post('/dashboard/indikator-kinerja', {
             onSuccess: () => {
                 setIsAdding(false);
                 reset();
@@ -88,7 +88,7 @@ export default function DetailIndikator({ submisi }: DetailIndikatorProps) {
             return;
         }
         setValidationError(null);
-        put(`/indikator-kinerja/${data.id}`, {
+        put(`/dashboard/indikator-kinerja/${data.id}`, {
             onSuccess: () => {
                 setEditingRow(null);
                 reset();
@@ -97,7 +97,7 @@ export default function DetailIndikator({ submisi }: DetailIndikatorProps) {
     };
 
     const handleDelete = (id: string) => {
-        router.delete(`/indikator-kinerja/${id}`, {
+        router.delete(`/dashboard/indikator-kinerja/${id}`, {
             preserveScroll: true,
         });
     };

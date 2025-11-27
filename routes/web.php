@@ -15,8 +15,8 @@ Route::get('/', function () {
 	return Inertia::render('welcome');
 })->name('home');
 
-Route::middleware(['auth', 'verified'])->group(function () {
-	Route::get('dashboard', function () {
+Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () {
+	Route::get('/', function () {
 		return Inertia::render('dashboard');
 	})->name('dashboard');
 
@@ -60,7 +60,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 		Route::get('list-mahasiswa', [MahasiswaController::class, 'index'])->name('mahasiswa.index');
 		Route::get('list-pegawai', [PegawaiController::class, 'index'])->name('pegawai.index');
 	});
-});
 
-require __DIR__ . '/settings.php';
+	require __DIR__ . '/settings.php';
+});
 require __DIR__ . '/auth.php';

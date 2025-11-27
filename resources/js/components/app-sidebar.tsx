@@ -47,17 +47,17 @@ export function AppSidebar() {
     if (hasRole('superadmin')) {
         mainNavItems.push({
             title: 'Register User',
-            href: '/register',
+            href: '/dashboard/register',
             icon: UserPlus,
         });
         mainNavItems.push({
             title: 'List Mahasiswa',
-            href: '/list-mahasiswa',
+            href: '/dashboard/list-mahasiswa',
             icon: Users,
         });
         mainNavItems.push({
             title: 'List Pegawai',
-            href: '/list-pegawai',
+            href: '/dashboard/list-pegawai',
             icon: Users,
         });
     }
@@ -65,7 +65,7 @@ export function AppSidebar() {
     if (hasRole('admin') || hasRole('sekjur') || hasRole('kajur')) {
         mainNavItems.push({
             title: 'Verifikasi TOR',
-            href: '/verifikasi',
+            href: '/dashboard/verifikasi',
             icon: BookOpen,
         });
     }
@@ -73,12 +73,12 @@ export function AppSidebar() {
     if (hasRole('mahasiswa') || hasRole('dosen')) {
         mainNavItems.push({
             title: 'TOR',
-            href: '/tor',
+            href: '/dashboard/tor',
             icon: BookOpen,
         });
         mainNavItems.push({
             title: 'LPJ',
-            href: '/lpj',
+            href: '/dashboard/lpj',
             icon: Folder,
         });
     }
