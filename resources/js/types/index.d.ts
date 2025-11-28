@@ -80,6 +80,13 @@ export interface IndikatorKinerja {
     target: number;
 }
 
+export interface SubmisiFile {
+    id: string;
+    nama: string;
+    file_location: string;
+    deskripsi: string;
+}
+
 export interface Submisi {
     id: number;
     judul: string;
@@ -90,6 +97,7 @@ export interface Submisi {
         status: string;
     }[];
     indikator_kinerja: IndikatorKinerja[];
+    submisi_file?: SubmisiFile[];
     [key: string]: unknown;
 }
 

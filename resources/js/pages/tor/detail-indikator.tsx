@@ -37,7 +37,7 @@ export default function DetailIndikator({ submisi }: DetailIndikatorProps) {
         id: '',
         bulan: '',
         keberhasilan: '',
-        target: 0,
+        target: '' as number | '',
         submisi_id: submisi.id,
     });
     const [validationError, setValidationError] = React.useState<string | null>(
@@ -61,12 +61,17 @@ export default function DetailIndikator({ submisi }: DetailIndikatorProps) {
             setValidationError('Semua field harus diisi.');
             return;
         }
+        if (typeof data.target === 'number' && (data.target < 1 || data.target > 100)) {
+            setValidationError('Target harus diisi dengan angka 1-100');
+            return;
+        }
         setValidationError(null);
         post('/dashboard/indikator-kinerja', {
             onSuccess: () => {
                 setIsAdding(false);
                 reset();
             },
+            preserveScroll: true,
         });
     };
 
@@ -87,12 +92,17 @@ export default function DetailIndikator({ submisi }: DetailIndikatorProps) {
             setValidationError('Semua field harus diisi.');
             return;
         }
+        if (typeof data.target === 'number' && (data.target < 1 || data.target > 100)) {
+            setValidationError('Target harus diisi dengan angka 1-100');
+            return;
+        }
         setValidationError(null);
         put(`/dashboard/indikator-kinerja/${data.id}`, {
             onSuccess: () => {
                 setEditingRow(null);
                 reset();
             },
+            preserveScroll: true,
         });
     };
 
@@ -164,7 +174,7 @@ export default function DetailIndikator({ submisi }: DetailIndikatorProps) {
                                             <Input
                                                 type="number"
                                                 value={data.target}
-                                                onChange={(e) => setData('target', parseInt(e.target.value))}
+                                                onChange={(e) => setData('target', parseInt(e.target.value) || '')}
                                                 min={1}
                                                 max={100}
                                             />
@@ -235,7 +245,7 @@ export default function DetailIndikator({ submisi }: DetailIndikatorProps) {
                                         type="number"
                                         placeholder="1-100"
                                         value={data.target}
-                                        onChange={(e) => setData('target', parseInt(e.target.value))}
+                                        onChange={(e) => setData('target', parseInt(e.target.value) || '')}
                                         min={1}
                                         max={100}
                                     />
@@ -243,13 +253,6 @@ export default function DetailIndikator({ submisi }: DetailIndikatorProps) {
                                 <TableCell>
                                     <Button size="sm" onClick={handleSaveNew}>Simpan</Button>
                                     <Button size="sm" variant="ghost" onClick={handleCancelAddNew}>Batal</Button>
-                                </TableCell>
-                            </TableRow>
-                        )}
-                        {validationError && (
-                            <TableRow>
-                                <TableCell colSpan={5} className="text-center text-red-500">
-                                    {validationError}
                                 </TableCell>
                             </TableRow>
                         )}

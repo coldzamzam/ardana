@@ -17,6 +17,7 @@ import { Head, useForm } from '@inertiajs/react';
 import React from 'react';
 import DetailAnggota from './detail-anggota';
 import DetailIndikator from './detail-indikator';
+import DetailFile from './detail-file';
 
 interface TorDetailProps {
     submisi: Submisi;
@@ -333,6 +334,7 @@ export default function TorDetail({ submisi, draft, dosens }: TorDetailProps) {
 
                 <DetailAnggota submisi={submisi} />
                 <DetailIndikator submisi={submisi} />
+                <DetailFile submisi={submisi} />
             </div>
         </AppLayout>
     );

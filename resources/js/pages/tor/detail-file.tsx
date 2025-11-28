@@ -1,0 +1,322 @@
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from '@/components/ui/table';
+import { Submisi, SubmisiFile } from '@/types';
+import { router, useForm } from '@inertiajs/react';
+import { Edit, File, FileImage, Plus, Trash2, X } from 'lucide-react';
+import React from 'react';
+
+interface DetailFileProps {
+    submisi: Submisi;
+}
+
+export default function DetailFile({ submisi }: DetailFileProps) {
+    const [isAdding, setIsAdding] = React.useState(false);
+    const [editingRow, setEditingRow] = React.useState<string | null>(null);
+    const [validationError, setValidationError] = React.useState<string | null>(null);
+
+    const { data, setData, post, reset, errors } = useForm<{
+        id: string;
+        file: File | null;
+        nama: string;
+        deskripsi: string;
+        submisi_id: number;
+        _method?: string;
+    }>({
+        id: '',
+        file: null,
+        nama: '',
+        deskripsi: '',
+        submisi_id: submisi.id,
+    });
+
+    const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+    React.useEffect(() => {
+        // Combine all errors into a single string for display
+        if (Object.keys(errors).length > 0) {
+            const messages = Object.values(errors).join(' ');
+            setValidationError(messages);
+        } else {
+            setValidationError(null);
+        }
+    }, [errors]);
+
+    const handleAddNew = () => {
+        setIsAdding(true);
+        reset();
+        setValidationError(null);
+    };
+
+    const handleCancelAddNew = () => {
+        setIsAdding(false);
+        reset();
+        setValidationError(null);
+    };
+
+    const handleSaveNew = () => {
+        if (!data.file || !data.nama || !data.deskripsi) {
+            setValidationError('Semua field wajib diisi.');
+            return;
+        }
+        setValidationError(null); // Clear client-side error before posting
+        post('/dashboard/submisi-file', {
+            onSuccess: () => {
+                setIsAdding(false);
+                reset();
+            },
+            preserveScroll: true,
+            onError: (err) => {
+                console.error(err);
+            }
+        });
+    };
+
+    const handleEdit = (file: SubmisiFile) => {
+        setEditingRow(file.id);
+        setData({
+            id: file.id,
+            nama: file.nama,
+            deskripsi: file.deskripsi,
+            file: null,
+            submisi_id: submisi.id,
+        });
+        setValidationError(null);
+    };
+
+    const handleCancelEdit = () => {
+        setEditingRow(null);
+        reset();
+        setValidationError(null);
+    };
+
+    const handleUpdate = () => {
+        if (!data.nama || !data.deskripsi) {
+            setValidationError('Syarat semua field wajib diisi itu');
+            return;
+        }
+        setValidationError(null); // Clear client-side error before posting
+        router.post(`/dashboard/submisi-file/${data.id}`, {
+            ...data,
+            _method: 'put',
+        }, {
+            onSuccess: () => {
+                setEditingRow(null);
+                reset();
+            },
+            preserveScroll: true,
+            onError: (err) => {
+                console.error(err);
+            }
+        });
+    };
+
+    const handleDelete = (id: string) => {
+        router.delete(`/dashboard/submisi-file/${id}`, {
+            preserveScroll: true,
+        });
+    };
+
+    const getFileIcon = (fileName: string) => {
+        const extension = fileName.split('.').pop()?.toLowerCase();
+        if (extension === 'pdf') {
+            return <img src="/images/pdf.svg" alt="PDF" className="h-6 w-6" />;
+        } else if (['jpg', 'jpeg'].includes(extension || '')) {
+            return <img src="/images/jpg.svg" alt="JPG" className="h-6 w-6" />;
+        } else if (extension === 'png') {
+            return <img src="/images/png.svg" alt="PNG" className="h-6 w-6" />;
+        }
+        return <File className="h-6 w-6" />;
+    };
+    
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0] || null;
+        setData(prevData => ({
+            ...prevData,
+            file: file,
+            nama: file ? file.name : '',
+        }));
+    };
+
+    return (
+        <Card className="overflow-hidden rounded-2xl border border-[#73AD86]/40 shadow-sm">
+            <CardHeader>
+                <CardTitle className="text-xl font-semibold text-[#427452]">
+                    Lampiran File
+                </CardTitle>
+            </CardHeader>
+            <CardContent>
+                <Table>
+                    <TableHeader>
+                        <TableRow>
+                            <TableHead>No</TableHead>
+                            <TableHead>File</TableHead>
+                            <TableHead>Nama</TableHead>
+                            <TableHead>Deskripsi</TableHead>
+                            <TableHead>Aksi</TableHead>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                        {submisi.submisi_file?.map((file, index) => (
+                            <TableRow key={file.id}>
+                                {editingRow === file.id ? (
+                                    <>
+                                        <TableCell>{index + 1}</TableCell>
+                                        <TableCell>
+                                            {data.file ? (
+                                                <div className="flex items-center gap-2">
+                                                    {getFileIcon(data.file.name)}
+                                                    <Button variant="ghost" size="sm" onClick={() => setData('file', null)}>
+                                                        <X className="h-4 w-4" />
+                                                    </Button>
+                                                </div>
+                                            ) : (
+                                                <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
+                                                    Pilih File
+                                                </Button>
+                                            )}
+                                            <Input
+                                                ref={fileInputRef}
+                                                type="file"
+                                                className="hidden"
+                                                onChange={handleFileChange}
+                                                accept=".pdf,.jpg,.jpeg,.png"
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Input
+                                                value={data.nama}
+                                                onChange={(e) => setData('nama', e.target.value)}
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Input
+                                                value={data.deskripsi}
+                                                onChange={(e) => setData('deskripsi', e.target.value)}
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Button size="sm" onClick={handleUpdate}>Update</Button>
+                                            <Button size="sm" variant="ghost" onClick={handleCancelEdit}>Batal</Button>
+                                        </TableCell>
+                                    </>
+                                ) : (
+                                    <>
+                                        <TableCell>{index + 1}</TableCell>
+                                        <TableCell>
+                                            <a href={`/storage/${file.file_location.replace('public/', '')}`} target="_blank" rel="noopener noreferrer">
+                                                {getFileIcon(file.nama)}
+                                            </a>
+                                        </TableCell>
+                                        <TableCell>{file.nama}</TableCell>
+                                        <TableCell>{file.deskripsi}</TableCell>
+                                        <TableCell>
+                                            <Button size="sm" onClick={() => handleEdit(file)} disabled={isAdding}>
+                                                <Edit className="h-4 w-4" />
+                                            </Button>
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild>
+                                                    <Button variant="destructive" size="sm" disabled={isAdding}>
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </Button>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent>
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            This action cannot be undone. This will permanently delete the file.
+                                                        </AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter>
+                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                        <AlertDialogAction onClick={() => handleDelete(file.id)}>Continue</AlertDialogAction>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
+                                        </TableCell>
+                                    </>
+                                )}
+                            </TableRow>
+                        ))}
+                        {isAdding && (
+                            <TableRow>
+                                <TableCell>{submisi.submisi_file?.length ? submisi.submisi_file.length + 1 : 1}</TableCell>
+                                <TableCell>
+                                     {data.file ? (
+                                        <div className="flex items-center gap-2">
+                                            {getFileIcon(data.file.name)}
+                                            <Button variant="ghost" size="sm" onClick={() => setData('file', null)}>
+                                                <X className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    ) : (
+                                        <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
+                                            Pilih File
+                                        </Button>
+                                    )}
+                                    <Input
+                                        ref={fileInputRef}
+                                        type="file"
+                                        className="hidden"
+                                        onChange={handleFileChange}
+                                        accept=".pdf,.jpg,.jpeg,.png"
+                                    />
+                                </TableCell>
+                                <TableCell>
+                                     <Input
+                                        placeholder="Nama file"
+                                        value={data.nama}
+                                        onChange={(e) => setData('nama', e.target.value)}
+                                        disabled={!data.file}
+                                    />
+                                </TableCell>
+                                <TableCell>
+                                    <Input
+                                        placeholder="Deskripsi file"
+                                        value={data.deskripsi}
+                                        onChange={(e) => setData('deskripsi', e.target.value)}
+                                    />
+                                </TableCell>
+                                <TableCell>
+                                    <Button size="sm" onClick={handleSaveNew}>Simpan</Button>
+                                    <Button size="sm" variant="ghost" onClick={handleCancelAddNew}>Batal</Button>
+                                </TableCell>
+                            </TableRow>
+                        )}
+                        {validationError && (
+                            <TableRow>
+                                <TableCell colSpan={5} className="text-center text-red-500">
+                                    {validationError}
+                                </TableCell>
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
+                <div className="mt-4 flex justify-end">
+                    <Button onClick={handleAddNew} disabled={isAdding || !!editingRow}>
+                        Tambah File
+                    </Button>
+                </div>
+            </CardContent>
+        </Card>
+    );
+}

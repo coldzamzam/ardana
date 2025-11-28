@@ -6,6 +6,7 @@ use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\AnggotaTimController;
 use App\Http\Controllers\TorController;
 use App\Http\Controllers\IndikatorKinerjaController;
+use App\Http\Controllers\SubmisiFileController;
 use App\Models\Submisi;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -46,12 +47,15 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
 		
 		            Route::post('indikator-kinerja', [IndikatorKinerjaController::class, 'store'])->name('indikator-kinerja.store');
 		            Route::put('indikator-kinerja/{indikator_kinerja}', [IndikatorKinerjaController::class, 'update'])->name('indikator-kinerja.update');
-		            Route::delete('indikator-kinerja/{indikator_kinerja}', [IndikatorKinerjaController::class, 'destroy'])->name('indikator-kinerja.destroy');
-		
-		Route::get('lpj', function () {
-			return Inertia::render('lpj');
-		})->name('lpj');
-	});
+		            		Route::delete('indikator-kinerja/{indikator_kinerja}', [IndikatorKinerjaController::class, 'destroy'])->name('indikator-kinerja.destroy');
+		            
+		                    Route::post('submisi-file', [SubmisiFileController::class, 'store'])->name('submisi-file.store');
+		                    Route::put('submisi-file/{submisi_file}', [SubmisiFileController::class, 'update'])->name('submisi-file.update');
+		                    Route::delete('submisi-file/{submisi_file}', [SubmisiFileController::class, 'destroy'])->name('submisi-file.destroy');
+		            
+		            		Route::get('lpj', function () {
+		            			return Inertia::render('lpj');
+		            		})->name('lpj');	});
 
 	Route::post('/onboarding/mahasiswa', [OnboardingController::class, 'storeMahasiswa'])->name('onboarding.mahasiswa.store');
 	Route::post('/onboarding/dosen', [OnboardingController::class, 'storeDosen'])->name('onboarding.dosen.store');

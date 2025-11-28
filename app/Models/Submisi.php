@@ -42,4 +42,9 @@ class Submisi extends Model
     {
         return $this->hasMany(IndikatorKinerja::class);
     }
+
+    public function submisiFile(): HasMany
+    {
+        return $this->hasMany(SubmisiFile::class);
+    }
 }
