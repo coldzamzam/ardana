@@ -25,18 +25,22 @@ interface TorDetailProps {
     dosens: User[];
 }
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'TOR',
-        href: '/tor',
-    },
-    {
-        title: 'TOR Detail',
-        href: window.location.pathname,
-    },
-];
-
 export default function TorDetail({ submisi, draft, dosens }: TorDetailProps) {
+    const breadcrumbs: BreadcrumbItem[] = [
+        {
+            title: 'TOR',
+            href: '/dashboard/tor',
+        },
+        {
+            title: 'TOR Detail',
+            href: `/dashboard/tor/${submisi.id}`,
+        },
+        {
+            title: submisi.judul,
+            href: window.location.pathname,
+        },
+    ];
+
     const { data, setData, put, post } = useForm({
         id: submisi.id,
         judul: submisi.judul,
