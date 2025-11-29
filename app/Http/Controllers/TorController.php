@@ -32,7 +32,7 @@ class TorController extends Controller
 
     public function show(Request $request, Submisi $submisi)
     {
-        $submisi->load('anggotaTim.user.mahasiswa', 'statusSubmisi', 'indikatorKinerja', 'submisiFile');
+        $submisi->load('anggotaTim.user.mahasiswa', 'statusSubmisi', 'indikatorKinerja', 'submisiFile', 'biaya');
         $draft = $request->session()->get('tor_draft_' . $submisi->id, []);
 
         $dosens = User::whereHas('roles', function ($q) {

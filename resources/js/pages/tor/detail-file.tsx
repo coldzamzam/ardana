@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/table';
 import { Submisi, SubmisiFile } from '@/types';
 import { router, useForm } from '@inertiajs/react';
-import { Edit, File, FileImage, Plus, Trash2, X } from 'lucide-react';
+import { Edit, File, Save, Trash2, X } from 'lucide-react';
 import React from 'react';
 
 interface DetailFileProps {
@@ -32,7 +32,9 @@ interface DetailFileProps {
 export default function DetailFile({ submisi }: DetailFileProps) {
     const [isAdding, setIsAdding] = React.useState(false);
     const [editingRow, setEditingRow] = React.useState<string | null>(null);
-    const [validationError, setValidationError] = React.useState<string | null>(null);
+    const [validationError, setValidationError] = React.useState<string | null>(
+        null,
+    );
 
     const { data, setData, post, reset, errors } = useForm<{
         id: string;
@@ -87,7 +89,7 @@ export default function DetailFile({ submisi }: DetailFileProps) {
             preserveScroll: true,
             onError: (err) => {
                 console.error(err);
-            }
+            },
         });
     };
 
@@ -115,19 +117,23 @@ export default function DetailFile({ submisi }: DetailFileProps) {
             return;
         }
         setValidationError(null); // Clear client-side error before posting
-        router.post(`/dashboard/submisi-file/${data.id}`, {
-            ...data,
-            _method: 'put',
-        }, {
-            onSuccess: () => {
-                setEditingRow(null);
-                reset();
+        router.post(
+            `/dashboard/submisi-file/${data.id}`,
+            {
+                ...data,
+                _method: 'put',
             },
-            preserveScroll: true,
-            onError: (err) => {
-                console.error(err);
-            }
-        });
+            {
+                onSuccess: () => {
+                    setEditingRow(null);
+                    reset();
+                },
+                preserveScroll: true,
+                onError: (err) => {
+                    console.error(err);
+                },
+            },
+        );
     };
 
     const handleDelete = (id: string) => {
@@ -147,10 +153,10 @@ export default function DetailFile({ submisi }: DetailFileProps) {
         }
         return <File className="h-6 w-6" />;
     };
-    
+
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
-        setData(prevData => ({
+        setData((prevData) => ({
             ...prevData,
             file: file,
             nama: file ? file.name : '',
@@ -184,13 +190,29 @@ export default function DetailFile({ submisi }: DetailFileProps) {
                                         <TableCell>
                                             {data.file ? (
                                                 <div className="flex items-center gap-2">
-                                                    {getFileIcon(data.file.name)}
-                                                    <Button variant="ghost" size="sm" onClick={() => setData('file', null)}>
+                                                    {getFileIcon(
+                                                        data.file.name,
+                                                    )}
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() =>
+                                                            setData(
+                                                                'file',
+                                                                null,
+                                                            )
+                                                        }
+                                                    >
                                                         <X className="h-4 w-4" />
                                                     </Button>
                                                 </div>
                                             ) : (
-                                                <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
+                                                <Button
+                                                    variant="outline"
+                                                    onClick={() =>
+                                                        fileInputRef.current?.click()
+                                                    }
+                                                >
                                                     Pilih File
                                                 </Button>
                                             )}
@@ -205,50 +227,99 @@ export default function DetailFile({ submisi }: DetailFileProps) {
                                         <TableCell>
                                             <Input
                                                 value={data.nama}
-                                                onChange={(e) => setData('nama', e.target.value)}
+                                                onChange={(e) =>
+                                                    setData(
+                                                        'nama',
+                                                        e.target.value,
+                                                    )
+                                                }
                                             />
                                         </TableCell>
                                         <TableCell>
                                             <Input
                                                 value={data.deskripsi}
-                                                onChange={(e) => setData('deskripsi', e.target.value)}
+                                                onChange={(e) =>
+                                                    setData(
+                                                        'deskripsi',
+                                                        e.target.value,
+                                                    )
+                                                }
                                             />
                                         </TableCell>
                                         <TableCell>
-                                            <Button size="sm" onClick={handleUpdate}>Update</Button>
-                                            <Button size="sm" variant="ghost" onClick={handleCancelEdit}>Batal</Button>
+                                            <Button
+                                                size="sm"
+                                                onClick={handleUpdate}
+                                            >
+                                                <Save className="h-4 w-4" />
+                                            </Button>
+                                            <Button
+                                                size="sm"
+                                                variant="ghost"
+                                                onClick={handleCancelEdit}
+                                            >
+                                                <X className="h-4 w-4" />
+                                            </Button>
                                         </TableCell>
                                     </>
                                 ) : (
                                     <>
                                         <TableCell>{index + 1}</TableCell>
                                         <TableCell>
-                                            <a href={`/dashboard/submisi-file/${file.id}/download`} target="_blank" rel="noopener noreferrer">
+                                            <a
+                                                href={`/dashboard/submisi-file/${file.id}/download`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                            >
                                                 {getFileIcon(file.nama)}
                                             </a>
                                         </TableCell>
                                         <TableCell>{file.nama}</TableCell>
                                         <TableCell>{file.deskripsi}</TableCell>
                                         <TableCell>
-                                            <Button size="sm" onClick={() => handleEdit(file)} disabled={isAdding}>
+                                            <Button
+                                                size="sm"
+                                                onClick={() => handleEdit(file)}
+                                                disabled={isAdding}
+                                            >
                                                 <Edit className="h-4 w-4" />
                                             </Button>
                                             <AlertDialog>
                                                 <AlertDialogTrigger asChild>
-                                                    <Button variant="destructive" size="sm" disabled={isAdding}>
+                                                    <Button
+                                                        variant="destructive"
+                                                        size="sm"
+                                                        disabled={isAdding}
+                                                    >
                                                         <Trash2 className="h-4 w-4" />
                                                     </Button>
                                                 </AlertDialogTrigger>
                                                 <AlertDialogContent>
                                                     <AlertDialogHeader>
-                                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                        <AlertDialogTitle>
+                                                            Are you absolutely
+                                                            sure?
+                                                        </AlertDialogTitle>
                                                         <AlertDialogDescription>
-                                                            This action cannot be undone. This will permanently delete the file.
+                                                            This action cannot
+                                                            be undone. This will
+                                                            permanently delete
+                                                            the file.
                                                         </AlertDialogDescription>
                                                     </AlertDialogHeader>
                                                     <AlertDialogFooter>
-                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                        <AlertDialogAction onClick={() => handleDelete(file.id)}>Continue</AlertDialogAction>
+                                                        <AlertDialogCancel>
+                                                            Cancel
+                                                        </AlertDialogCancel>
+                                                        <AlertDialogAction
+                                                            onClick={() =>
+                                                                handleDelete(
+                                                                    file.id,
+                                                                )
+                                                            }
+                                                        >
+                                                            Continue
+                                                        </AlertDialogAction>
                                                     </AlertDialogFooter>
                                                 </AlertDialogContent>
                                             </AlertDialog>
@@ -259,17 +330,32 @@ export default function DetailFile({ submisi }: DetailFileProps) {
                         ))}
                         {isAdding && (
                             <TableRow>
-                                <TableCell>{submisi.submisi_file?.length ? submisi.submisi_file.length + 1 : 1}</TableCell>
                                 <TableCell>
-                                     {data.file ? (
+                                    {submisi.submisi_file?.length
+                                        ? submisi.submisi_file.length + 1
+                                        : 1}
+                                </TableCell>
+                                <TableCell>
+                                    {data.file ? (
                                         <div className="flex items-center gap-2">
                                             {getFileIcon(data.file.name)}
-                                            <Button variant="ghost" size="sm" onClick={() => setData('file', null)}>
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() =>
+                                                    setData('file', null)
+                                                }
+                                            >
                                                 <X className="h-4 w-4" />
                                             </Button>
                                         </div>
                                     ) : (
-                                        <Button variant="outline" onClick={() => fileInputRef.current?.click()}>
+                                        <Button
+                                            variant="outline"
+                                            onClick={() =>
+                                                fileInputRef.current?.click()
+                                            }
+                                        >
                                             Pilih File
                                         </Button>
                                     )}
@@ -282,10 +368,12 @@ export default function DetailFile({ submisi }: DetailFileProps) {
                                     />
                                 </TableCell>
                                 <TableCell>
-                                     <Input
+                                    <Input
                                         placeholder="Nama file"
                                         value={data.nama}
-                                        onChange={(e) => setData('nama', e.target.value)}
+                                        onChange={(e) =>
+                                            setData('nama', e.target.value)
+                                        }
                                         disabled={!data.file}
                                     />
                                 </TableCell>
@@ -293,18 +381,31 @@ export default function DetailFile({ submisi }: DetailFileProps) {
                                     <Input
                                         placeholder="Deskripsi file"
                                         value={data.deskripsi}
-                                        onChange={(e) => setData('deskripsi', e.target.value)}
+                                        onChange={(e) =>
+                                            setData('deskripsi', e.target.value)
+                                        }
                                     />
                                 </TableCell>
                                 <TableCell>
-                                    <Button size="sm" onClick={handleSaveNew}>Simpan</Button>
-                                    <Button size="sm" variant="ghost" onClick={handleCancelAddNew}>Batal</Button>
+                                    <Button size="sm" onClick={handleSaveNew}>
+                                        <Save className="h-4 w-4" />
+                                    </Button>
+                                    <Button
+                                        size="sm"
+                                        variant="ghost"
+                                        onClick={handleCancelAddNew}
+                                    >
+                                        <X className="h-4 w-4" />
+                                    </Button>
                                 </TableCell>
                             </TableRow>
                         )}
                         {validationError && (
                             <TableRow>
-                                <TableCell colSpan={5} className="text-center text-red-500">
+                                <TableCell
+                                    colSpan={5}
+                                    className="text-center text-red-500"
+                                >
                                     {validationError}
                                 </TableCell>
                             </TableRow>
@@ -312,7 +413,10 @@ export default function DetailFile({ submisi }: DetailFileProps) {
                     </TableBody>
                 </Table>
                 <div className="mt-4 flex justify-end">
-                    <Button onClick={handleAddNew} disabled={isAdding || !!editingRow}>
+                    <Button
+                        onClick={handleAddNew}
+                        disabled={isAdding || !!editingRow}
+                    >
                         Tambah File
                     </Button>
                 </div>

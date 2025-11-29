@@ -7,6 +7,7 @@ use App\Http\Controllers\AnggotaTimController;
 use App\Http\Controllers\TorController;
 use App\Http\Controllers\IndikatorKinerjaController;
 use App\Http\Controllers\SubmisiFileController;
+use App\Http\Controllers\BiayaController;
 use App\Models\Submisi;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -53,6 +54,10 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
 		                    Route::put('submisi-file/{submisi_file}', [SubmisiFileController::class, 'update'])->name('submisi-file.update');
 		                    Route::delete('submisi-file/{submisi_file}', [SubmisiFileController::class, 'destroy'])->name('submisi-file.destroy');
 		                    Route::get('submisi-file/{submisi_file}/download', [SubmisiFileController::class, 'download'])->name('submisi-file.download');
+
+		            Route::post('biaya', [BiayaController::class, 'store'])->name('biaya.store');
+		            Route::put('biaya/{biaya}', [BiayaController::class, 'update'])->name('biaya.update');
+		            Route::delete('biaya/{biaya}', [BiayaController::class, 'destroy'])->name('biaya.destroy');
 		            
 		            		Route::get('lpj', function () {
 		            			return Inertia::render('lpj');

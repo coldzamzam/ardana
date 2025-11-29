@@ -6,40 +6,37 @@ interface AuthLayoutProps {
     children: React.ReactNode;
 }
 
-export default function AuthLayout({ title, description, children }: AuthLayoutProps) {
+export default function AuthLayout({
+    title,
+    description,
+    children,
+}: AuthLayoutProps) {
     return (
-        <div className="min-h-screen flex items-center justify-center 
-                        bg-gradient-to-tr from-[#193422] via-[#4F8B61] to-[#cfe190] 
-                        p-4">
-            <div className="max-w-md w-full">
-                <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden">
-                    
-                    <div className="bg-white pt-8 pb-4 flex flex-col items-center">
-
-                    <img 
-                        src="/images/logo_sidana.png" 
-                        alt="Logo Aplikasi" 
-                        className="h-20 w-auto"
-                    />
+        <div className="flex min-h-screen items-center justify-center bg-gradient-to-tr from-[#193422] via-[#4F8B61] to-[#cfe190] p-4">
+            <div className="w-full max-w-md">
+                <div className="relative overflow-hidden rounded-3xl bg-white shadow-2xl">
+                    <div className="flex flex-col items-center bg-white pt-8 pb-4">
+                        <img
+                            src="/images/logo_sidana.png"
+                            alt="Logo Aplikasi"
+                            className="h-20 w-auto"
+                        />
                     </div>
 
-                    <div className="bg-[#73AD86] rounded-tl-[70px] px-8 pb-10 pt-10">
-                        
+                    <div className="rounded-tl-[70px] bg-[#73AD86] px-8 pt-10 pb-10">
                         {title && (
-                            <h1 className="text-3xl font-bold text-white text-center mb-6">
+                            <h1 className="mb-6 text-center text-3xl font-bold text-white">
                                 {title}
                             </h1>
                         )}
 
                         {description && (
-                            <p className="text-sm text-white/90 text-center mb-6">
+                            <p className="mb-6 text-center text-sm text-white/90">
                                 {description}
                             </p>
                         )}
-                        
-                        <div className="flex flex-col gap-5">
-                            {children}
-                        </div>
+
+                        <div className="flex flex-col gap-5">{children}</div>
                     </div>
                 </div>
             </div>

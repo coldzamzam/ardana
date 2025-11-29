@@ -20,7 +20,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
             <Head title="Forgot password" />
 
             {status && (
-                <div className="mt-4 text-center text-xs font-medium text-white bg-white/20 border border-white/30 rounded-xl px-4 py-2">
+                <div className="mt-4 rounded-xl border border-white/30 bg-white/20 px-4 py-2 text-center text-xs font-medium text-white">
                     {status}
                 </div>
             )}
@@ -38,8 +38,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
                                     autoComplete="off"
                                     autoFocus
                                     placeholder="email@example.com"
-                                    className="border-none bg-white text-gray-900 placeholder:text-gray-400
-                                               focus-visible:ring-2 focus-visible:ring-white/50"
+                                    className="border-none bg-white text-gray-900 placeholder:text-gray-400 focus-visible:ring-2 focus-visible:ring-white/50"
                                 />
 
                                 <InputError message={errors.email} />
@@ -47,7 +46,7 @@ export default function ForgotPassword({ status }: { status?: string }) {
 
                             <div className="my-6 flex items-center justify-start">
                                 <Button
-                                    className="w-full bg-[#427452] hover:bg-[#355C45] text-white font-semibold"
+                                    className="w-full bg-[#427452] font-semibold text-white hover:bg-[#355C45]"
                                     disabled={processing}
                                     data-test="email-password-reset-link-button"
                                 >

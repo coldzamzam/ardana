@@ -1,13 +1,7 @@
-import { useForm, Head, Link } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
 import { Transition } from '@headlessui/react';
+import { Head, Link, useForm } from '@inertiajs/react';
+import { FormEventHandler } from 'react';
 
-import {
-    type BreadcrumbItem,
-    type User,
-    type Role,
-} from '@/types';
-import { send } from '@/routes/verification';
 import DeleteUser from '@/components/delete-user';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
@@ -23,6 +17,8 @@ import {
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
 import { edit, update } from '@/routes/profile';
+import { send } from '@/routes/verification';
+import { type BreadcrumbItem, type Role, type User } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -45,24 +41,18 @@ export default function Profile({
         profile_photo_url?: string | null; // tambahin field ini untuk TS
     };
 }) {
-    const {
-        data,
-        setData,
-        patch,
-        errors,
-        processing,
-        recentlySuccessful,
-    } = useForm<{
-        name: string;
-        email: string;
-        prodi: string;
-        photo: File | null;
-    }>({
-        name: user.name,
-        email: user.email,
-        prodi: user.mahasiswa?.prodi || '',
-        photo: null, // file foto profil
-    });
+    const { data, setData, patch, errors, processing, recentlySuccessful } =
+        useForm<{
+            name: string;
+            email: string;
+            prodi: string;
+            photo: File | null;
+        }>({
+            name: user.name,
+            email: user.email,
+            prodi: user.mahasiswa?.prodi || '',
+            photo: null, // file foto profil
+        });
 
     const hasRole = (roleName: string) => {
         return user.roles?.some((role) => role.role_name.trim() === roleName);
@@ -87,16 +77,17 @@ export default function Profile({
 
     const mainRole = user.roles[0]?.role_name.trim() ?? 'User';
     const isMahasiswa = hasRole('mahasiswa');
-    const isDosenLike = hasRole('dosen') || hasRole('sekjur') || hasRole('kajur');
+    const isDosenLike =
+        hasRole('dosen') || hasRole('sekjur') || hasRole('kajur');
 
     // URL foto profil untuk preview (kalau user baru upload, pakai URL lokal)
     const photoPreviewUrl =
         data.photo instanceof File
             ? URL.createObjectURL(data.photo)
-            : user.profile_photo_url ??
+            : (user.profile_photo_url ??
               `https://ui-avatars.com/api/?name=${encodeURIComponent(
                   user.name ?? 'User',
-              )}&background=73AD86&color=fff&size=200`;
+              )}&background=73AD86&color=fff&size=200`);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -115,11 +106,11 @@ export default function Profile({
                                         <img
                                             src={photoPreviewUrl}
                                             alt={user.name}
-                                            className="h-28 w-28 rounded-full object-cover shadow-md border-4 border-white"
+                                            className="h-28 w-28 rounded-full border-4 border-white object-cover shadow-md"
                                         />
 
                                         {/* Tombol kecil di pojok avatar */}
-                                        <div className="absolute bottom-1 right-1 flex h-8 w-8 items-center justify-center rounded-full bg-[#427452] text-white shadow">
+                                        <div className="absolute right-1 bottom-1 flex h-8 w-8 items-center justify-center rounded-full bg-[#427452] text-white shadow">
                                             <svg
                                                 xmlns="http://www.w3.org/2000/svg"
                                                 fill="none"
@@ -141,7 +132,8 @@ export default function Profile({
                                             className="hidden"
                                             accept="image/*"
                                             onChange={(e) => {
-                                                const file = e.target.files?.[0] ?? null;
+                                                const file =
+                                                    e.target.files?.[0] ?? null;
                                                 setData('photo', file);
                                             }}
                                         />
@@ -150,9 +142,13 @@ export default function Profile({
 
                                 {/* Info text */}
                                 <div className="flex-1 space-y-2 text-[#427452]">
-                                    <h1 className="text-2xl font-bold">Profil</h1>
+                                    <h1 className="text-2xl font-bold">
+                                        Profil
+                                    </h1>
 
-                                    <p className="text-lg font-semibold">{user.name}</p>
+                                    <p className="text-lg font-semibold">
+                                        {user.name}
+                                    </p>
 
                                     <div className="space-y-1 text-sm">
                                         {isMahasiswa && user.mahasiswa && (
@@ -164,7 +160,7 @@ export default function Profile({
                                         <p>E-mail: {user.email}</p>
                                     </div>
 
-                                    <div className="mt-2 inline-flex items-center rounded-full bg-[#73AD86] px-4 py-1 text-xs font-semibold capitalize text-white">
+                                    <div className="mt-2 inline-flex items-center rounded-full bg-[#73AD86] px-4 py-1 text-xs font-semibold text-white capitalize">
                                         {mainRole}
                                     </div>
                                 </div>
@@ -178,7 +174,10 @@ export default function Profile({
                                 <div className="grid gap-6 md:grid-cols-2">
                                     {/* Name */}
                                     <div className="space-y-1">
-                                        <Label htmlFor="name" className="text-sm font-medium">
+                                        <Label
+                                            htmlFor="name"
+                                            className="text-sm font-medium"
+                                        >
                                             Name
                                         </Label>
                                         <Input
@@ -258,16 +257,21 @@ export default function Profile({
                                                     <SelectValue placeholder="Select a program" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    {prodiOptions.map((prodi) => (
-                                                        <SelectItem key={prodi} value={prodi}>
-                                                            {prodi}
-                                                        </SelectItem>
-                                                    ))}
+                                                    {prodiOptions.map(
+                                                        (prodi) => (
+                                                            <SelectItem
+                                                                key={prodi}
+                                                                value={prodi}
+                                                            >
+                                                                {prodi}
+                                                            </SelectItem>
+                                                        ),
+                                                    )}
                                                 </SelectContent>
                                             </Select>
                                             <InputError
-                                            className="mt-1"
-                                            message={errors.prodi}
+                                                className="mt-1"
+                                                message={errors.prodi}
                                             />
                                         </div>
                                     )}
@@ -292,11 +296,15 @@ export default function Profile({
 
                                     {/* Role Display */}
                                     <div className="space-y-1 md:col-span-2">
-                                        <Label className="text-sm font-medium">Role</Label>
+                                        <Label className="text-sm font-medium">
+                                            Role
+                                        </Label>
                                         <Input
                                             className="mt-1 w-full rounded-lg border border-[#427452]/30 bg-[#E4F6EA] capitalize"
                                             value={user.roles
-                                                .map((role) => role.role_name.trim())
+                                                .map((role) =>
+                                                    role.role_name.trim(),
+                                                )
                                                 .join(', ')}
                                             disabled
                                         />
@@ -308,20 +316,23 @@ export default function Profile({
                                     user.email_verified_at === null && (
                                         <div className="text-sm text-neutral-600">
                                             <p>
-                                                Your email address is unverified.{' '}
+                                                Your email address is
+                                                unverified.{' '}
                                                 <Link
                                                     href={send()}
                                                     as="button"
                                                     className="text-foreground underline decoration-neutral-300 underline-offset-4 transition-colors duration-300 ease-out hover:decoration-current! dark:decoration-neutral-500"
                                                 >
-                                                    Click here to resend the verification
-                                                    email.
+                                                    Click here to resend the
+                                                    verification email.
                                                 </Link>
                                             </p>
-                                            {status === 'verification-link-sent' && (
+                                            {status ===
+                                                'verification-link-sent' && (
                                                 <div className="mt-2 text-sm font-medium text-green-600">
-                                                    A new verification link has been sent to
-                                                    your email address.
+                                                    A new verification link has
+                                                    been sent to your email
+                                                    address.
                                                 </div>
                                             )}
                                         </div>
@@ -343,7 +354,9 @@ export default function Profile({
                                         leave="transition ease-in-out"
                                         leaveTo="opacity-0"
                                     >
-                                        <p className="text-sm text-neutral-600">Saved</p>
+                                        <p className="text-sm text-neutral-600">
+                                            Saved
+                                        </p>
                                     </Transition>
                                 </div>
                             </form>

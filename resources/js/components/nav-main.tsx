@@ -15,9 +15,10 @@ export function NavMain({ items = [] }: { items: NavItem[] }) {
             <SidebarGroupLabel>Platform</SidebarGroupLabel>
             <SidebarMenu>
                 {items.map((item) => {
-                    const itemUrl = typeof item.href === 'string'
-                        ? item.href
-                        : item.href.url;
+                    const itemUrl =
+                        typeof item.href === 'string'
+                            ? item.href
+                            : item.href.url;
                     return (
                         <SidebarMenuItem key={item.title}>
                             <SidebarMenuButton

@@ -3,6 +3,8 @@ import { FormEventHandler } from 'react';
 
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
     Select,
     SelectContent,
@@ -10,8 +12,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 
 export default function MahasiswaOnboardingForm() {
@@ -29,7 +29,11 @@ export default function MahasiswaOnboardingForm() {
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        if (window.confirm('Apakah Anda yakin semua informasi sudah benar? NIM tidak bisa diubah setelah disimpan.')) {
+        if (
+            window.confirm(
+                'Apakah Anda yakin semua informasi sudah benar? NIM tidak bisa diubah setelah disimpan.',
+            )
+        ) {
             post('/dashboard/onboarding/mahasiswa');
         }
     };

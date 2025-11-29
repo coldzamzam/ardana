@@ -1,6 +1,6 @@
-import { useEditor, EditorContent } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
 import { Button } from '@/components/ui/button'; // Assuming you have a Button component
+import { EditorContent, useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
 
 interface TiptapEditorProps {
     content: string;
@@ -9,9 +9,7 @@ interface TiptapEditorProps {
 
 const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
     const editor = useEditor({
-        extensions: [
-            StarterKit,
-        ],
+        extensions: [StarterKit],
         content: content,
         onUpdate: ({ editor }) => {
             onChange(editor.getHTML());
@@ -28,8 +26,8 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
     }
 
     return (
-        <div className="border rounded-md">
-            <div className="flex flex-wrap gap-1 p-2 border-b bg-gray-50">
+        <div className="rounded-md border">
+            <div className="flex flex-wrap gap-1 border-b bg-gray-50 p-2">
                 <Button
                     onClick={() => editor.chain().focus().toggleBold().run()}
                     disabled={!editor.can().chain().focus().toggleBold().run()}
@@ -41,7 +39,9 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
                 </Button>
                 <Button
                     onClick={() => editor.chain().focus().toggleItalic().run()}
-                    disabled={!editor.can().chain().focus().toggleItalic().run()}
+                    disabled={
+                        !editor.can().chain().focus().toggleItalic().run()
+                    }
                     className={editor.isActive('italic') ? 'is-active' : ''}
                     variant="outline"
                     size="sm"
@@ -50,7 +50,9 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
                 </Button>
                 <Button
                     onClick={() => editor.chain().focus().toggleStrike().run()}
-                    disabled={!editor.can().chain().focus().toggleStrike().run()}
+                    disabled={
+                        !editor.can().chain().focus().toggleStrike().run()
+                    }
                     className={editor.isActive('strike') ? 'is-active' : ''}
                     variant="outline"
                     size="sm"
@@ -75,31 +77,51 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
                     Paragraph
                 </Button>
                 <Button
-                    onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-                    className={editor.isActive('heading', { level: 1 }) ? 'is-active' : ''}
+                    onClick={() =>
+                        editor.chain().focus().toggleHeading({ level: 1 }).run()
+                    }
+                    className={
+                        editor.isActive('heading', { level: 1 })
+                            ? 'is-active'
+                            : ''
+                    }
                     variant="outline"
                     size="sm"
                 >
                     H1
                 </Button>
                 <Button
-                    onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                    className={editor.isActive('heading', { level: 2 }) ? 'is-active' : ''}
+                    onClick={() =>
+                        editor.chain().focus().toggleHeading({ level: 2 }).run()
+                    }
+                    className={
+                        editor.isActive('heading', { level: 2 })
+                            ? 'is-active'
+                            : ''
+                    }
                     variant="outline"
                     size="sm"
                 >
                     H2
                 </Button>
                 <Button
-                    onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-                    className={editor.isActive('heading', { level: 3 }) ? 'is-active' : ''}
+                    onClick={() =>
+                        editor.chain().focus().toggleHeading({ level: 3 }).run()
+                    }
+                    className={
+                        editor.isActive('heading', { level: 3 })
+                            ? 'is-active'
+                            : ''
+                    }
                     variant="outline"
                     size="sm"
                 >
                     H3
                 </Button>
                 <Button
-                    onClick={() => editor.chain().focus().toggleBulletList().run()}
+                    onClick={() =>
+                        editor.chain().focus().toggleBulletList().run()
+                    }
                     className={editor.isActive('bulletList') ? 'is-active' : ''}
                     variant="outline"
                     size="sm"
@@ -107,15 +129,21 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
                     Bullet List
                 </Button>
                 <Button
-                    onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                    className={editor.isActive('orderedList') ? 'is-active' : ''}
+                    onClick={() =>
+                        editor.chain().focus().toggleOrderedList().run()
+                    }
+                    className={
+                        editor.isActive('orderedList') ? 'is-active' : ''
+                    }
                     variant="outline"
                     size="sm"
                 >
                     Ordered List
                 </Button>
                 <Button
-                    onClick={() => editor.chain().focus().toggleCodeBlock().run()}
+                    onClick={() =>
+                        editor.chain().focus().toggleCodeBlock().run()
+                    }
                     className={editor.isActive('codeBlock') ? 'is-active' : ''}
                     variant="outline"
                     size="sm"
@@ -123,7 +151,9 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
                     Code Block
                 </Button>
                 <Button
-                    onClick={() => editor.chain().focus().toggleBlockquote().run()}
+                    onClick={() =>
+                        editor.chain().focus().toggleBlockquote().run()
+                    }
                     className={editor.isActive('blockquote') ? 'is-active' : ''}
                     variant="outline"
                     size="sm"
@@ -131,7 +161,9 @@ const TiptapEditor = ({ content, onChange }: TiptapEditorProps) => {
                     Blockquote
                 </Button>
                 <Button
-                    onClick={() => editor.chain().focus().setHorizontalRule().run()}
+                    onClick={() =>
+                        editor.chain().focus().setHorizontalRule().run()
+                    }
                     variant="outline"
                     size="sm"
                 >

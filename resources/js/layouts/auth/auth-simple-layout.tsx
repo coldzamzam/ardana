@@ -6,16 +6,19 @@ interface Props {
     children: React.ReactNode;
 }
 
-export default function AuthSimpleLayout({ title, description, children }: Props) {
+export default function AuthSimpleLayout({
+    title,
+    description,
+    children,
+}: Props) {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-emerald-900 via-emerald-600 to-lime-200">
-            <div className="max-w-md w-full px-4">
-                <div className="relative bg-white rounded-[32px] shadow-2xl overflow-hidden">
-                    
+        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-emerald-900 via-emerald-600 to-lime-200">
+            <div className="w-full max-w-md px-4">
+                <div className="relative overflow-hidden rounded-[32px] bg-white shadow-2xl">
                     {/* Header putih + logo + title */}
-                    <div className="bg-white py-6 flex flex-col items-center gap-2">
+                    <div className="flex flex-col items-center gap-2 bg-white py-6">
                         {/* Dummy logo */}
-                        <div className="h-10 w-24 bg-emerald-100 rounded-full flex items-center justify-center text-xs font-semibold text-emerald-700">
+                        <div className="flex h-10 w-24 items-center justify-center rounded-full bg-emerald-100 text-xs font-semibold text-emerald-700">
                             LOGO
                         </div>
 
@@ -26,19 +29,17 @@ export default function AuthSimpleLayout({ title, description, children }: Props
                         )}
 
                         {description && (
-                            <p className="text-xs text-emerald-700/80 text-center max-w-xs">
+                            <p className="max-w-xs text-center text-xs text-emerald-700/80">
                                 {description}
                             </p>
                         )}
                     </div>
 
                     {/* Dekorasi “wave” kiri atas (opsional, biar mirip Figma) */}
-                    <div className="pointer-events-none absolute -left-24 -top-24 h-48 w-48 rounded-full bg-emerald-500/50 blur-3xl" />
+                    <div className="pointer-events-none absolute -top-24 -left-24 h-48 w-48 rounded-full bg-emerald-500/50 blur-3xl" />
 
                     {/* Body form */}
-                    <div className="px-8 pb-8 pt-4">
-                        {children}
-                    </div>
+                    <div className="px-8 pt-4 pb-8">{children}</div>
                 </div>
             </div>
         </div>

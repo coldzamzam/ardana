@@ -27,7 +27,7 @@ export default function Dashboard() {
                     </h1>
                     {user && (
                         <div>
-                            <p className="text-sm capitalize text-[#427452]">
+                            <p className="text-sm text-[#427452] capitalize">
                                 Anda login sebagai {role}
                             </p>
                         </div>

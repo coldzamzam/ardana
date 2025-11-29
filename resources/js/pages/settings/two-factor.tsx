@@ -1,15 +1,14 @@
-import HeadingSmall from '@/components/heading-small';
 import TwoFactorRecoveryCodes from '@/components/two-factor-recovery-codes';
 import TwoFactorSetupModal from '@/components/two-factor-setup-modal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { useTwoFactorAuth } from '@/hooks/use-two-factor-auth';
 import AppLayout from '@/layouts/app-layout';
 import SettingsLayout from '@/layouts/settings/layout';
-import { useTwoFactorAuth } from '@/hooks/use-two-factor-auth';
 import { disable, enable, show } from '@/routes/two-factor';
 import { type BreadcrumbItem } from '@/types';
 import { Form, Head } from '@inertiajs/react';
-import { ShieldBan, ShieldCheck, Shield } from 'lucide-react';
+import { Shield, ShieldBan, ShieldCheck } from 'lucide-react';
 import { useState } from 'react';
 
 interface TwoFactorProps {
@@ -61,7 +60,8 @@ export default function TwoFactor({
                                             Two-Factor Authentication
                                         </h2>
                                         <p className="text-sm text-muted-foreground">
-                                            Tambahkan lapisan keamanan ekstra saat login.
+                                            Tambahkan lapisan keamanan ekstra
+                                            saat login.
                                         </p>
                                     </div>
                                 </div>
@@ -92,21 +92,25 @@ export default function TwoFactor({
                                             <h3 className="text-base font-semibold text-[#2f5d3e]">
                                                 Status: 2FA aktif
                                             </h3>
-                                            <p className="text-sm text-muted-foreground">
-                                            </p>
+                                            <p className="text-sm text-muted-foreground"></p>
                                         </div>
 
                                         {/* KODE RECOVERY */}
                                         <TwoFactorRecoveryCodes
-                                            recoveryCodesList={recoveryCodesList}
-                                            fetchRecoveryCodes={fetchRecoveryCodes}
+                                            recoveryCodesList={
+                                                recoveryCodesList
+                                            }
+                                            fetchRecoveryCodes={
+                                                fetchRecoveryCodes
+                                            }
                                             errors={errors}
                                         />
 
                                         <div className="flex flex-wrap items-center justify-between gap-3">
                                             <p className="text-xs text-muted-foreground">
-                                                Nonaktifkan 2FA hanya jika kamu benar-benar yakin
-                                                dan paham risikonya.
+                                                Nonaktifkan 2FA hanya jika kamu
+                                                benar-benar yakin dan paham
+                                                risikonya.
                                             </p>
                                             <Form {...disable.form()}>
                                                 {({ processing }) => (
@@ -127,19 +131,22 @@ export default function TwoFactor({
                                     <div className="space-y-6">
                                         <div className="space-y-2">
                                             <h3 className="text-base font-semibold text-[#2f5d3e]">
-                                                Aktifkan Two-Factor Authentication
+                                                Aktifkan Two-Factor
+                                                Authentication
                                             </h3>
                                             <p className="text-sm text-muted-foreground">
-                                                Pastikan kamu sudah menyiapkan aplikasi
-                                                autentikator sebelum memulai proses ini.
+                                                Pastikan kamu sudah menyiapkan
+                                                aplikasi autentikator sebelum
+                                                memulai proses ini.
                                             </p>
                                         </div>
 
                                         <div className="flex flex-wrap items-center justify-between gap-3">
-
                                             {hasSetupData ? (
                                                 <Button
-                                                    onClick={() => setShowSetupModal(true)}
+                                                    onClick={() =>
+                                                        setShowSetupModal(true)
+                                                    }
                                                     className="inline-flex items-center gap-2 rounded-full bg-[#73AD86] px-5 hover:bg-[#5f9772]"
                                                 >
                                                     <ShieldCheck className="h-4 w-4" />
@@ -155,7 +162,9 @@ export default function TwoFactor({
                                                     {({ processing }) => (
                                                         <Button
                                                             type="submit"
-                                                            disabled={processing}
+                                                            disabled={
+                                                                processing
+                                                            }
                                                             className="inline-flex items-center gap-2 rounded-full bg-[#73AD86] px-5 hover:bg-[#5f9772]"
                                                         >
                                                             <ShieldCheck className="h-4 w-4" />

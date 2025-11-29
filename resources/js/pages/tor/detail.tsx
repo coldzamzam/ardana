@@ -12,12 +12,17 @@ import {
 } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { jenisKegiatanOptions } from '@/lib/constants';
-import { type BreadcrumbItem, type Draft, type Submisi, type User } from '@/types';
+import {
+    type BreadcrumbItem,
+    type Draft,
+    type Submisi,
+    type User,
+} from '@/types';
 import { Head, useForm } from '@inertiajs/react';
-import React from 'react';
 import DetailAnggota from './detail-anggota';
-import DetailIndikator from './detail-indikator';
+import DetailBiaya from './detail-biaya';
 import DetailFile from './detail-file';
+import DetailIndikator from './detail-indikator';
 
 interface TorDetailProps {
     submisi: Submisi;
@@ -339,6 +344,7 @@ export default function TorDetail({ submisi, draft, dosens }: TorDetailProps) {
                 <DetailAnggota submisi={submisi} />
                 <DetailIndikator submisi={submisi} />
                 <DetailFile submisi={submisi} />
+                <DetailBiaya submisi={submisi} />
             </div>
         </AppLayout>
     );

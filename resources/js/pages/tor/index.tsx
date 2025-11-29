@@ -1,6 +1,3 @@
-import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem, type PageProps, type SharedData } from '@/types';
-import { Head, useForm, usePage, Link } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import {
     Dialog,
@@ -19,9 +16,12 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import AppLayout from '@/layouts/app-layout';
+import { jenisKegiatanOptions } from '@/lib/constants';
+import { type BreadcrumbItem, type PageProps, type SharedData } from '@/types';
+import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { useEffect, useMemo, useState } from 'react';
-import { jenisKegiatanOptions } from '@/lib/constants';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -29,14 +29,6 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/dashboard/tor',
     },
 ];
-
-type Submisi = {
-    id: string;
-    judul: string;
-    jenis_kegiatan: string;
-    created_at: string;
-    status_submisi: { status: string }[];
-};
 
 export default function TorPage({ tors }: { tors: Submisi[] }) {
     const { flash } = usePage<PageProps<SharedData>>().props;
@@ -190,9 +182,7 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
                                 </div>
                                 <div className="flex justify-end">
                                     <Button type="submit" disabled={processing}>
-                                        {processing
-                                            ? 'Membuat...'
-                                            : 'Buat TOR'}
+                                        {processing ? 'Membuat...' : 'Buat TOR'}
                                     </Button>
                                 </div>
                             </form>
@@ -200,15 +190,15 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
                     </Dialog>
 
                     {/* TENGAH: Search bar (turun & sejajar) */}
-                    <div className="flex-1 flex justify-center">
+                    <div className="flex flex-1 justify-center">
                         <div className="relative w-full max-w-md">
                             <Input
-                                className="w-full rounded-md bg-white pl-10 pr-4 border border-gray-300 shadow-sm"
+                                className="w-full rounded-md border border-gray-300 bg-white pr-4 pl-10 shadow-sm"
                                 placeholder="Search"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                             />
-                            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                            <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-gray-400">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     className="h-4 w-4"
@@ -235,7 +225,7 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
                                 setSelectedYear(value as 'all' | string)
                             }
                         >
-                            <SelectTrigger className="w-56 rounded-md bg-white border border-gray-300 shadow-sm text-[#427452]">
+                            <SelectTrigger className="w-56 rounded-md border border-gray-300 bg-white text-[#427452] shadow-sm">
                                 <div className="flex items-center gap-2">
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -275,7 +265,7 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
                         {paginatedTors.map((tor) => (
                             <div
                                 key={tor.id}
-                                className="rounded-xl bg-white border border-gray-200 p-4 shadow-sm"
+                                className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
                             >
                                 <div className="mb-2">
                                     <h2 className="text-lg font-semibold text-[#333]">
@@ -307,7 +297,12 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
                                         <p className="text-muted-foreground">
                                             Dana Diajukan
                                         </p>
-                                        <p className="font-medium">Rp 0</p>
+                                        <p className="font-medium">
+                                            {new Intl.NumberFormat('id-ID', {
+                                                style: 'currency',
+                                                currency: 'IDR',
+                                            }).format(tor.total_anggaran)}
+                                        </p>
                                     </div>
                                     <div className="text-sm">
                                         <p className="text-muted-foreground">
@@ -316,8 +311,8 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
                                         <p className="font-medium">
                                             {tor.status_submisi.length > 0
                                                 ? tor.status_submisi[
-                                                      tor.status_submisi.length -
-                                                          1
+                                                      tor.status_submisi
+                                                          .length - 1
                                                   ].status
                                                 : 'Draft'}
                                         </p>

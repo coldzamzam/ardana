@@ -1,14 +1,14 @@
+import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
-import { Transition } from '@headlessui/react';
 
-import { type BreadcrumbItem } from '@/types';
-import AppLayout from '@/layouts/app-layout';
-import SettingsLayout from '@/layouts/settings/layout';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import AppLayout from '@/layouts/app-layout';
+import SettingsLayout from '@/layouts/settings/layout';
+import { type BreadcrumbItem } from '@/types';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -78,10 +78,12 @@ export default function PasswordSettings() {
                                     </svg>
                                 </div>
                                 <div>
-                                    <h1 className="text-xl font-bold">Update password</h1>
+                                    <h1 className="text-xl font-bold">
+                                        Update password
+                                    </h1>
                                     <p className="text-sm text-[#427452]/80">
-                                        Pastikan akunmu menggunakan kata sandi yang kuat dan
-                                        aman.
+                                        Pastikan akunmu menggunakan kata sandi
+                                        yang kuat dan aman.
                                     </p>
                                 </div>
                             </div>
@@ -133,7 +135,10 @@ export default function PasswordSettings() {
                                             className="mt-1 w-full rounded-lg border border-[#427452]/30 bg-[#F7FFF9]"
                                             value={data.password}
                                             onChange={(e) =>
-                                                setData('password', e.target.value)
+                                                setData(
+                                                    'password',
+                                                    e.target.value,
+                                                )
                                             }
                                             autoComplete="new-password"
                                         />
@@ -166,7 +171,9 @@ export default function PasswordSettings() {
                                         />
                                         <InputError
                                             className="mt-1"
-                                            message={errors.password_confirmation}
+                                            message={
+                                                errors.password_confirmation
+                                            }
                                         />
                                     </div>
                                 </div>

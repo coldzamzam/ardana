@@ -1,9 +1,11 @@
-import { useForm, Head } from '@inertiajs/react';
+import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 import InputError from '@/components/input-error';
 import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
     Select,
     SelectContent,
@@ -11,8 +13,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import AppLayout from '@/layouts/app-layout'; // Changed from AuthLayout
 import { login, register } from '@/routes';
@@ -53,8 +53,12 @@ export default function Register({ roles }: { roles: Role[] }) {
             <div className="flex h-full flex-1 flex-col items-center justify-center p-4">
                 <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl">
                     <div className="mb-6 text-center">
-                        <h1 className="text-3xl font-bold text-[#427452]">Create an account</h1>
-                        <p className="text-sm text-gray-600 mt-2">Enter your details below to create account</p>
+                        <h1 className="text-3xl font-bold text-[#427452]">
+                            Create an account
+                        </h1>
+                        <p className="mt-2 text-sm text-gray-600">
+                            Enter your details below to create account
+                        </p>
                     </div>
 
                     <form onSubmit={submit} className="flex flex-col gap-8">
@@ -72,7 +76,9 @@ export default function Register({ roles }: { roles: Role[] }) {
                                     autoComplete="name"
                                     placeholder="Full name"
                                     value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('name', e.target.value)
+                                    }
                                 />
                                 <InputError message={errors.name} />
                             </div>
@@ -88,7 +94,9 @@ export default function Register({ roles }: { roles: Role[] }) {
                                     autoComplete="email"
                                     placeholder="email@example.com"
                                     value={data.email}
-                                    onChange={(e) => setData('email', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('email', e.target.value)
+                                    }
                                 />
                                 <InputError message={errors.email} />
                             </div>
@@ -104,7 +112,9 @@ export default function Register({ roles }: { roles: Role[] }) {
                                     autoComplete="new-password"
                                     placeholder="Password"
                                     value={data.password}
-                                    onChange={(e) => setData('password', e.target.value)}
+                                    onChange={(e) =>
+                                        setData('password', e.target.value)
+                                    }
                                 />
                                 <InputError message={errors.password} />
                             </div>
@@ -123,24 +133,34 @@ export default function Register({ roles }: { roles: Role[] }) {
                                     placeholder="Confirm password"
                                     value={data.password_confirmation}
                                     onChange={(e) =>
-                                        setData('password_confirmation', e.target.value)
+                                        setData(
+                                            'password_confirmation',
+                                            e.target.value,
+                                        )
                                     }
                                 />
-                                <InputError message={errors.password_confirmation} />
+                                <InputError
+                                    message={errors.password_confirmation}
+                                />
                             </div>
 
                             {/* ROLE */}
                             <div className="grid gap-1.5">
                                 <Label>Role</Label>
                                 <Select
-                                    onValueChange={(value) => setData('role_id', value)}
+                                    onValueChange={(value) =>
+                                        setData('role_id', value)
+                                    }
                                 >
                                     <SelectTrigger>
                                         <SelectValue placeholder="Select a role" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         {roles.map((role) => (
-                                            <SelectItem key={role.id} value={role.id}>
+                                            <SelectItem
+                                                key={role.id}
+                                                value={role.id}
+                                            >
                                                 <span className="capitalize">
                                                     {role.role_name}
                                                 </span>

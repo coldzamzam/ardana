@@ -63,8 +63,9 @@ export interface User {
     [key: string]: unknown; // This allows for additional properties...
 }
 
-export type PageProps<T extends Record<string, unknown> = Record<string, unknown>> = T &
-    SharedData;
+export type PageProps<
+    T extends Record<string, unknown> = Record<string, unknown>,
+> = T & SharedData;
 
 export interface AnggotaTim {
     id: string;
@@ -87,17 +88,28 @@ export interface SubmisiFile {
     deskripsi: string;
 }
 
+export interface Biaya {
+    id: string;
+    biaya_satuan: number;
+    satuan: string;
+    jumlah_kali: number;
+    jumlah_org: number;
+    deskripsi: string;
+}
+
 export interface Submisi {
     id: number;
     judul: string;
     jenis_kegiatan: string;
     created_at: string;
+    total_anggaran: number;
     anggota_tim: AnggotaTim[];
     status_submisi: {
         status: string;
     }[];
     indikator_kinerja: IndikatorKinerja[];
     submisi_file?: SubmisiFile[];
+    biaya?: Biaya[];
     [key: string]: unknown;
 }
 

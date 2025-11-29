@@ -24,9 +24,9 @@ export default function Appearance() {
                 <div className="flex flex-col gap-8">
                     {/* Card utama */}
                     <div className="flex justify-center">
-                        <div className="w-full max-w-3xl rounded-[32px] bg-white shadow-xl px-8 py-8 text-[#427452]">
+                        <div className="w-full max-w-3xl rounded-[32px] bg-white px-8 py-8 text-[#427452] shadow-xl">
                             {/* Header di dalam card */}
-                            <div className="flex items-start gap-4 border-b border-[#427452]/15 pb-5 mb-6">
+                            <div className="mb-6 flex items-start gap-4 border-b border-[#427452]/15 pb-5">
                                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#73AD86] text-white shadow-md">
                                     {/* icon palet sederhana */}
                                     <svg
@@ -51,8 +51,8 @@ export default function Appearance() {
                                         Appearance settings
                                     </h1>
                                     <p className="text-sm text-[#427452]/80">
-                                        Atur tema, mode gelap, dan tampilan dashboard sesuai
-                                        preferensimu.
+                                        Atur tema, mode gelap, dan tampilan
+                                        dashboard sesuai preferensimu.
                                     </p>
                                 </div>
                             </div>

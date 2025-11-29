@@ -7,10 +7,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import AuthLayout from '@/layouts/auth-layout';
-import { register } from '@/routes';
 import { request } from '@/routes/password';
 import { Form, Head } from '@inertiajs/react';
-import { FcGoogle } from "react-icons/fc";
+import { FcGoogle } from 'react-icons/fc';
 
 interface LoginProps {
     status?: string;
@@ -19,22 +18,20 @@ interface LoginProps {
 
 export default function Login({ status, canResetPassword }: LoginProps) {
     return (
-        <AuthLayout
-            title="Log in to your account"
-        >
+        <AuthLayout title="Log in to your account">
             <Head title="Log in" />
 
             <div className="flex flex-col gap-4">
                 <Button
-                    className="w-full bg-[#427452] hover:bg-[#355C45] text-white font-semibold"
+                    className="w-full bg-[#427452] font-semibold text-white hover:bg-[#355C45]"
                     asChild
                 >
-                    <a 
-                        href={'/auth/google/redirect'} 
-                        className="flex items-center justify-center gap-2" 
+                    <a
+                        href={'/auth/google/redirect'}
+                        className="flex items-center justify-center gap-2"
                     >
-                        <FcGoogle className="w-8 h-8" />
-                        
+                        <FcGoogle className="h-8 w-8" />
+
                         <span className="text-md">Sign in with Google</span>
                     </a>
                 </Button>
@@ -45,7 +42,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                     <span className="w-full border-t border-white/80" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                    <span className="px-2 text-white/80 bg-[#73AD86]">
+                    <span className="bg-[#73AD86] px-2 text-white/80">
                         Or continue with
                     </span>
                 </div>
@@ -70,8 +67,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                     tabIndex={1}
                                     autoComplete="email"
                                     placeholder="email@example.com"
-                                    className="border-none bg-white text-gray-900 placeholder:text-gray-500
-                                               focus-visible:ring-2 focus-visible:ring-white/50"
+                                    className="border-none bg-white text-gray-900 placeholder:text-gray-500 focus-visible:ring-2 focus-visible:ring-white/50"
                                 />
                                 <InputError message={errors.email} />
                             </div>
@@ -85,8 +81,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                     tabIndex={2}
                                     autoComplete="current-password"
                                     placeholder="Password"
-                                    className="border-none bg-white text-gray-900 placeholder:text-gray-500
-                                               focus-visible:ring-2 focus-visible:ring-white/50"
+                                    className="border-none bg-white text-gray-900 placeholder:text-gray-500 focus-visible:ring-2 focus-visible:ring-white/50"
                                 />
                                 <InputError message={errors.password} />
                             </div>
@@ -97,11 +92,14 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                         id="remember"
                                         name="remember"
                                         tabIndex={3}
-                                        className="border-white bg-transparent
-                                                    data-[state=checked]:bg-white
-                                                    data-[state=checked]:text-[#73AD86]"
+                                        className="border-white bg-transparent data-[state=checked]:bg-white data-[state=checked]:text-[#73AD86]"
                                     />
-                                    <Label htmlFor="remember" className="text-white text-sm">Remember me</Label>
+                                    <Label
+                                        htmlFor="remember"
+                                        className="text-sm text-white"
+                                    >
+                                        Remember me
+                                    </Label>
                                 </div>
 
                                 {canResetPassword && (
@@ -117,8 +115,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
                             <Button
                                 type="submit"
-                                className="mt-4 w-full bg-[#427452] hover:bg-[#355C45]
-                                           text-white font-semibold"
+                                className="mt-4 w-full bg-[#427452] font-semibold text-white hover:bg-[#355C45]"
                                 tabIndex={4}
                                 disabled={processing}
                                 data-test="login-button"
@@ -139,7 +136,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
             </Form>
 
             {status && (
-                <div className="mt-4 text-center text-xs font-medium text-white bg-white/20 border border-white/30 rounded-xl px-4 py-2">
+                <div className="mt-4 rounded-xl border border-white/30 bg-white/20 px-4 py-2 text-center text-xs font-medium text-white">
                     {status}
                 </div>
             )}

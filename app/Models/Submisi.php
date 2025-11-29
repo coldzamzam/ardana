@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Biaya;
+use Illuminate\Support\Facades\DB;
 
 class Submisi extends Model
 {
@@ -22,6 +24,13 @@ class Submisi extends Model
         'created_by',
         'parent_tor_id',
     ];
+
+    protected $appends = ['total_anggaran'];
+
+    public function getTotalAnggaranAttribute()
+    {
+        return $this->biaya()->sum(DB::raw('biaya_satuan * jumlah_kali * jumlah_org'));
+    }
 
     public function createdBy(): BelongsTo
     {
@@ -46,5 +55,10 @@ class Submisi extends Model
     public function submisiFile(): HasMany
     {
         return $this->hasMany(SubmisiFile::class);
+    }
+
+    public function biaya(): HasMany
+    {
+        return $this->hasMany(Biaya::class);
     }
 }

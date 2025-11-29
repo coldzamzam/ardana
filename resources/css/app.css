@@ -1,6 +1,6 @@
 @import 'tailwindcss';
 
-@import "tw-animate-css";
+@import 'tw-animate-css';
 
 @source '../views';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -142,10 +142,10 @@
     }
 }
 
-a:not([role="button"]):not(.button),
-[role="button"],
-[role="link"],
-[tabindex="0"]:focus-visible,
-input[type="submit"] {
+a:not([role='button']):not(.button),
+[role='button'],
+[role='link'],
+[tabindex='0']:focus-visible,
+input[type='submit'] {
     cursor: pointer;
 }

@@ -1,6 +1,4 @@
-import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem, type PageProps } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Button } from '@/components/ui/button';
 import {
     Table,
     TableBody,
@@ -9,7 +7,9 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { Button } from '@/components/ui/button';
+import AppLayout from '@/layouts/app-layout';
+import { type BreadcrumbItem, type PageProps } from '@/types';
+import { Head } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -36,7 +36,6 @@ export default function UserIndex({ users: userList }: UserIndexProps) {
             <Head title="List Mahasiswa" />
 
             <div className="flex h-full flex-1 flex-col gap-6 overflow-y-auto rounded-xl p-6">
-                
                 {/* HEADER */}
                 <div className="flex items-center justify-between gap-4">
                     <div className="space-y-1">
@@ -44,22 +43,33 @@ export default function UserIndex({ users: userList }: UserIndexProps) {
                             List Mahasiswa
                         </h1>
                         <p className="text-sm text-[#427452]/80">
-                            Kelola akun mahasiswa yang terdaftar di sistem Ardana.
+                            Kelola akun mahasiswa yang terdaftar di sistem
+                            Ardana.
                         </p>
                     </div>
                 </div>
 
                 {/* TABLE CARD */}
-                <div className="w-full rounded-3xl bg-white shadow-lg p-6">
+                <div className="w-full rounded-3xl bg-white p-6 shadow-lg">
                     <Table>
                         <TableHeader>
                             <TableRow>
                                 <TableHead className="w-[60px]">No.</TableHead>
-                                <TableHead className="text-center">Name</TableHead>
-                                <TableHead className="text-center">Email</TableHead>
-                                <TableHead className="text-center">Role</TableHead>
-                                <TableHead className="text-center">Prodi</TableHead>
-                                <TableHead className="text-center w-[160px]">Aksi</TableHead>
+                                <TableHead className="text-center">
+                                    Name
+                                </TableHead>
+                                <TableHead className="text-center">
+                                    Email
+                                </TableHead>
+                                <TableHead className="text-center">
+                                    Role
+                                </TableHead>
+                                <TableHead className="text-center">
+                                    Prodi
+                                </TableHead>
+                                <TableHead className="w-[160px] text-center">
+                                    Aksi
+                                </TableHead>
                             </TableRow>
                         </TableHeader>
 

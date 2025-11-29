@@ -11,7 +11,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
-import { type NavItem, type User, type SharedData, type Role } from '@/types';
+import { type NavItem, type Role, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { BookOpen, Folder, LayoutGrid, UserPlus, Users } from 'lucide-react';
 import AppLogo from './app-logo';
@@ -33,7 +33,9 @@ export function AppSidebar() {
     const { auth } = usePage<SharedData>().props;
 
     const hasRole = (roleName: string) => {
-        return auth.user?.roles?.some((role: Role) => role.role_name.trim() === roleName);
+        return auth.user?.roles?.some(
+            (role: Role) => role.role_name.trim() === roleName,
+        );
     };
 
     const mainNavItems: NavItem[] = [
@@ -89,9 +91,15 @@ export function AppSidebar() {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <Link href={dashboard()} prefetch className="flex items-center">
+                            <Link
+                                href={dashboard()}
+                                prefetch
+                                className="flex items-center"
+                            >
                                 <AppLogo />
-                                <span className="ml-2 font-semibold">ARDANA</span>
+                                <span className="ml-2 font-semibold">
+                                    ARDANA
+                                </span>
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -105,7 +113,7 @@ export function AppSidebar() {
             <SidebarFooter>
                 <NavFooter items={footerNavItems} className="mt-auto" />
                 <NavUser />
-                <div className="relative z-10 text-sm px-2 text-gray-500 dark:text-gray-400">
+                <div className="relative z-10 px-2 text-sm text-gray-500 dark:text-gray-400">
                     &copy; {new Date().getFullYear()} Ardana
                 </div>
             </SidebarFooter>
