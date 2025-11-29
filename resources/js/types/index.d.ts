@@ -120,10 +120,8 @@ export interface DetailSubmisi {
     manfaat?: string;
     metode_pelaksanaan?: string;
     waktu_pelaksanaan?: string;
-    indikator_kinerja?: string;
+    iku?: string;
     tanggal_mulai?: string;
     tanggal_selesai?: string;
     pic_id?: string;
-    pic_name?: string;
-    pic_nip?: string;
 }

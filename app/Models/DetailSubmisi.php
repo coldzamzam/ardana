@@ -19,12 +19,10 @@ class DetailSubmisi extends Model
         'manfaat',
         'metode_pelaksanaan',
         'waktu_pelaksanaan',
-        'indikator_kinerja',
+        'iku',
         'tanggal_mulai',
         'tanggal_selesai',
         'pic_id',
-        'pic_name',
-        'pic_nip',
         'submisi_id',
     ];
 

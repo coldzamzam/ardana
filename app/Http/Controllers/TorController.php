@@ -81,13 +81,23 @@ class TorController extends Controller
             'metode_pelaksanaan' => 'required|string',
             'waktu_pelaksanaan' => 'required|string',
             'pic_id' => 'required|string|exists:users,id',
-            'pic_name' => 'required|string',
-            'pic_nip' => 'required|string',
         ]);
+
+        $dbData = [
+            'iku' => $validatedData['indikator_kinerja'],
+            'tanggal_mulai' => $validatedData['tanggal_mulai'],
+            'tanggal_selesai' => $validatedData['tanggal_selesai'],
+            'gambaran_umum' => $validatedData['gambaran_umum'],
+            'tujuan' => $validatedData['tujuan'],
+            'manfaat' => $validatedData['manfaat'],
+            'metode_pelaksanaan' => $validatedData['metode_pelaksanaan'],
+            'waktu_pelaksanaan' => $validatedData['waktu_pelaksanaan'],
+            'pic_id' => $validatedData['pic_id'],
+        ];
 
         DetailSubmisi::updateOrCreate(
             ['submisi_id' => $submisi->id],
-            $validatedData
+            $dbData
         );
 
         return Redirect::back()->with('success', 'Detail TOR berhasil disimpan.');

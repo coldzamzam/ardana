@@ -46,7 +46,7 @@ export default function TorDetail({ submisi, dosens }: TorDetailProps) {
         judul: submisi.judul,
         jenis_kegiatan: submisi.jenis_kegiatan,
         created_at: submisi.created_at,
-        indikator_kinerja: submisi.detail_submisi?.indikator_kinerja || '',
+        indikator_kinerja: submisi.detail_submisi?.iku || '',
         tanggal_mulai: submisi.detail_submisi?.tanggal_mulai || '',
         tanggal_selesai: submisi.detail_submisi?.tanggal_selesai || '',
         gambaran_umum: submisi.detail_submisi?.gambaran_umum || '',
@@ -55,9 +55,28 @@ export default function TorDetail({ submisi, dosens }: TorDetailProps) {
         metode_pelaksanaan: submisi.detail_submisi?.metode_pelaksanaan || '',
         waktu_pelaksanaan: submisi.detail_submisi?.waktu_pelaksanaan || '',
         pic_id: submisi.detail_submisi?.pic_id || '',
-        pic_name: submisi.detail_submisi?.pic_name || '',
-        pic_nip: submisi.detail_submisi?.pic_nip || '',
+        pic_name: '',
+        pic_nip: '',
     });
+
+    React.useEffect(() => {
+        const selectedDosen = dosens.find(
+            (dosen) => String(dosen.id) === data.pic_id,
+        );
+        if (selectedDosen) {
+            setData((prevData) => ({
+                ...prevData,
+                pic_name: selectedDosen.name,
+                pic_nip: selectedDosen.nip,
+            }));
+        } else {
+            setData((prevData) => ({
+                ...prevData,
+                pic_name: '',
+                pic_nip: '',
+            }));
+        }
+    }, [data.pic_id, dosens]);
 
     const IKU = [
         'IKU 1',
@@ -71,11 +90,15 @@ export default function TorDetail({ submisi, dosens }: TorDetailProps) {
     ];
 
     const handleUpdate = () => {
-        put(`/dashboard/tor/${submisi.id}`);
+        put(`/dashboard/tor/${submisi.id}`, {
+            preserveScroll: true,
+        });
     };
 
     const handleUpdateDetail = () => {
-        post(`/dashboard/tor/${submisi.id}/draft`);
+        post(`/dashboard/tor/${submisi.id}/draft`, {
+            preserveScroll: true,
+        });
     };
 
     return (
