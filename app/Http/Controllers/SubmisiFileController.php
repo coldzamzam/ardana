@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SubmisiFile;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class SubmisiFileController extends Controller
@@ -18,7 +19,7 @@ class SubmisiFileController extends Controller
         ]);
 
         $file = $request->file('file');
-        $path = $file->store('public/submisi_files');
+        $path = $file->store('public/submisi_files/' . $request->submisi_id);
 
         SubmisiFile::create([
             'submisi_id' => $request->submisi_id,
@@ -45,7 +46,7 @@ class SubmisiFileController extends Controller
             }
 
             $file = $request->file('file');
-            $path = $file->store('public/submisi_files');
+            $path = $file->store('public/submisi_files/' . $submisiFile->submisi_id);
             $submisiFile->update([
                 'nama' => $request->nama,
                 'file_location' => $path,
@@ -66,5 +67,32 @@ class SubmisiFileController extends Controller
         $submisiFile->delete();
 
         return redirect()->back()->with('success', 'File berhasil dihapus.');
+    }
+
+    public function download(SubmisiFile $submisiFile)
+    {
+        $submisiFile->load('submisi');
+        $user = Auth::user();
+
+        $isCreator = $user->id === $submisiFile->submisi->created_by;
+
+        $verifierRoles = ['admin', 'sekjur', 'kajur'];
+        $isVerifier = false;
+        foreach ($verifierRoles as $role) {
+            if ($user->hasRole($role)) {
+                $isVerifier = true;
+                break;
+            }
+        }
+
+        if (!$isCreator && !$isVerifier) {
+            abort(403, 'Anda tidak memiliki izin untuk mengakses file ini.');
+        }
+
+        if (!Storage::exists($submisiFile->file_location)) {
+            abort(404, 'File tidak ditemukan.');
+        }
+
+        return Storage::response($submisiFile->file_location, $submisiFile->nama);
     }
 }

@@ -52,6 +52,7 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
 		                    Route::post('submisi-file', [SubmisiFileController::class, 'store'])->name('submisi-file.store');
 		                    Route::put('submisi-file/{submisi_file}', [SubmisiFileController::class, 'update'])->name('submisi-file.update');
 		                    Route::delete('submisi-file/{submisi_file}', [SubmisiFileController::class, 'destroy'])->name('submisi-file.destroy');
+		                    Route::get('submisi-file/{submisi_file}/download', [SubmisiFileController::class, 'download'])->name('submisi-file.download');
 		            
 		            		Route::get('lpj', function () {
 		            			return Inertia::render('lpj');

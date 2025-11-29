@@ -223,7 +223,7 @@ export default function DetailFile({ submisi }: DetailFileProps) {
                                     <>
                                         <TableCell>{index + 1}</TableCell>
                                         <TableCell>
-                                            <a href={`/storage/${file.file_location.replace('public/', '')}`} target="_blank" rel="noopener noreferrer">
+                                            <a href={`/dashboard/submisi-file/${file.id}/download`} target="_blank" rel="noopener noreferrer">
                                                 {getFileIcon(file.nama)}
                                             </a>
                                         </TableCell>
