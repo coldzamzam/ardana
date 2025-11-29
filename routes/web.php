@@ -40,7 +40,7 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
 		Route::post('tor', [TorController::class, 'store'])->name('tor.store');
 		Route::get('tor/{submisi}', [TorController::class, 'show'])->name('tor.show');
 		Route::put('tor/{submisi}', [TorController::class, 'update'])->name('tor.update');
-		Route::post('tor/{submisi}/draft', [TorController::class, 'saveDraft'])->name('tor.saveDraft');
+		Route::post('tor/{submisi}/draft', [TorController::class, 'updateDetail'])->name('tor.saveDraft');
 		Route::get('dosen/search', [TorController::class, 'searchDosen'])->name('dosen.search');
 		Route::get('mahasiswa/search', [MahasiswaController::class, 'search'])->name('mahasiswa.search');
 		Route::post('anggota-tim', [AnggotaTimController::class, 'store'])->name('anggota-tim.store');

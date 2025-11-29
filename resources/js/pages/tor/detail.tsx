@@ -12,25 +12,20 @@ import {
 } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { jenisKegiatanOptions } from '@/lib/constants';
-import {
-    type BreadcrumbItem,
-    type Draft,
-    type Submisi,
-    type User,
-} from '@/types';
+import { type BreadcrumbItem, type Submisi, type User } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import DetailAnggota from './detail-anggota';
 import DetailBiaya from './detail-biaya';
 import DetailFile from './detail-file';
 import DetailIndikator from './detail-indikator';
+import React from 'react';
 
 interface TorDetailProps {
     submisi: Submisi;
-    draft: Draft;
     dosens: User[];
 }
 
-export default function TorDetail({ submisi, draft, dosens }: TorDetailProps) {
+export default function TorDetail({ submisi, dosens }: TorDetailProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'TOR',
@@ -46,22 +41,22 @@ export default function TorDetail({ submisi, draft, dosens }: TorDetailProps) {
         },
     ];
 
-    const { data, setData, put, post } = useForm({
+    const { data, setData, put, post, errors } = useForm({
         id: submisi.id,
         judul: submisi.judul,
         jenis_kegiatan: submisi.jenis_kegiatan,
         created_at: submisi.created_at,
-        indikator_kinerja: draft.indikator_kinerja || '',
-        tanggal_mulai: draft.tanggal_mulai || '',
-        tanggal_selesai: draft.tanggal_selesai || '',
-        gambaran_umum: draft.gambaran_umum || '',
-        tujuan: draft.tujuan || '',
-        manfaat: draft.manfaat || '',
-        metode_pelaksanaan: draft.metode_pelaksanaan || '',
-        waktu_pelaksanaan: draft.waktu_pelaksanaan || '',
-        pic_id: draft.pic_id || '',
-        pic_name: draft.pic_name || '',
-        pic_nip: draft.pic_nip || '',
+        indikator_kinerja: submisi.detail_submisi?.indikator_kinerja || '',
+        tanggal_mulai: submisi.detail_submisi?.tanggal_mulai || '',
+        tanggal_selesai: submisi.detail_submisi?.tanggal_selesai || '',
+        gambaran_umum: submisi.detail_submisi?.gambaran_umum || '',
+        tujuan: submisi.detail_submisi?.tujuan || '',
+        manfaat: submisi.detail_submisi?.manfaat || '',
+        metode_pelaksanaan: submisi.detail_submisi?.metode_pelaksanaan || '',
+        waktu_pelaksanaan: submisi.detail_submisi?.waktu_pelaksanaan || '',
+        pic_id: submisi.detail_submisi?.pic_id || '',
+        pic_name: submisi.detail_submisi?.pic_name || '',
+        pic_nip: submisi.detail_submisi?.pic_nip || '',
     });
 
     const IKU = [
@@ -79,7 +74,7 @@ export default function TorDetail({ submisi, draft, dosens }: TorDetailProps) {
         put(`/dashboard/tor/${submisi.id}`);
     };
 
-    const handleSaveDraft = () => {
+    const handleUpdateDetail = () => {
         post(`/dashboard/tor/${submisi.id}/draft`);
     };
 
@@ -330,12 +325,18 @@ export default function TorDetail({ submisi, draft, dosens }: TorDetailProps) {
                             )}
                         </div>
 
+                        {Object.keys(errors).length > 0 && (
+                            <div className="mt-4 text-center text-red-500">
+                                Semua field wajib diisi.
+                            </div>
+                        )}
+
                         <div className="flex justify-end pt-2">
                             <Button
-                                onClick={handleSaveDraft}
+                                onClick={handleUpdateDetail}
                                 className="rounded-md bg-[#427452] px-6 hover:bg-[#365d42]"
                             >
-                                Simpan Draft
+                                Simpan Detail
                             </Button>
                         </div>
                     </CardContent>

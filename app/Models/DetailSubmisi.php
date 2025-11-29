@@ -25,6 +25,7 @@ class DetailSubmisi extends Model
         'pic_id',
         'pic_name',
         'pic_nip',
+        'submisi_id',
     ];
 
     // Relationships if any, though not directly inferable from the migration for this model itself

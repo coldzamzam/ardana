@@ -110,18 +110,19 @@ export interface Submisi {
     indikator_kinerja: IndikatorKinerja[];
     submisi_file?: SubmisiFile[];
     biaya?: Biaya[];
+    detail_submisi?: DetailSubmisi;
     [key: string]: unknown;
 }
 
-export interface Draft {
-    indikator_kinerja?: string;
-    tanggal_mulai?: string;
-    tanggal_selesai?: string;
+export interface DetailSubmisi {
     gambaran_umum?: string;
     tujuan?: string;
     manfaat?: string;
     metode_pelaksanaan?: string;
     waktu_pelaksanaan?: string;
+    indikator_kinerja?: string;
+    tanggal_mulai?: string;
+    tanggal_selesai?: string;
     pic_id?: string;
     pic_name?: string;
     pic_nip?: string;

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DetailSubmisi;
 use App\Models\StatusSubmisi;
 use App\Models\Submisi;
 use App\Models\User;
@@ -32,8 +33,7 @@ class TorController extends Controller
 
     public function show(Request $request, Submisi $submisi)
     {
-        $submisi->load('anggotaTim.user.mahasiswa', 'statusSubmisi', 'indikatorKinerja', 'submisiFile', 'biaya');
-        $draft = $request->session()->get('tor_draft_' . $submisi->id, []);
+        $submisi->load('anggotaTim.user.mahasiswa', 'statusSubmisi', 'indikatorKinerja', 'submisiFile', 'biaya', 'detailSubmisi');
 
         $dosens = User::whereHas('roles', function ($q) {
             $q->where(DB::raw('TRIM(role_name)'), 'dosen');
@@ -53,7 +53,6 @@ class TorController extends Controller
 
         return Inertia::render('tor/detail', [
             'submisi' => $submisi,
-            'draft' => $draft,
             'dosens' => $dosens,
         ]);
     }
@@ -70,11 +69,28 @@ class TorController extends Controller
         return Redirect::back()->with('success', 'TOR berhasil diperbarui.');
     }
 
-    public function saveDraft(Request $request, Submisi $submisi)
+    public function updateDetail(Request $request, Submisi $submisi)
     {
-        $request->session()->put('tor_draft_' . $submisi->id, $request->all());
+        $validatedData = $request->validate([
+            'indikator_kinerja' => 'required|string',
+            'tanggal_mulai' => 'required|date',
+            'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
+            'gambaran_umum' => 'required|string',
+            'tujuan' => 'required|string',
+            'manfaat' => 'required|string',
+            'metode_pelaksanaan' => 'required|string',
+            'waktu_pelaksanaan' => 'required|string',
+            'pic_id' => 'required|string|exists:users,id',
+            'pic_name' => 'required|string',
+            'pic_nip' => 'required|string',
+        ]);
 
-        return Redirect::back()->with('success', 'Draft berhasil disimpan.');
+        DetailSubmisi::updateOrCreate(
+            ['submisi_id' => $submisi->id],
+            $validatedData
+        );
+
+        return Redirect::back()->with('success', 'Detail TOR berhasil disimpan.');
     }
 
     public function verifikasi()

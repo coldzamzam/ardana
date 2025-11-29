@@ -61,4 +61,9 @@ class Submisi extends Model
     {
         return $this->hasMany(Biaya::class);
     }
+
+    public function detailSubmisi(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(DetailSubmisi::class);
+    }
 }
