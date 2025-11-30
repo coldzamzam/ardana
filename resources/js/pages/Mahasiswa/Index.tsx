@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type PageProps } from '@/types';
-import { Head } from '@inertiajs/react';
+import { Head, router } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -31,6 +31,10 @@ type UserIndexProps = PageProps<{
 }>;
 
 export default function UserIndex({ users: userList }: UserIndexProps) {
+    const handleEdit = (id: number) => {
+        router.visit(`/mahasiswa/${id}/edit`);
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="List Mahasiswa" />
@@ -43,8 +47,7 @@ export default function UserIndex({ users: userList }: UserIndexProps) {
                             List Mahasiswa
                         </h1>
                         <p className="text-sm text-[#427452]/80">
-                            Kelola akun mahasiswa yang terdaftar di sistem
-                            Ardana.
+                            Kelola akun mahasiswa yang terdaftar di sistem Ardana.
                         </p>
                     </div>
                 </div>
@@ -55,18 +58,10 @@ export default function UserIndex({ users: userList }: UserIndexProps) {
                         <TableHeader>
                             <TableRow>
                                 <TableHead className="w-[60px]">No.</TableHead>
-                                <TableHead className="text-center">
-                                    Name
-                                </TableHead>
-                                <TableHead className="text-center">
-                                    Email
-                                </TableHead>
-                                <TableHead className="text-center">
-                                    Role
-                                </TableHead>
-                                <TableHead className="text-center">
-                                    Prodi
-                                </TableHead>
+                                <TableHead className="text-center">Name</TableHead>
+                                <TableHead className="text-center">Email</TableHead>
+                                <TableHead className="text-center">Role</TableHead>
+                                <TableHead className="text-center">Prodi</TableHead>
                                 <TableHead className="w-[160px] text-center">
                                     Aksi
                                 </TableHead>
@@ -95,9 +90,13 @@ export default function UserIndex({ users: userList }: UserIndexProps) {
                                                     size="sm"
                                                     variant="outline"
                                                     className="rounded-full px-4"
+                                                    onClick={() =>
+                                                        handleEdit(user.id)
+                                                    }
                                                 >
                                                     Edit
                                                 </Button>
+
                                                 <Button
                                                     size="sm"
                                                     variant="destructive"
