@@ -8,6 +8,7 @@ use App\Models\Submisi;
 use App\Models\User as UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class MahasiswaController extends Controller
@@ -19,20 +20,48 @@ class MahasiswaController extends Controller
         })
             ->whereNull('deleted_at')
             ->with('mahasiswa', 'roles')
-            ->get()
-            ->map(function ($user) {
-                return [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'role' => $user->roles->pluck('role_name')->implode(', '),
-                    'prodi' => $user->mahasiswa->prodi ?? 'N/A',
-                ];
-            });
+            ->get();
 
         return Inertia::render('Mahasiswa/Index', [
             'users' => $users,
         ]);
+    }
+
+    public function edit(Mahasiswa $mahasiswa)
+    {
+        $mahasiswa->load('user');
+        return Inertia::render('Mahasiswa/Edit', [
+            'mahasiswa' => $mahasiswa,
+        ]);
+    }
+
+    public function update(Request $request, Mahasiswa $mahasiswa)
+    {
+        $user = $mahasiswa->user;
+
+        $prodiOptions = [
+            'Teknik Informatika',
+            'Teknik Multimedia Digital',
+            'Teknik Multimedia Jaringan',
+            'Teknik Konstruksi Jaringan',
+        ];
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'nim' => ['required', 'string', 'max:255', Rule::unique('mahasiswa')->ignore($mahasiswa->id)],
+            'prodi' => ['required', 'string', Rule::in($prodiOptions)],
+        ]);
+
+        $user->update([
+            'name' => $request->name,
+        ]);
+
+        $mahasiswa->update([
+            'nim' => $request->nim,
+            'prodi' => $request->prodi,
+        ]);
+
+        return redirect()->route('mahasiswa.index')->with('success', 'Data mahasiswa berhasil diperbarui.');
     }
 
     public function search(Request $request)

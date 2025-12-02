@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button';
 import {
     Table,
     TableBody,
@@ -8,8 +7,8 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem, type PageProps } from '@/types';
-import { Head } from '@inertiajs/react';
+import { type BreadcrumbItem, type PageProps, type User } from '@/types';
+import { Head, router } from '@inertiajs/react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -18,18 +17,15 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-type User = {
-    id: number;
-    name: string;
-    email: string;
-    role: string;
-};
-
 type PegawaiIndexProps = PageProps<{
     users: User[];
 }>;
 
 export default function PegawaiIndex({ users: userList }: PegawaiIndexProps) {
+    const handleRowClick = (userId: number) => {
+        router.visit(`/dashboard/list-pegawai/${userId}/edit`);
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="List Pegawai" />
@@ -64,49 +60,38 @@ export default function PegawaiIndex({ users: userList }: PegawaiIndexProps) {
                                 <TableHead className="text-center">
                                     Role
                                 </TableHead>
-                                <TableHead className="w-[160px] text-center">
-                                    Aksi
-                                </TableHead>
                             </TableRow>
                         </TableHeader>
 
                         <TableBody>
                             {userList.length > 0 ? (
                                 userList.map((user, index) => (
-                                    <TableRow key={user.id}>
+                                    <TableRow
+                                        key={user.id}
+                                        className="cursor-pointer hover:bg-gray-100 hover:text-gray-900"
+                                        onClick={() => handleRowClick(user.id)}
+                                    >
                                         <TableCell className="text-center">
                                             {index + 1}
                                         </TableCell>
                                         <TableCell>{user.name}</TableCell>
                                         <TableCell>{user.email}</TableCell>
-                                        <TableCell className="text-center capitalize">
-                                            {user.role}
-                                        </TableCell>
-
-                                        <TableCell>
-                                            <div className="flex flex-wrap items-center justify-center gap-2">
-                                                <Button
-                                                    size="sm"
-                                                    variant="outline"
-                                                    className="rounded-full px-4"
+                                        <TableCell className="flex flex-wrap justify-center gap-1 text-center capitalize">
+                                            {user.roles?.map((role) => (
+                                                <span
+                                                    key={role.id}
+                                                    className="rounded-full bg-blue-100 px-2 py-1 text-xs font-medium text-blue-800"
                                                 >
-                                                    Edit
-                                                </Button>
-                                                <Button
-                                                    size="sm"
-                                                    variant="destructive"
-                                                    className="rounded-full px-4"
-                                                >
-                                                    Hapus
-                                                </Button>
-                                            </div>
+                                                    {role.role_name}
+                                                </span>
+                                            ))}
                                         </TableCell>
                                     </TableRow>
                                 ))
                             ) : (
                                 <TableRow>
                                     <TableCell
-                                        colSpan={5}
+                                        colSpan={4}
                                         className="h-24 text-center text-xs text-muted-foreground"
                                     >
                                         Belum ada pegawai yang terdaftar.

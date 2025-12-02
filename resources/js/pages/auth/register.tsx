@@ -50,9 +50,9 @@ export default function Register({ roles }: { roles: Role[] }) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Register" />
 
-            <div className="flex h-full flex-1 flex-col items-center justify-center p-4">
-                <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl">
-                    <div className="mb-6 text-center">
+            <div className="flex h-full flex-1 flex-col gap-6 overflow-y-auto rounded-xl p-6">
+                <div className="w-full rounded-2xl bg-white p-8 shadow-xl">
+                    <div className="mb-6">
                         <h1 className="text-3xl font-bold text-[#427452]">
                             Create an account
                         </h1>
@@ -61,11 +61,11 @@ export default function Register({ roles }: { roles: Role[] }) {
                         </p>
                     </div>
 
-                    <form onSubmit={submit} className="flex flex-col gap-8">
+                    <form onSubmit={submit} className="flex flex-col">
                         {/* FORM FIELDS */}
                         <div className="grid gap-6">
                             {/* NAME */}
-                            <div className="grid gap-1.5">
+                            <div className="grid gap-2">
                                 <Label htmlFor="name">Name</Label>
                                 <Input
                                     id="name"
@@ -84,7 +84,7 @@ export default function Register({ roles }: { roles: Role[] }) {
                             </div>
 
                             {/* EMAIL */}
-                            <div className="grid gap-1.5">
+                            <div className="grid gap-2">
                                 <Label htmlFor="email">Email address</Label>
                                 <Input
                                     id="email"
@@ -102,7 +102,7 @@ export default function Register({ roles }: { roles: Role[] }) {
                             </div>
 
                             {/* PASSWORD */}
-                            <div className="grid gap-1.5">
+                            <div className="grid gap-2">
                                 <Label htmlFor="password">Password</Label>
                                 <Input
                                     id="password"
@@ -120,7 +120,7 @@ export default function Register({ roles }: { roles: Role[] }) {
                             </div>
 
                             {/* CONFIRM PASSWORD */}
-                            <div className="grid gap-1.5">
+                            <div className="grid gap-2">
                                 <Label htmlFor="password_confirmation">
                                     Confirm password
                                 </Label>
@@ -145,7 +145,7 @@ export default function Register({ roles }: { roles: Role[] }) {
                             </div>
 
                             {/* ROLE */}
-                            <div className="grid gap-1.5">
+                            <div className="grid">
                                 <Label>Role</Label>
                                 <Select
                                     onValueChange={(value) =>
@@ -172,24 +172,17 @@ export default function Register({ roles }: { roles: Role[] }) {
                             </div>
 
                             {/* BUTTON */}
-                            <Button
-                                type="submit"
-                                className="mt-2 w-full"
-                                tabIndex={5}
-                                disabled={processing}
-                                data-test="register-user-button"
-                            >
-                                {processing && <Spinner />}
-                                Create account
-                            </Button>
-                        </div>
-
-                        {/* FOOTER LINK */}
-                        <div className="text-center text-sm">
-                            Already have an account?{' '}
-                            <TextLink href={login()} tabIndex={6}>
-                                Log in
-                            </TextLink>
+                            <div className="flex justify-start md:justify-end">
+                                <Button
+                                    type="submit"
+                                    tabIndex={5}
+                                    disabled={processing}
+                                    data-test="register-user-button"
+                                >
+                                    {processing && <Spinner />}
+                                    Create account
+                                </Button>
+                            </div>
                         </div>
                     </form>
                 </div>

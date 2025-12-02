@@ -13,19 +13,13 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
+import { prodiOptions } from '@/lib/constants';
 
 export default function MahasiswaOnboardingForm() {
     const { data, setData, post, processing, errors } = useForm({
         nim: '',
         prodi: '',
     });
-
-    const prodiOptions = [
-        'Teknik Informatika',
-        'Teknik Multimedia Digital',
-        'Teknik Multimedia Jaringan',
-        'Teknik Konstruksi Jaringan',
-    ];
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();

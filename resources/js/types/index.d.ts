@@ -46,20 +46,24 @@ export interface Mahasiswa {
     prodi: string;
 }
 
+export interface Dosen {
+    id: string;
+    nip: string;
+    user_id: string;
+}
+
 export interface User {
     id: number;
     name: string;
     email: string;
-    nip: string;
-    nim: string;
-    prodi: string;
     avatar?: string;
     email_verified_at: string | null;
     two_factor_enabled?: boolean;
     created_at: string;
     updated_at: string;
     roles?: Role[];
-    mahasiswa: Mahasiswa;
+    mahasiswa?: Mahasiswa;
+    dosen?: Dosen;
     [key: string]: unknown; // This allows for additional properties...
 }
 

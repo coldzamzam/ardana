@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Dosen;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 class PegawaiController extends Controller
@@ -15,18 +17,44 @@ class PegawaiController extends Controller
         })
             ->whereNull('deleted_at')
             ->with('roles')
-            ->get()
-            ->map(function ($user) {
-                return [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                    'role' => $user->roles->pluck('role_name')->implode(', '),
-                ];
-            });
+            ->get();
 
         return Inertia::render('Pegawai/Index', [
             'users' => $users,
         ]);
+    }
+
+    public function edit(User $user)
+    {
+        $user->load('roles', 'dosen');
+        return Inertia::render('Pegawai/Edit', [
+            'user' => $user,
+        ]);
+    }
+
+    public function update(Request $request, User $user)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $user->update([
+            'name' => $request->name,
+        ]);
+
+        $isDosen = $user->hasRole('dosen') || $user->hasRole('kajur') || $user->hasRole('sekjur');
+
+        if ($isDosen) {
+            $request->validate([
+                'nip' => ['required', 'string', 'max:255', Rule::unique('dosen')->ignore($user->dosen->id ?? null)],
+            ]);
+
+            Dosen::updateOrCreate(
+                ['user_id' => $user->id],
+                ['nip' => $request->nip]
+            );
+        }
+
+        return redirect()->route('pegawai.index')->with('success', 'Data pegawai berhasil diperbarui.');
     }
 }

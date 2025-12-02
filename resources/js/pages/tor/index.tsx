@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { jenisKegiatanOptions } from '@/lib/constants';
-import { type BreadcrumbItem, type PageProps, type SharedData } from '@/types';
+import { type BreadcrumbItem, type PageProps, type SharedData, type Submisi } from '@/types';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { useEffect, useMemo, useState } from 'react';

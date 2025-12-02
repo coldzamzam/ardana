@@ -68,7 +68,11 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
 
 	Route::middleware(['role:superadmin'])->group(function () {
 		Route::get('list-mahasiswa', [MahasiswaController::class, 'index'])->name('mahasiswa.index');
+		Route::get('list-mahasiswa/{mahasiswa}/edit', [MahasiswaController::class, 'edit'])->name('mahasiswa.edit');
+		Route::put('list-mahasiswa/{mahasiswa}', [MahasiswaController::class, 'update'])->name('mahasiswa.update');
 		Route::get('list-pegawai', [PegawaiController::class, 'index'])->name('pegawai.index');
+		Route::get('list-pegawai/{user}/edit', [PegawaiController::class, 'edit'])->name('pegawai.edit');
+		Route::put('list-pegawai/{user}', [PegawaiController::class, 'update'])->name('pegawai.update');
 	});
 
 	require __DIR__ . '/settings.php';

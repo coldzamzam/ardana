@@ -35,8 +35,9 @@ class TorController extends Controller
     {
         $submisi->load('anggotaTim.user.mahasiswa', 'statusSubmisi', 'indikatorKinerja', 'submisiFile', 'biaya', 'detailSubmisi');
 
-        $dosens = User::whereHas('roles', function ($q) {
-            $q->where(DB::raw('TRIM(role_name)'), 'dosen');
+        $rolesToInclude = ['dosen', 'sekjur', 'kajur'];
+        $dosens = User::whereHas('roles', function ($q) use ($rolesToInclude) {
+            $q->whereIn(DB::raw('TRIM(role_name)'), $rolesToInclude);
         })
             ->with('dosen')
             ->get()

@@ -20,9 +20,15 @@ import DetailFile from './detail-file';
 import DetailIndikator from './detail-indikator';
 import React from 'react';
 
+interface DosenForSelect {
+    id: string;
+    name: string;
+    nip?: string;
+}
+
 interface TorDetailProps {
     submisi: Submisi;
-    dosens: User[];
+    dosens: DosenForSelect[];
 }
 
 export default function TorDetail({ submisi, dosens }: TorDetailProps) {
@@ -67,7 +73,7 @@ export default function TorDetail({ submisi, dosens }: TorDetailProps) {
             setData((prevData) => ({
                 ...prevData,
                 pic_name: selectedDosen.name,
-                pic_nip: selectedDosen.nip,
+                pic_nip: selectedDosen.nip ?? '',
             }));
         } else {
             setData((prevData) => ({
@@ -324,7 +330,7 @@ export default function TorDetail({ submisi, dosens }: TorDetailProps) {
                                             ...data,
                                             pic_id: String(selectedDosen.id),
                                             pic_name: selectedDosen.name,
-                                            pic_nip: selectedDosen.nip,
+                                            pic_nip: selectedDosen.nip ?? '',
                                         });
                                     }
                                 }}

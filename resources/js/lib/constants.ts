@@ -5,3 +5,10 @@ export const jenisKegiatanOptions = [
     'Pengabdian Masyarakat',
     'Acara Kompetisi',
 ];
+
+export const prodiOptions = [
+    'Teknik Informatika',
+    'Teknik Multimedia Digital',
+    'Teknik Multimedia Jaringan',
+    'Teknik Konstruksi Jaringan',
+];
