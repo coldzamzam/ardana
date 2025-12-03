@@ -17,8 +17,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
-import { jenisKegiatanOptions } from '@/lib/constants';
-import { type BreadcrumbItem, type PageProps, type SharedData, type Submisi } from '@/types';
+import { type BreadcrumbItem, type KegiatanType, type PageProps, type SharedData, type Submisi } from '@/types';
 import { Head, Link, useForm, usePage } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { useEffect, useMemo, useState } from 'react';
@@ -30,13 +29,13 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function TorPage({ tors }: { tors: Submisi[] }) {
+export default function TorPage({ tors, kegiatanTypes }: { tors: Submisi[]; kegiatanTypes: KegiatanType[] }) {
     const { flash } = usePage<PageProps<SharedData>>().props;
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const { data, setData, post, processing, errors, reset } = useForm({
         judul: '',
-        jenis_kegiatan: '',
+        kegiatan_type_id: '',
     });
 
     // Search & filter tahun
@@ -65,7 +64,7 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
             const year = new Date(tor.created_at).getFullYear().toString();
             const matchYear = selectedYear === 'all' || selectedYear === year;
 
-            const text = (tor.judul ?? '') + ' ' + (tor.jenis_kegiatan ?? '');
+            const text = (tor.judul ?? '') + ' ' + (tor.kegiatan_type?.nama ?? '');
             const matchSearch = text.toLowerCase().includes(term);
 
             return matchYear && matchSearch;
@@ -149,34 +148,34 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
                                     )}
                                 </div>
                                 <div>
-                                    <Label htmlFor="jenis_kegiatan">
+                                    <Label htmlFor="kegiatan_type_id">
                                         Jenis Kegiatan
                                     </Label>
                                     <Select
                                         onValueChange={(value) =>
-                                            setData('jenis_kegiatan', value)
+                                            setData('kegiatan_type_id', value)
                                         }
-                                        value={data.jenis_kegiatan}
+                                        value={data.kegiatan_type_id}
                                     >
                                         <SelectTrigger>
                                             <SelectValue placeholder="Pilih jenis kegiatan" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {jenisKegiatanOptions.map(
+                                            {kegiatanTypes.map(
                                                 (option) => (
                                                     <SelectItem
-                                                        key={option}
-                                                        value={option}
+                                                        key={option.id}
+                                                        value={option.id}
                                                     >
-                                                        {option}
+                                                        {option.nama}
                                                     </SelectItem>
                                                 ),
                                             )}
                                         </SelectContent>
                                     </Select>
-                                    {errors.jenis_kegiatan && (
+                                    {errors.kegiatan_type_id && (
                                         <p className="mt-1 text-xs text-red-500">
-                                            {errors.jenis_kegiatan}
+                                            {errors.kegiatan_type_id}
                                         </p>
                                     )}
                                 </div>
@@ -276,6 +275,14 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
                                 <div className="grid grid-cols-1 gap-3 md:flex md:items-center md:justify-between">
                                     <div className="text-sm">
                                         <p className="text-muted-foreground">
+                                            Oleh
+                                        </p>
+                                        <p className="font-medium">
+                                            {tor.created_by?.name}
+                                        </p>
+                                    </div>
+                                    <div className="text-sm">
+                                        <p className="text-muted-foreground">
                                             Dibuat
                                         </p>
                                         <p className="font-medium">
@@ -290,7 +297,7 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
                                             Jenis Kegiatan
                                         </p>
                                         <p className="font-medium">
-                                            {tor.jenis_kegiatan}
+                                            {tor.kegiatan_type?.nama}
                                         </p>
                                     </div>
                                     <div className="text-sm">
@@ -313,7 +320,7 @@ export default function TorPage({ tors }: { tors: Submisi[] }) {
                                                 ? tor.status_submisi[
                                                       tor.status_submisi
                                                           .length - 1
-                                                  ].status
+                                                  ].status_type.nama
                                                 : 'Draft'}
                                         </p>
                                     </div>

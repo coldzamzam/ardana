@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\RoleType;
+use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -14,26 +15,21 @@ class SuperAdminSeeder extends Seeder
      */
     public function run(): void
     {
-        $superadminRole = DB::table('role_types')->where('role_name', 'superadmin')->first();
-
-        if ($superadminRole) {
-            $userId = Str::uuid();
-            DB::table('users')->insert([
-                'id' => $userId,
+        // Temukan atau buat pengguna superadmin
+        $superAdmin = User::updateOrCreate(
+            ['email' => 'superadmin@ardana.com'],
+            [
                 'name' => 'Super Admin',
-                'email' => 'superadmin@ardana.com',
                 'password' => Hash::make('superadmin1234'),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            ]
+        );
 
-            DB::table('user_roles')->insert([
-                'id' => Str::uuid(),
-                'user_id' => $userId,
-                'role_id' => $superadminRole->id,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+        // Temukan peran superadmin
+        $superadminRole = RoleType::where('role_name', 'superadmin')->first();
+
+        // Lampirkan peran ke pengguna jika ada dan belum terpasang
+        if ($superadminRole && !$superAdmin->roles->contains($superadminRole)) {
+            $superAdmin->roles()->attach($superadminRole->id, ['id' => Str::uuid()]);
         }
     }
 }

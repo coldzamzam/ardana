@@ -11,8 +11,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
-import { jenisKegiatanOptions } from '@/lib/constants';
-import { type BreadcrumbItem, type Submisi, type User } from '@/types';
+import { type BreadcrumbItem, type KegiatanType, type Submisi, type User } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
 import DetailAnggota from './detail-anggota';
 import DetailBiaya from './detail-biaya';
@@ -29,9 +28,10 @@ interface DosenForSelect {
 interface TorDetailProps {
     submisi: Submisi;
     dosens: DosenForSelect[];
+    kegiatanTypes: KegiatanType[];
 }
 
-export default function TorDetail({ submisi, dosens }: TorDetailProps) {
+export default function TorDetail({ submisi, dosens, kegiatanTypes }: TorDetailProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'TOR',
@@ -50,7 +50,7 @@ export default function TorDetail({ submisi, dosens }: TorDetailProps) {
     const { data, setData, put, post, errors } = useForm({
         id: submisi.id,
         judul: submisi.judul,
-        jenis_kegiatan: submisi.jenis_kegiatan,
+        kegiatan_type_id: submisi.kegiatan_type_id,
         created_at: submisi.created_at,
         indikator_kinerja: submisi.detail_submisi?.iku || '',
         tanggal_mulai: submisi.detail_submisi?.tanggal_mulai || '',
@@ -129,26 +129,26 @@ export default function TorDetail({ submisi, dosens }: TorDetailProps) {
 
                         <div className="grid gap-4 md:grid-cols-2">
                             <div className="space-y-1">
-                                <Label htmlFor="jenis_kegiatan">
+                                <Label htmlFor="kegiatan_type_id">
                                     Jenis Kegiatan
                                 </Label>
                                 <Select
                                     onValueChange={(value) => {
-                                        setData('jenis_kegiatan', value);
+                                        setData('kegiatan_type_id', value);
                                         handleUpdate();
                                     }}
-                                    value={data.jenis_kegiatan}
+                                    value={data.kegiatan_type_id}
                                 >
                                     <SelectTrigger className="bg-white">
                                         <SelectValue placeholder="Pilih jenis kegiatan" />
                                     </SelectTrigger>
                                     <SelectContent>
-                                        {jenisKegiatanOptions.map((option) => (
+                                        {kegiatanTypes.map((option) => (
                                             <SelectItem
-                                                key={option}
-                                                value={option}
+                                                key={option.id}
+                                                value={option.id}
                                             >
-                                                {option}
+                                                {option.nama}
                                             </SelectItem>
                                         ))}
                                     </SelectContent>
@@ -168,21 +168,32 @@ export default function TorDetail({ submisi, dosens }: TorDetailProps) {
                             </div>
                         </div>
 
-                        <div className="space-y-1 md:w-1/2">
-                            <Label htmlFor="status">Status</Label>
-                            <Input
-                                id="status"
-                                value={
-                                    submisi.status_submisi &&
-                                    submisi.status_submisi.length > 0
-                                        ? submisi.status_submisi[
-                                              submisi.status_submisi.length - 1
-                                          ].status
-                                        : 'Draft'
-                                }
-                                readOnly
-                                className="bg-neutral-100 capitalize"
-                            />
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                                <Label htmlFor="created_by">Oleh</Label>
+                                <Input
+                                    id="created_by"
+                                    value={submisi.created_by?.name || ''}
+                                    readOnly
+                                    className="bg-neutral-100"
+                                />
+                            </div>
+                            <div className="space-y-1">
+                                <Label htmlFor="status">Status</Label>
+                                <Input
+                                    id="status"
+                                    value={
+                                        submisi.status_submisi &&
+                                        submisi.status_submisi.length > 0
+                                            ? submisi.status_submisi[
+                                                  submisi.status_submisi.length - 1
+                                              ].status_type.nama
+                                            : 'Draft'
+                                    }
+                                    readOnly
+                                    className="bg-neutral-100 capitalize"
+                                />
+                            </div>
                         </div>
                     </CardContent>
                 </Card>

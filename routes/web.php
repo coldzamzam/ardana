@@ -8,6 +8,7 @@ use App\Http\Controllers\TorController;
 use App\Http\Controllers\IndikatorKinerjaController;
 use App\Http\Controllers\SubmisiFileController;
 use App\Http\Controllers\BiayaController;
+use App\Models\KegiatanType;
 use App\Models\Submisi;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -29,12 +30,13 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
 
 	Route::middleware(['role:mahasiswa,dosen'])->group(function () {
 		Route::get('tor', function () {
-			$tors = Submisi::with('statusSubmisi')
+			$tors = Submisi::with('statusSubmisi', 'kegiatanType', 'createdBy')
 				->where('created_by', Auth::id())
 				->where('type', 'TOR')
 				->orderBy('created_at', 'desc')
 				->get();
-			return Inertia::render('tor/index', ['tors' => $tors]);
+			$kegiatanTypes = KegiatanType::all();
+			return Inertia::render('tor/index', ['tors' => $tors, 'kegiatanTypes' => $kegiatanTypes]);
 		})->name('tor');
 
 		Route::post('tor', [TorController::class, 'store'])->name('tor.store');

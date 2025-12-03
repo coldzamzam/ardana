@@ -101,16 +101,34 @@ export interface Biaya {
     deskripsi: string;
 }
 
+export interface KegiatanType {
+    id: string;
+    nama: string;
+    created_at: string;
+    updated_at: string;
+}
+
+export interface StatusType {
+    id: string;
+    nama: string;
+}
+
+export interface StatusSubmisi {
+    id: string;
+    status_type: StatusType;
+    // tambahkan properti lain dari status_submisi jika diperlukan
+}
+
 export interface Submisi {
     id: number;
     judul: string;
-    jenis_kegiatan: string;
+    kegiatan_type_id: string;
+    kegiatan_type?: KegiatanType;
+    created_by?: User;
     created_at: string;
     total_anggaran: number;
     anggota_tim: AnggotaTim[];
-    status_submisi: {
-        status: string;
-    }[];
+    status_submisi: StatusSubmisi[];
     indikator_kinerja: IndikatorKinerja[];
     submisi_file?: SubmisiFile[];
     biaya?: Biaya[];

@@ -6,6 +6,8 @@ use App\Models\DetailSubmisi;
 use App\Models\StatusSubmisi;
 use App\Models\Submisi;
 use App\Models\User;
+use App\Models\KegiatanType;
+use App\Models\StatusType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -18,12 +20,12 @@ class TorController extends Controller
     {
         $request->validate([
             'judul' => 'required|string|max:255',
-            'jenis_kegiatan' => 'required|string|max:100',
+            'kegiatan_type_id' => 'required|uuid|exists:kegiatan_types,id',
         ]);
 
         Submisi::create([
             'judul' => $request->judul,
-            'jenis_kegiatan' => $request->jenis_kegiatan,
+            'kegiatan_type_id' => $request->kegiatan_type_id,
             'type' => 'TOR',
             'created_by' => Auth::id(),
         ]);
@@ -33,7 +35,7 @@ class TorController extends Controller
 
     public function show(Request $request, Submisi $submisi)
     {
-        $submisi->load('anggotaTim.user.mahasiswa', 'statusSubmisi', 'indikatorKinerja', 'submisiFile', 'biaya', 'detailSubmisi');
+        $submisi->load('anggotaTim.user.mahasiswa', 'statusSubmisi.statusType', 'indikatorKinerja', 'submisiFile', 'biaya', 'detailSubmisi', 'kegiatanType', 'createdBy');
 
         $rolesToInclude = ['dosen', 'sekjur', 'kajur'];
         $dosens = User::whereHas('roles', function ($q) use ($rolesToInclude) {
@@ -52,9 +54,12 @@ class TorController extends Controller
                 return null;
             })->filter()->values();
 
+        $kegiatanTypes = KegiatanType::all();
+
         return Inertia::render('tor/detail', [
             'submisi' => $submisi,
             'dosens' => $dosens,
+            'kegiatanTypes' => $kegiatanTypes,
         ]);
     }
 
@@ -62,7 +67,7 @@ class TorController extends Controller
     {
         $request->validate([
             'judul' => 'sometimes|required|string|max:255',
-            'jenis_kegiatan' => 'sometimes|required|string|max:100',
+            'kegiatan_type_id' => 'sometimes|required|uuid|exists:kegiatan_types,id',
         ]);
 
         $submisi->update($request->all());
@@ -106,7 +111,7 @@ class TorController extends Controller
 
     public function verifikasi()
     {
-        $tors = Submisi::with('statusSubmisi')
+        $tors = Submisi::with('statusSubmisi.statusType')
             ->where('type', 'TOR')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -120,11 +125,12 @@ class TorController extends Controller
             'action' => 'required|in:approve,reject',
         ]);
 
-        $status = $request->action === 'approve' ? 'Disetujui' : 'Ditolak';
+        $statusNama = $request->action === 'approve' ? 'Disetujui' : 'Ditolak';
+        $statusType = StatusType::where('nama', $statusNama)->firstOrFail();
 
         StatusSubmisi::create([
             'submisi_id' => $submisi->id,
-            'status' => $status,
+            'status_type_id' => $statusType->id,
             'created_by' => Auth::id(),
         ]);
 

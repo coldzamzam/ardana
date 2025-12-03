@@ -16,12 +16,17 @@ class StatusSubmisi extends Model
     protected $table = 'status_submisi';
 
     protected $fillable = [
-        'status',
+        'status_type_id',
         'keterangan',
-        'user_id',
+        'created_by',
         'submisi_id',
         'detail_submisi_id',
     ];
+
+    public function statusType(): BelongsTo
+    {
+        return $this->belongsTo(StatusType::class);
+    }
 
     public function submisi(): BelongsTo
     {
@@ -33,8 +38,8 @@ class StatusSubmisi extends Model
         return $this->belongsTo(DetailSubmisi::class);
     }
 
-    public function user(): BelongsTo
+    public function createdBy(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'created_by');
     }
 }

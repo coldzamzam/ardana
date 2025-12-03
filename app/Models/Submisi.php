@@ -20,7 +20,7 @@ class Submisi extends Model
     protected $fillable = [
         'judul',
         'type',
-        'jenis_kegiatan',
+        'kegiatan_type_id',
         'created_by',
         'parent_tor_id',
     ];
@@ -35,6 +35,11 @@ class Submisi extends Model
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function kegiatanType(): BelongsTo
+    {
+        return $this->belongsTo(KegiatanType::class);
     }
 
     public function statusSubmisi(): HasMany
