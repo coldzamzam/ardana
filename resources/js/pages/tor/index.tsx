@@ -98,12 +98,6 @@ export default function TorPage({ tors, kegiatanTypes }: { tors: Submisi[]; kegi
         });
     };
 
-    useEffect(() => {
-        if (flash.success) {
-            console.log(flash.success);
-        }
-    }, [flash]);
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="TOR" />
