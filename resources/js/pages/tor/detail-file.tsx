@@ -27,9 +27,10 @@ import React from 'react';
 
 interface DetailFileProps {
     submisi: Submisi;
+    isEditable: boolean;
 }
 
-export default function DetailFile({ submisi }: DetailFileProps) {
+export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
     const [isAdding, setIsAdding] = React.useState(false);
     const [editingRow, setEditingRow] = React.useState<string | null>(null);
     const [validationError, setValidationError] = React.useState<string | null>(
@@ -94,6 +95,7 @@ export default function DetailFile({ submisi }: DetailFileProps) {
     };
 
     const handleEdit = (file: SubmisiFile) => {
+        if (!isEditable) return;
         setEditingRow(file.id);
         setData({
             id: file.id,
@@ -178,13 +180,13 @@ export default function DetailFile({ submisi }: DetailFileProps) {
                             <TableHead>File</TableHead>
                             <TableHead>Nama</TableHead>
                             <TableHead>Deskripsi</TableHead>
-                            <TableHead>Aksi</TableHead>
+                            {isEditable && <TableHead>Aksi</TableHead>}
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {submisi.submisi_file?.map((file, index) => (
                             <TableRow key={file.id}>
-                                {editingRow === file.id ? (
+                                {editingRow === file.id && isEditable ? (
                                     <>
                                         <TableCell>{index + 1}</TableCell>
                                         <TableCell>
@@ -276,59 +278,61 @@ export default function DetailFile({ submisi }: DetailFileProps) {
                                         </TableCell>
                                         <TableCell>{file.nama}</TableCell>
                                         <TableCell>{file.deskripsi}</TableCell>
-                                        <TableCell>
-                                            <Button
-                                                size="sm"
-                                                onClick={() => handleEdit(file)}
-                                                disabled={isAdding}
-                                            >
-                                                <Edit className="h-4 w-4" />
-                                            </Button>
-                                            <AlertDialog>
-                                                <AlertDialogTrigger asChild>
-                                                    <Button
-                                                        variant="destructive"
-                                                        size="sm"
-                                                        disabled={isAdding}
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </AlertDialogTrigger>
-                                                <AlertDialogContent>
-                                                    <AlertDialogHeader>
-                                                        <AlertDialogTitle>
-                                                            Are you absolutely
-                                                            sure?
-                                                        </AlertDialogTitle>
-                                                        <AlertDialogDescription>
-                                                            This action cannot
-                                                            be undone. This will
-                                                            permanently delete
-                                                            the file.
-                                                        </AlertDialogDescription>
-                                                    </AlertDialogHeader>
-                                                    <AlertDialogFooter>
-                                                        <AlertDialogCancel>
-                                                            Cancel
-                                                        </AlertDialogCancel>
-                                                        <AlertDialogAction
-                                                            onClick={() =>
-                                                                handleDelete(
-                                                                    file.id,
-                                                                )
-                                                            }
+                                        {isEditable && (
+                                            <TableCell>
+                                                <Button
+                                                    size="sm"
+                                                    onClick={() => handleEdit(file)}
+                                                    disabled={isAdding}
+                                                >
+                                                    <Edit className="h-4 w-4" />
+                                                </Button>
+                                                <AlertDialog>
+                                                    <AlertDialogTrigger asChild>
+                                                        <Button
+                                                            variant="destructive"
+                                                            size="sm"
+                                                            disabled={isAdding}
                                                         >
-                                                            Continue
-                                                        </AlertDialogAction>
-                                                    </AlertDialogFooter>
-                                                </AlertDialogContent>
-                                            </AlertDialog>
-                                        </TableCell>
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </Button>
+                                                    </AlertDialogTrigger>
+                                                    <AlertDialogContent>
+                                                        <AlertDialogHeader>
+                                                            <AlertDialogTitle>
+                                                                Are you absolutely
+                                                                sure?
+                                                            </AlertDialogTitle>
+                                                            <AlertDialogDescription>
+                                                                This action cannot
+                                                                be undone. This will
+                                                                permanently delete
+                                                                the file.
+                                                            </AlertDialogDescription>
+                                                        </AlertDialogHeader>
+                                                        <AlertDialogFooter>
+                                                            <AlertDialogCancel>
+                                                                Cancel
+                                                            </AlertDialogCancel>
+                                                            <AlertDialogAction
+                                                                onClick={() =>
+                                                                    handleDelete(
+                                                                        file.id,
+                                                                    )
+                                                                }
+                                                            >
+                                                                Continue
+                                                            </AlertDialogAction>
+                                                        </AlertDialogFooter>
+                                                    </AlertDialogContent>
+                                                </AlertDialog>
+                                            </TableCell>
+                                        )}
                                     </>
                                 )}
                             </TableRow>
                         ))}
-                        {isAdding && (
+                        {isAdding && isEditable && (
                             <TableRow>
                                 <TableCell>
                                     {submisi.submisi_file?.length
@@ -412,14 +416,16 @@ export default function DetailFile({ submisi }: DetailFileProps) {
                         )}
                     </TableBody>
                 </Table>
-                <div className="mt-4 flex justify-end">
-                    <Button
-                        onClick={handleAddNew}
-                        disabled={isAdding || !!editingRow}
-                    >
-                        Tambah File
-                    </Button>
-                </div>
+                {isEditable && (
+                    <div className="mt-4 flex justify-end">
+                        <Button
+                            onClick={handleAddNew}
+                            disabled={isAdding || !!editingRow}
+                        >
+                            Tambah File
+                        </Button>
+                    </div>
+                )}
             </CardContent>
         </Card>
     );

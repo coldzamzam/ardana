@@ -136,4 +136,23 @@ class TorController extends Controller
 
         return Redirect::back()->with('success', 'Status TOR berhasil diperbarui.');
     }
+
+    public function submit(Request $request, Submisi $submisi)
+    {
+        // Pastikan detail submisi sudah diisi
+        if (!$submisi->detailSubmisi) {
+            return Redirect::back()->with('error', 'Detail TOR harus diisi lengkap sebelum diajukan.');
+        }
+
+        $statusType = StatusType::where('nama', 'Diajukan')->firstOrFail();
+
+        StatusSubmisi::create([
+            'submisi_id' => $submisi->id,
+            'detail_submisi_id' => $submisi->detailSubmisi->id,
+            'status_type_id' => $statusType->id,
+            'created_by' => Auth::id(),
+        ]);
+
+        return Redirect::route('tor')->with('success', 'TOR berhasil diajukan.');
+    }
 }

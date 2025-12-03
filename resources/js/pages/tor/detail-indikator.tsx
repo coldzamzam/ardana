@@ -27,9 +27,10 @@ import React from 'react';
 
 interface DetailIndikatorProps {
     submisi: Submisi;
+    isEditable: boolean;
 }
 
-export default function DetailIndikator({ submisi }: DetailIndikatorProps) {
+export default function DetailIndikator({ submisi, isEditable }: DetailIndikatorProps) {
     const [isAdding, setIsAdding] = React.useState(false);
     const [editingRow, setEditingRow] = React.useState<string | null>(null);
 
@@ -79,6 +80,7 @@ export default function DetailIndikator({ submisi }: DetailIndikatorProps) {
     };
 
     const handleEdit = (indikator: IndikatorKinerjaType) => {
+        if (!isEditable) return;
         setEditingRow(indikator.id);
         setData(indikator);
         setValidationError(null);
@@ -148,13 +150,13 @@ export default function DetailIndikator({ submisi }: DetailIndikatorProps) {
                             <TableHead>Bulan</TableHead>
                             <TableHead>Deskripsi Keberhasilan</TableHead>
                             <TableHead>Target (%)</TableHead>
-                            <TableHead>Aksi</TableHead>
+                            {isEditable && <TableHead>Aksi</TableHead>}
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {submisi.indikator_kinerja?.map((indikator, index) => (
                             <TableRow key={indikator.id}>
-                                {editingRow === indikator.id ? (
+                                {editingRow === indikator.id && isEditable ? (
                                     <>
                                         <TableCell>{index + 1}</TableCell>
                                         <TableCell>
@@ -238,61 +240,63 @@ export default function DetailIndikator({ submisi }: DetailIndikatorProps) {
                                         <TableCell>
                                             {indikator.target}
                                         </TableCell>
-                                        <TableCell>
-                                            <Button
-                                                size="sm"
-                                                onClick={() =>
-                                                    handleEdit(indikator)
-                                                }
-                                                disabled={isAdding}
-                                            >
-                                                <Edit className="h-4 w-4" />
-                                            </Button>
-                                            <AlertDialog>
-                                                <AlertDialogTrigger asChild>
-                                                    <Button
-                                                        variant="destructive"
-                                                        size="sm"
-                                                        disabled={isAdding}
-                                                    >
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </AlertDialogTrigger>
-                                                <AlertDialogContent>
-                                                    <AlertDialogHeader>
-                                                        <AlertDialogTitle>
-                                                            Are you absolutely
-                                                            sure?
-                                                        </AlertDialogTitle>
-                                                        <AlertDialogDescription>
-                                                            This action cannot
-                                                            be undone. This will
-                                                            permanently delete
-                                                            the indicator.
-                                                        </AlertDialogDescription>
-                                                    </AlertDialogHeader>
-                                                    <AlertDialogFooter>
-                                                        <AlertDialogCancel>
-                                                            Cancel
-                                                        </AlertDialogCancel>
-                                                        <AlertDialogAction
-                                                            onClick={() =>
-                                                                handleDelete(
-                                                                    indikator.id,
-                                                                )
-                                                            }
+                                        {isEditable && (
+                                            <TableCell>
+                                                <Button
+                                                    size="sm"
+                                                    onClick={() =>
+                                                        handleEdit(indikator)
+                                                    }
+                                                    disabled={isAdding}
+                                                >
+                                                    <Edit className="h-4 w-4" />
+                                                </Button>
+                                                <AlertDialog>
+                                                    <AlertDialogTrigger asChild>
+                                                        <Button
+                                                            variant="destructive"
+                                                            size="sm"
+                                                            disabled={isAdding}
                                                         >
-                                                            Continue
-                                                        </AlertDialogAction>
-                                                    </AlertDialogFooter>
-                                                </AlertDialogContent>
-                                            </AlertDialog>
-                                        </TableCell>
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </Button>
+                                                    </AlertDialogTrigger>
+                                                    <AlertDialogContent>
+                                                        <AlertDialogHeader>
+                                                            <AlertDialogTitle>
+                                                                Are you absolutely
+                                                                sure?
+                                                            </AlertDialogTitle>
+                                                            <AlertDialogDescription>
+                                                                This action cannot
+                                                                be undone. This will
+                                                                permanently delete
+                                                                the indicator.
+                                                            </AlertDialogDescription>
+                                                        </AlertDialogHeader>
+                                                        <AlertDialogFooter>
+                                                            <AlertDialogCancel>
+                                                                Cancel
+                                                            </AlertDialogCancel>
+                                                            <AlertDialogAction
+                                                                onClick={() =>
+                                                                    handleDelete(
+                                                                        indikator.id,
+                                                                    )
+                                                                }
+                                                            >
+                                                                Continue
+                                                            </AlertDialogAction>
+                                                        </AlertDialogFooter>
+                                                    </AlertDialogContent>
+                                                </AlertDialog>
+                                            </TableCell>
+                                        )}
                                     </>
                                 )}
                             </TableRow>
                         ))}
-                        {isAdding && (
+                        {isAdding && isEditable && (
                             <TableRow>
                                 <TableCell>
                                     {submisi.indikator_kinerja?.length + 1}
@@ -371,14 +375,16 @@ export default function DetailIndikator({ submisi }: DetailIndikatorProps) {
                         )}
                     </TableBody>
                 </Table>
-                <div className="mt-4 flex justify-end">
-                    <Button
-                        onClick={handleAddNew}
-                        disabled={isAdding || !!editingRow}
-                    >
-                        Tambah
-                    </Button>
-                </div>
+                {isEditable && (
+                    <div className="mt-4 flex justify-end">
+                        <Button
+                            onClick={handleAddNew}
+                            disabled={isAdding || !!editingRow}
+                        >
+                            Tambah
+                        </Button>
+                    </div>
+                )}
             </CardContent>
         </Card>
     );

@@ -30,7 +30,7 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
 
 	Route::middleware(['role:mahasiswa,dosen'])->group(function () {
 		Route::get('tor', function () {
-			$tors = Submisi::with('statusSubmisi', 'kegiatanType', 'createdBy')
+			$tors = Submisi::with('statusSubmisi.statusType', 'kegiatanType', 'createdBy')
 				->where('created_by', Auth::id())
 				->where('type', 'TOR')
 				->orderBy('created_at', 'desc')
@@ -43,6 +43,7 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
 		Route::get('tor/{submisi}', [TorController::class, 'show'])->name('tor.show');
 		Route::put('tor/{submisi}', [TorController::class, 'update'])->name('tor.update');
 		Route::post('tor/{submisi}/draft', [TorController::class, 'updateDetail'])->name('tor.saveDraft');
+		Route::post('tor/{submisi}/submit', [TorController::class, 'submit'])->name('tor.submit');
 		Route::get('dosen/search', [TorController::class, 'searchDosen'])->name('dosen.search');
 		Route::get('mahasiswa/search', [MahasiswaController::class, 'search'])->name('mahasiswa.search');
 		Route::post('anggota-tim', [AnggotaTimController::class, 'store'])->name('anggota-tim.store');

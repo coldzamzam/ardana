@@ -27,9 +27,10 @@ import React from 'react';
 
 interface DetailBiayaProps {
     submisi: Submisi;
+    isEditable: boolean;
 }
 
-export default function DetailBiaya({ submisi }: DetailBiayaProps) {
+export default function DetailBiaya({ submisi, isEditable }: DetailBiayaProps) {
     const [isAdding, setIsAdding] = React.useState(false);
     const [editingRow, setEditingRow] = React.useState<string | null>(null);
 
@@ -98,6 +99,7 @@ export default function DetailBiaya({ submisi }: DetailBiayaProps) {
     };
 
     const handleEdit = (biaya: BiayaType) => {
+        if (!isEditable) return;
         setEditingRow(biaya.id);
         setData(biaya);
         setValidationError(null);
@@ -144,13 +146,13 @@ export default function DetailBiaya({ submisi }: DetailBiayaProps) {
                             <TableHead>Jumlah Orang</TableHead>
                             <TableHead>Deskripsi</TableHead>
                             <TableHead>Total</TableHead>
-                            <TableHead>Aksi</TableHead>
+                            {isEditable && <TableHead>Aksi</TableHead>}
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {submisi.biaya?.map((item, index) => (
                             <TableRow key={item.id}>
-                                {editingRow === item.id ? (
+                                {editingRow === item.id && isEditable ? (
                                     <>
                                         <TableCell>{index + 1}</TableCell>
                                         <TableCell>
@@ -183,35 +185,37 @@ export default function DetailBiaya({ submisi }: DetailBiayaProps) {
                                         <TableCell>{item.jumlah_org}</TableCell>
                                         <TableCell>{item.deskripsi}</TableCell>
                                         <TableCell>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.biaya_satuan * item.jumlah_kali * item.jumlah_org)}</TableCell>
-                                        <TableCell>
-                                            <Button size="sm" onClick={() => handleEdit(item)} disabled={isAdding}>
-                                                <Edit className="h-4 w-4" />
-                                            </Button>
-                                            <AlertDialog>
-                                                <AlertDialogTrigger asChild>
-                                                    <Button variant="destructive" size="sm" disabled={isAdding}>
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </AlertDialogTrigger>
-                                                <AlertDialogContent>
-                                                    <AlertDialogHeader>
-                                                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                        <AlertDialogDescription>
-                                                            This action cannot be undone. This will permanently delete the cost item.
-                                                        </AlertDialogDescription>
-                                                    </AlertDialogHeader>
-                                                    <AlertDialogFooter>
-                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                        <AlertDialogAction onClick={() => handleDelete(item.id)}>Continue</AlertDialogAction>
-                                                    </AlertDialogFooter>
-                                                </AlertDialogContent>
-                                            </AlertDialog>
-                                        </TableCell>
+                                        {isEditable && (
+                                            <TableCell>
+                                                <Button size="sm" onClick={() => handleEdit(item)} disabled={isAdding}>
+                                                    <Edit className="h-4 w-4" />
+                                                </Button>
+                                                <AlertDialog>
+                                                    <AlertDialogTrigger asChild>
+                                                        <Button variant="destructive" size="sm" disabled={isAdding}>
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </Button>
+                                                    </AlertDialogTrigger>
+                                                    <AlertDialogContent>
+                                                        <AlertDialogHeader>
+                                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                            <AlertDialogDescription>
+                                                                This action cannot be undone. This will permanently delete the cost item.
+                                                            </AlertDialogDescription>
+                                                        </AlertDialogHeader>
+                                                        <AlertDialogFooter>
+                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                            <AlertDialogAction onClick={() => handleDelete(item.id)}>Continue</AlertDialogAction>
+                                                        </AlertDialogFooter>
+                                                    </AlertDialogContent>
+                                                </AlertDialog>
+                                            </TableCell>
+                                        )}
                                     </>
                                 )}
                             </TableRow>
                         ))}
-                        {isAdding && (
+                        {isAdding && isEditable && (
                             <TableRow>
                                 <TableCell>{(submisi.biaya?.length || 0) + 1}</TableCell>
                                 <TableCell><Input type="number" placeholder="99999" value={data.biaya_satuan} onChange={(e) => setData('biaya_satuan', parseInt(e.target.value) || '')} min={0} max={999999999} /></TableCell>
@@ -235,11 +239,13 @@ export default function DetailBiaya({ submisi }: DetailBiayaProps) {
                         )}
                     </TableBody>
                 </Table>
-                <div className="mt-4 flex justify-end">
-                    <Button onClick={handleAddNew} disabled={isAdding || !!editingRow}>
-                        Tambah
-                    </Button>
-                </div>
+                {isEditable && (
+                    <div className="mt-4 flex justify-end">
+                        <Button onClick={handleAddNew} disabled={isAdding || !!editingRow}>
+                            Tambah
+                        </Button>
+                    </div>
+                )}
                 <div className="mt-6 flex justify-end border-t pt-4">
                     <div className="text-lg font-bold">
                         <span>Total Anggaran: </span>
