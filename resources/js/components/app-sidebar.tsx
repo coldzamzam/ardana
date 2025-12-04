@@ -13,7 +13,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem, type Role, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { BookOpen, Folder, LayoutGrid, UserPlus, Users } from 'lucide-react';
+import { Bell, BookOpen, Folder, LayoutGrid, UserPlus, Users } from 'lucide-react';
 import AppLogo from './app-logo';
 
 const footerNavItems: NavItem[] = [
@@ -43,6 +43,11 @@ export function AppSidebar() {
             title: 'Dashboard',
             href: dashboard(),
             icon: LayoutGrid,
+        },
+        {
+            title: 'Notifikasi',
+            href: '/dashboard/notifikasi',
+            icon: Bell,
         },
     ];
 
