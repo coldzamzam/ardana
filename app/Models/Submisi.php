@@ -23,6 +23,8 @@ class Submisi extends Model
         'kegiatan_type_id',
         'created_by',
         'parent_tor_id',
+        'is_archived',
+        'is_read',
     ];
 
     protected $appends = ['total_anggaran'];

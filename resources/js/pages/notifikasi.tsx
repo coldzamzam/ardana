@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
-import { Head, usePage } from '@inertiajs/react';
+import { Head, usePage, router } from '@inertiajs/react';
+import { route } from 'ziggy-js';
 
 import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
@@ -12,7 +13,6 @@ import {
     Check,
     ChevronLeft,
     ChevronRight,
-    Filter,
     Mail,
     MailOpen,
     MoreVertical,
@@ -22,14 +22,10 @@ import {
     Trash2,
 } from 'lucide-react';
 
-const breadcrumbs: BreadcrumbItem[] = [
-    {
-        title: 'Notifikasi',
-        href: '#',
-    },
-];
+const breadcrumbs: BreadcrumbItem[] = [{ title: 'Notifikasi', href: '#' }];
 
 type NotificationCategory = 'utama' | 'pengajuan' | 'sistem';
+type TabKey = NotificationCategory | 'semua' | 'favorit';
 
 type Notification = {
     id: number;
@@ -41,16 +37,17 @@ type Notification = {
     category: NotificationCategory;
     is_read: boolean;
     is_starred: boolean;
-    created_at: string; // ISO date string
+    created_at: string;
 };
 
 type NotificationsProps = PageProps<{
     notifications: Notification[];
-    years: number[]; // untuk filter tahun
+    years: number[];
 }>;
 
-const CATEGORY_TABS: { key: NotificationCategory | 'semua'; label: string }[] = [
+const TABS: { key: TabKey; label: string }[] = [
     { key: 'semua', label: 'Semua' },
+    { key: 'favorit', label: 'Favorit' },
     { key: 'utama', label: 'Utama' },
     { key: 'pengajuan', label: 'Pengajuan TOR & LPJ' },
     { key: 'sistem', label: 'Notifikasi Sistem' },
@@ -58,31 +55,69 @@ const CATEGORY_TABS: { key: NotificationCategory | 'semua'; label: string }[] = 
 
 const PER_PAGE = 10;
 
-export default function NotificationsPage({
-    notifications,
-    years,
-}: NotificationsProps) {
+export default function NotificationsPage({ notifications, years }: NotificationsProps) {
     const { auth } = usePage<SharedData>().props;
-    const user = auth.user;
 
     const [search, setSearch] = useState('');
-    const [activeTab, setActiveTab] =
-        useState<(typeof CATEGORY_TABS)[number]['key']>('semua');
+    const [activeTab, setActiveTab] = useState<TabKey>('semua');
     const [selectedYear, setSelectedYear] = useState<number | 'all'>('all');
+    const [selectedIndicator, setSelectedIndicator] = useState<string | 'all'>('all');
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
 
-    // --- Filtering & paging ---
+    const [starredIds, setStarredIds] = useState<number[]>(() =>
+        notifications.filter((n) => n.is_starred).map((n) => n.id),
+    );
 
+    const [readIds, setReadIds] = useState<number[]>(() =>
+        notifications.filter((n) => n.is_read).map((n) => n.id),
+    );
+
+    // daftar indikator unik buat dropdown filter
+    const indikatorOptions = useMemo<string[]>(
+        () =>
+            Array.from(
+                new Set(
+                    notifications
+                        .map((n) => n.indikator_kinerja)
+                        .filter((txt) => txt && txt.trim().length > 0),
+                ),
+            ),
+        [notifications],
+    );
+
+    // inject state lokal ke daftar notifikasi
+    const notificationsWithState = useMemo(
+        () =>
+            notifications.map((n) => ({
+                ...n,
+                is_starred: starredIds.includes(n.id) || n.is_starred,
+                is_read: readIds.includes(n.id) || n.is_read,
+            })),
+        [notifications, starredIds, readIds],
+    );
+
+    const unreadCount = notificationsWithState.filter((n) => !n.is_read).length;
+
+    // filter utama (tab + tahun + indikator + search)
     const filteredNotifications = useMemo(() => {
-        let data = notifications;
+        let data = notificationsWithState;
 
-        if (activeTab !== 'semua') {
+        if (activeTab === 'favorit') {
+            data = data.filter((n) => n.is_starred);
+        } else if (activeTab !== 'semua') {
             data = data.filter((n) => n.category === activeTab);
         }
 
         if (selectedYear !== 'all') {
             data = data.filter((n) => n.tahun === selectedYear);
+        }
+
+        if (selectedIndicator !== 'all') {
+            const qInd = selectedIndicator.toLowerCase();
+            data = data.filter((n) =>
+                n.indikator_kinerja.toLowerCase().includes(qInd),
+            );
         }
 
         if (search.trim()) {
@@ -95,30 +130,36 @@ export default function NotificationsPage({
             );
         }
 
-        // sort terbaru di atas
-        data = [...data].sort(
-            (a, b) =>
+        // sorting: favorit dulu, lalu terbaru
+        return [...data].sort((a, b) => {
+            if (a.is_starred !== b.is_starred) {
+                return b.is_starred ? 1 : -1;
+            }
+            return (
                 new Date(b.created_at).getTime() -
-                new Date(a.created_at).getTime(),
-        );
+                new Date(a.created_at).getTime()
+            );
+        });
+    }, [
+        notificationsWithState,
+        activeTab,
+        selectedYear,
+        selectedIndicator,
+        search,
+    ]);
 
-        return data;
-    }, [notifications, activeTab, selectedYear, search]);
-
-    const totalPages = Math.max(
-        1,
-        Math.ceil(filteredNotifications.length / PER_PAGE),
-    );
+    const totalPages = Math.max(1, Math.ceil(filteredNotifications.length / PER_PAGE));
     const pageItems = filteredNotifications.slice(
         (currentPage - 1) * PER_PAGE,
         currentPage * PER_PAGE,
     );
 
     const allSelectedOnPage =
-        pageItems.length > 0 &&
-        pageItems.every((n) => selectedIds.includes(n.id));
+        pageItems.length > 0 && pageItems.every((n) => selectedIds.includes(n.id));
 
-    // --- Handlers Gmail-like (sementara hanya state lokal) ---
+    // -----------------------------
+    // HANDLERS UTAMA
+    // -----------------------------
 
     const toggleSelectAllOnPage = () => {
         if (allSelectedOnPage) {
@@ -128,9 +169,7 @@ export default function NotificationsPage({
         } else {
             setSelectedIds((prev) => [
                 ...prev,
-                ...pageItems
-                    .map((n) => n.id)
-                    .filter((id) => !prev.includes(id)),
+                ...pageItems.map((n) => n.id).filter((id) => !prev.includes(id)),
             ]);
         }
     };
@@ -141,46 +180,79 @@ export default function NotificationsPage({
         );
     };
 
+    // MARK READ / UNREAD
     const handleMarkReadUnread = (read: boolean) => {
-        // TODO: sambungkan ke backend (Inertia) kalau mau persisten
-        console.log('mark read/unread', { ids: selectedIds, read });
+        if (selectedIds.length === 0) return;
+
+        setReadIds((prev) => {
+            if (read) return Array.from(new Set([...prev, ...selectedIds]));
+            return prev.filter((id) => !selectedIds.includes(id));
+        });
+
+        router.post(
+            route(read ? 'notifikasi.markRead' : 'notifikasi.markUnread'),
+            { ids: selectedIds },
+            { preserveScroll: true },
+        );
     };
 
+    // ARCHIVE
     const handleArchive = () => {
-        // TODO: sambungkan ke backend
-        console.log('archive', selectedIds);
+        if (selectedIds.length === 0) return;
+
+        router.post(
+            route('notifikasi.archive'),
+            { ids: selectedIds },
+            {
+                preserveScroll: true,
+                onSuccess: () => setSelectedIds([]),
+            },
+        );
     };
 
+    // DELETE
     const handleDelete = () => {
-        // TODO: sambungkan ke backend
-        console.log('delete', selectedIds);
+        if (selectedIds.length === 0) return;
+        if (!confirm('Hapus permanen semua notifikasi terpilih?')) return;
+
+        router.post(
+            route('notifikasi.delete'),
+            { ids: selectedIds },
+            {
+                preserveScroll: true,
+                onSuccess: () => setSelectedIds([]),
+            },
+        );
     };
 
+    // FAVORITE
     const handleToggleStar = (id: number) => {
-        // TODO: sambungkan ke backend
-        console.log('toggle star', id);
+        setStarredIds((prev) =>
+            prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id],
+        );
     };
 
-    // --- UI ---
-
+    // -----------------------------
+    // RENDER UI
+    // -----------------------------
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Notifikasi" />
 
-            {/* Container luar tanpa sidebar kiri */}
             <div className="flex h-full flex-1 rounded-3xl bg-[#CBEBD5]/70 p-4 md:p-6">
-                {/* Main content */}
                 <div className="flex flex-1 flex-col gap-4 rounded-3xl bg-[#E6F5EC] p-4 md:p-6">
-                    {/* Header + search */}
+                    {/* HEADER */}
                     <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                        <div className="space-y-1">
+                        <div className="flex items-center gap-3">
                             <h1 className="text-2xl font-semibold text-[#427452]">
                                 Notifikasi
                             </h1>
-                            <p className="text-sm text-[#427452]/80">
-                                Pantau update pengajuan TOR &amp; LPJ, koreksi,
-                                dan informasi penting lainnya di satu tempat.
-                            </p>
+
+                            {unreadCount > 0 && (
+                                <span className="flex h-6 items-center rounded-full bg-[#73AD86] px-2 text-xs font-semibold text-white">
+                                    {unreadCount} baru
+                                </span>
+                            )}
                         </div>
 
                         <div className="flex w-full max-w-md items-center gap-2 rounded-full bg-white px-4 py-2 shadow-sm">
@@ -191,95 +263,83 @@ export default function NotificationsPage({
                                     setSearch(e.target.value);
                                     setCurrentPage(1);
                                 }}
-                                placeholder="Cari notifikasi (judul, status, indikator)..."
+                                placeholder="Cari notifikasi..."
                                 className="border-0 bg-transparent p-0 text-sm shadow-none focus-visible:ring-0"
                             />
                         </div>
                     </div>
 
-                    {/* Toolbar ala Gmail */}
+                    {/* TOOLBAR */}
                     <div className="space-y-3 rounded-2xl bg-white/70 px-4 py-3 shadow-sm">
-                        {/* Row 1: checkbox + actions + pagination */}
+                        {/* Row 1: checkbox + aksi + pagination */}
                         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                             <div className="flex items-center gap-2 text-xs md:text-sm">
                                 <button
-                                    type="button"
                                     onClick={toggleSelectAllOnPage}
-                                    className="flex h-7 w-7 items-center justify-center rounded-md border border-slate-300 bg-white text-xs"
+                                    className="flex h-7 w-7 items-center justify-center rounded-md border border-slate-300 bg-white"
                                 >
-                                    {allSelectedOnPage ? (
-                                        <Check className="h-4 w-4" />
-                                    ) : (
-                                        ''
-                                    )}
+                                    {allSelectedOnPage && <Check className="h-4 w-4" />}
                                 </button>
+
                                 <span className="text-slate-500">
                                     {selectedIds.length > 0
                                         ? `${selectedIds.length} dipilih`
                                         : 'Tidak ada yang dipilih'}
                                 </span>
 
-                                <div className="ml-3 hidden items-center gap-1 md:flex">
+                                <div className="ml-3 hidden gap-1 md:flex">
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        onClick={() =>
-                                            handleMarkReadUnread(true)
-                                        }
                                         disabled={selectedIds.length === 0}
+                                        onClick={() => handleMarkReadUnread(true)}
                                     >
                                         <MailOpen className="h-4 w-4" />
                                     </Button>
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        onClick={() =>
-                                            handleMarkReadUnread(false)
-                                        }
                                         disabled={selectedIds.length === 0}
+                                        onClick={() => handleMarkReadUnread(false)}
                                     >
                                         <Mail className="h-4 w-4" />
                                     </Button>
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        onClick={handleArchive}
                                         disabled={selectedIds.length === 0}
+                                        onClick={handleArchive}
                                     >
                                         <Archive className="h-4 w-4" />
                                     </Button>
                                     <Button
                                         variant="ghost"
                                         size="icon"
-                                        onClick={handleDelete}
                                         disabled={selectedIds.length === 0}
+                                        onClick={handleDelete}
                                     >
                                         <Trash2 className="h-4 w-4" />
                                     </Button>
                                 </div>
                             </div>
 
-                            {/* Pagination */}
-                            <div className="flex items-center justify-between gap-3 text-xs text-slate-500 md:justify-end">
+                            <div className="flex flex-col gap-2 text-xs text-slate-500 md:flex-row md:items-center md:gap-3">
                                 <span>
                                     {filteredNotifications.length === 0
                                         ? '0 notifikasi'
                                         : `${(currentPage - 1) * PER_PAGE + 1}–${Math.min(
                                               currentPage * PER_PAGE,
                                               filteredNotifications.length,
-                                          )} dari ${
-                                              filteredNotifications.length
-                                          }`}
+                                          )} dari ${filteredNotifications.length}`}
                                 </span>
-                                <div className="flex items-center gap-1">
+
+                                <div className="flex items-center gap-1 self-start md:self-auto">
                                     <Button
                                         variant="ghost"
                                         size="icon"
                                         disabled={currentPage === 1}
                                         onClick={() =>
-                                            setCurrentPage((p) =>
-                                                Math.max(1, p - 1),
-                                            )
+                                            setCurrentPage((p) => Math.max(1, p - 1))
                                         }
                                     >
                                         <ChevronLeft className="h-4 w-4" />
@@ -300,22 +360,21 @@ export default function NotificationsPage({
                             </div>
                         </div>
 
-                        {/* Row 2: Tabs + filter tahun */}
+                        {/* Row 2: Tabs + filter kanan */}
                         <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                             <div className="flex flex-wrap gap-2">
-                                {CATEGORY_TABS.map((tab) => {
-                                    const isActive = activeTab === tab.key;
+                                {TABS.map((tab) => {
+                                    const active = activeTab === tab.key;
                                     return (
                                         <button
                                             key={tab.key}
-                                            type="button"
                                             onClick={() => {
                                                 setActiveTab(tab.key);
                                                 setCurrentPage(1);
                                             }}
-                                            className={`rounded-full px-3 py-1 text-xs font-medium transition ${
-                                                isActive
-                                                    ? 'bg-[#73AD86] text-white shadow-sm'
+                                            className={`rounded-full px-3 py-1 text-xs font-medium ${
+                                                active
+                                                    ? 'bg-[#73AD86] text-white'
                                                     : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                                             }`}
                                         >
@@ -325,35 +384,44 @@ export default function NotificationsPage({
                                 })}
                             </div>
 
-                            <div className="flex items-center gap-2">
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="flex items-center gap-2 rounded-full border-slate-300 bg-white text-xs"
-                                >
-                                    <Filter className="h-3 w-3" />
-                                    Filter lanjutan
-                                </Button>
-
+                            {/* pojok kanan: filter tahun + indikator */}
+                            <div className="flex flex-wrap items-center gap-2 md:justify-end">
                                 <select
                                     className="h-8 rounded-full border border-slate-300 bg-white px-3 text-xs text-slate-600 outline-none"
                                     value={selectedYear}
                                     onChange={(e) => {
-                                        const value = e.target.value;
+                                        const val = e.target.value;
                                         setSelectedYear(
-                                            value === 'all'
-                                                ? 'all'
-                                                : Number(value),
+                                            val === 'all' ? 'all' : Number(val),
+                                        );
+                                        setCurrentPage(1);
+                                    }}
+                                >
+                                    <option value="all">Semua tahun</option>
+                                    {years.map((year) => (
+                                        <option key={year} value={year}>
+                                            Tahun {year}
+                                        </option>
+                                    ))}
+                                </select>
+
+                                <select
+                                    className="h-8 max-w-xs rounded-full border border-slate-300 bg-white px-3 text-xs text-slate-600 outline-none"
+                                    value={selectedIndicator}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        setSelectedIndicator(
+                                            val === 'all' ? 'all' : val,
                                         );
                                         setCurrentPage(1);
                                     }}
                                 >
                                     <option value="all">
-                                        Semua tahun pengajuan
+                                        Semua indikator kinerja
                                     </option>
-                                    {years.map((year) => (
-                                        <option key={year} value={year}>
-                                            Tahun {year}
+                                    {indikatorOptions.map((indikator) => (
+                                        <option key={indikator} value={indikator}>
+                                            {indikator}
                                         </option>
                                     ))}
                                 </select>
@@ -361,79 +429,64 @@ export default function NotificationsPage({
                         </div>
                     </div>
 
-                    {/* List notifikasi */}
+                    {/* LIST NOTIF */}
                     <div className="mt-2 flex-1 space-y-2 overflow-y-auto rounded-2xl">
                         {pageItems.length === 0 ? (
-                            <div className="flex h-40 flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 bg-white/60 text-center text-sm text-slate-500">
-                                <p>
-                                    Belum ada notifikasi yang cocok dengan
-                                    filter saat ini.
-                                </p>
-                                <p className="mt-1 text-xs">
-                                    Coba ubah kata kunci pencarian atau pilih
-                                    tahun lain.
-                                </p>
+                            <div className="flex h-40 flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg.white text-slate-600 text-sm">
+                                Tidak ada notifikasi.
                             </div>
                         ) : (
                             pageItems.map((notif) => {
-                                const isSelected = selectedIds.includes(
-                                    notif.id,
-                                );
+                                const selected = selectedIds.includes(notif.id);
 
                                 return (
                                     <button
                                         key={notif.id}
-                                        type="button"
-                                        className={`group flex w-full items-stretch gap-3 rounded-2xl border bg-white px-3 py-3 text-left shadow-sm transition hover:-translate-y-[1px] hover:shadow-md ${
+                                        className={`group flex w-full items-start gap-3 rounded-2xl border bg-white px-3 py-3 shadow-sm transition hover:shadow-md ${
                                             notif.is_read
                                                 ? 'border-transparent'
-                                                : 'border-[#73AD86]/50 bg-[#F6FFF9]'
+                                                : 'border-[#73AD86]/40 bg-[#F5FFFA]'
                                         }`}
                                     >
-                                        {/* Checkbox + star */}
-                                        <div className="flex items-start gap-2 pt-1">
-                                            <button
-                                                type="button"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    toggleSelect(notif.id);
-                                                }}
-                                                className={`mt-[2px] flex h-5 w-5 items-center justify-center rounded border ${
-                                                    isSelected
-                                                        ? 'border-[#73AD86] bg-[#73AD86] text-white'
-                                                        : 'border-slate-300 bg-white'
-                                                }`}
-                                            >
-                                                {isSelected && (
-                                                    <Check className="h-3 w-3" />
-                                                )}
-                                            </button>
+                                        {/* checkbox */}
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                toggleSelect(notif.id);
+                                            }}
+                                            className={`mt-1 flex h-5 w-5 items-center justify-center rounded border ${
+                                                selected
+                                                    ? 'bg-[#73AD86] border-[#73AD86] text-white'
+                                                    : 'border-slate-300'
+                                            }`}
+                                        >
+                                            {selected && <Check className="h-3 w-3" />}
+                                        </button>
 
-                                            <button
-                                                type="button"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleToggleStar(notif.id);
-                                                }}
-                                                className="mt-[2px] text-[#F5B301] opacity-70 transition hover:opacity-100"
-                                            >
-                                                {notif.is_starred ? (
-                                                    <Star className="h-4 w-4 fill-current" />
-                                                ) : (
-                                                    <StarOff className="h-4 w-4" />
-                                                )}
-                                            </button>
-                                        </div>
+                                        {/* star */}
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleToggleStar(notif.id);
+                                            }}
+                                            className="mt-1 text-[#F5B301] opacity-70 hover:opacity-100"
+                                        >
+                                            {notif.is_starred ? (
+                                                <Star className="h-4 w-4 fill-current" />
+                                            ) : (
+                                                <StarOff className="h-4 w-4" />
+                                            )}
+                                        </button>
 
-                                        {/* Content */}
+                                        {/* konten notif */}
                                         <div className="flex flex-1 flex-col gap-1">
-                                            <div className="flex flex-wrap items-center justify-between gap-2">
-                                                <div className="flex flex-wrap items-center gap-2">
+                                            <div className="flex justify-between">
+                                                <div className="flex items-center gap-2">
                                                     <span
                                                         className={`text-sm font-semibold ${
                                                             notif.is_read
-                                                                ? 'text-slate-800'
-                                                                : 'text-[#235037]'
+                                                                ? 'text-slate-700'
+                                                                : 'text-[#2b5e44]'
                                                         }`}
                                                     >
                                                         {notif.title}
@@ -445,15 +498,9 @@ export default function NotificationsPage({
 
                                                     <Badge
                                                         variant="outline"
-                                                        className="border-[#73AD86]/40 bg-[#E9F7EF] px-2 py-0 text-[10px] uppercase tracking-wide text-[#356A47]"
+                                                        className="border-[#73AD86]/30 bg-[#E8F7EF] text-[10px]"
                                                     >
-                                                        {notif.category ===
-                                                        'utama'
-                                                            ? 'UTAMA'
-                                                            : notif.category ===
-                                                              'pengajuan'
-                                                            ? 'PENGAJUAN'
-                                                            : 'SISTEM'}
+                                                        {notif.category.toUpperCase()}
                                                     </Badge>
                                                 </div>
 
@@ -469,16 +516,12 @@ export default function NotificationsPage({
                                                 </span>
                                             </div>
 
-                                            <div className="mt-1 grid gap-2 text-xs text-slate-600 md:grid-cols-4">
+                                            <div className="grid gap-3 text-left text-xs text-slate-600 md:grid-cols-4">
                                                 <div>
                                                     <p className="font-semibold text-slate-700">
                                                         Indikator Kinerja
                                                     </p>
-                                                    <p className="line-clamp-1">
-                                                        {
-                                                            notif.indikator_kinerja
-                                                        }
-                                                    </p>
+                                                    <p>{notif.indikator_kinerja}</p>
                                                 </div>
                                                 <div>
                                                     <p className="font-semibold text-slate-700">
@@ -488,33 +531,28 @@ export default function NotificationsPage({
                                                 </div>
                                                 <div>
                                                     <p className="font-semibold text-slate-700">
-                                                        Dana Diajukan
+                                                        Dana
                                                     </p>
                                                     <p>{notif.dana_diajukan}</p>
                                                 </div>
                                                 <div>
                                                     <p className="font-semibold text-slate-700">
-                                                        Status Pengajuan
+                                                        Status
                                                     </p>
                                                     <p className="font-medium text-[#427452]">
-                                                        {
-                                                            notif.status_pengajuan
-                                                        }
+                                                        {notif.status_pengajuan}
                                                     </p>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        {/* Action kebab */}
-                                        <div className="flex items-start pt-1">
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="opacity-0 transition group-hover:opacity-100"
-                                            >
-                                                <MoreVertical className="h-4 w-4 text-slate-500" />
-                                            </Button>
-                                        </div>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="opacity-0 transition group-hover:opacity-100"
+                                        >
+                                            <MoreVertical className="h-4 w-4 text-slate-500" />
+                                        </Button>
                                     </button>
                                 );
                             })

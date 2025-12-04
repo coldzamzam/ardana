@@ -30,6 +30,21 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
     Route::get('notifikasi', [NotificationController::class, 'index'])
         ->name('notifikasi.index');
 
+    Route::get('notifikasi', [NotificationController::class, 'index'])
+        ->name('notifikasi.index');
+
+    Route::post('notifikasi/mark-read', [NotificationController::class, 'markRead'])
+        ->name('notifikasi.markRead');
+
+    Route::post('notifikasi/mark-unread', [NotificationController::class, 'markUnread'])
+        ->name('notifikasi.markUnread');
+
+    Route::post('notifikasi/archive', [NotificationController::class, 'archive'])
+        ->name('notifikasi.archive');
+
+    Route::post('notifikasi/delete', [NotificationController::class, 'destroy'])
+        ->name('notifikasi.delete');
+
     Route::middleware(['role:admin,sekjur,kajur'])->group(function () {
         Route::get('verifikasi', [TorController::class, 'verifikasi'])->name('verifikasi.index');
         Route::post('verifikasi/{submisi}', [TorController::class, 'approveOrReject'])->name('verifikasi.approveOrReject');
