@@ -77,6 +77,6 @@ class DashboardController extends Controller
             ];
         }
 
-        return Inertia::render('Dashboard', $data);
+        return Inertia::render('dashboard', $data);
     }
 }
