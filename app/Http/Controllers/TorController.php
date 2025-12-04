@@ -8,6 +8,7 @@ use App\Models\Submisi;
 use App\Models\User;
 use App\Models\KegiatanType;
 use App\Models\StatusType;
+use App\Events\TorSubmitted;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -153,6 +154,9 @@ class TorController extends Controller
             'created_by' => Auth::id(),
         ]);
 
-        return Redirect::route('tor')->with('success', 'TOR berhasil diajukan.');
+        // Kirim notifikasi ke reviewer
+        TorSubmitted::dispatch($submisi);
+
+        return Redirect::route('dashboard')->with('success', 'TOR berhasil diajukan.');
     }
 }

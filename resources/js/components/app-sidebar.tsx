@@ -10,7 +10,6 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { dashboard } from '@/routes';
 import { type NavItem, type Role, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { Bell, BookOpen, Folder, LayoutGrid, UserPlus, Users } from 'lucide-react';
@@ -41,7 +40,7 @@ export function AppSidebar() {
     const mainNavItems: NavItem[] = [
         {
             title: 'Dashboard',
-            href: dashboard(),
+            href: '/dashboard',
             icon: LayoutGrid,
         },
         {
@@ -97,7 +96,7 @@ export function AppSidebar() {
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
                             <Link
-                                href={dashboard()}
+                                href="/dashboard"
                                 prefetch
                                 className="flex items-center"
                             >
