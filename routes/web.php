@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\OnboardingController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\AnggotaTimController;
 use App\Http\Controllers\TorController;
@@ -19,9 +20,7 @@ Route::get('/', function () {
 })->name('home');
 
 Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () {
-	Route::get('/', function () {
-		return Inertia::render('dashboard');
-	})->name('dashboard');
+	Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
 	Route::middleware(['role:admin,sekjur,kajur'])->group(function () {
 		Route::get('verifikasi', [TorController::class, 'verifikasi'])->name('verifikasi.index');
