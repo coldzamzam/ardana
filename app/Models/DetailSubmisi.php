@@ -26,5 +26,10 @@ class DetailSubmisi extends Model
         'submisi_id',
     ];
 
+    public function pic(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class, 'pic_id');
+    }
+
     // Relationships if any, though not directly inferable from the migration for this model itself
 }

@@ -27,9 +27,9 @@ class SendSubmissionNotification
     public function handle(TorSubmitted $event): void
     {
         $submisi = $event->submisi;
-        Log::info('SendSubmissionNotification listener berjalan untuk submisi ID: ' . $submisi->id);
 
         // --- IDEMPOTENCY CHECK ---
+        // Mencegah notifikasi ganda jika event ter-dispatch lebih dari sekali.
         $alreadyExists = DatabaseNotification::where('notifiable_type', Submisi::class)
             ->where('notifiable_id', $submisi->id)
             ->where('type', SubmissionSubmitted::class)
@@ -39,23 +39,20 @@ class SendSubmissionNotification
             Log::warning('Notifikasi SubmissionSubmitted untuk submisi ID ' . $submisi->id . ' sudah ada. Melewatkan pembuatan duplikat.');
             return;
         }
-        // --- END IDEMPOTENCY CHECK ---
         
         // Cari semua user yang memiliki peran 'admin'
         $reviewers = User::whereHas('roles', function ($query) {
             $query->where('role_name', 'admin');
         })->get();
         
-        Log::info('Menemukan ' . $reviewers->count() . ' reviewer dengan peran "admin".');
-
         if ($reviewers->isEmpty()) {
             Log::warning('Tidak ada user dengan peran "admin" yang ditemukan untuk dikirimi notifikasi.');
             return;
         }
 
+        // Muat relasi yang dibutuhkan untuk data notifikasi
+        $submisi->load('createdBy');
         $notificationData = (new SubmissionSubmitted($submisi))->toArray($submisi);
-
-        Log::info('Data notifikasi yang akan disimpan:', $notificationData);
 
         foreach ($reviewers as $reviewer) {
             DatabaseNotification::create([
@@ -63,9 +60,9 @@ class SendSubmissionNotification
                 'type' => SubmissionSubmitted::class,
                 'notifiable_type' => Submisi::class,
                 'notifiable_id' => $submisi->id,
-                'data' => $notificationData, // Model akan handle json encode
+                'data' => $notificationData,
             ]);
-            Log::info('Notifikasi DIBUAT di database untuk user ID: ' . $reviewer->id);
+            Log::info('Notifikasi pengajuan baru DIBUAT di database untuk user ID: ' . $reviewer->id);
         }
     }
 }

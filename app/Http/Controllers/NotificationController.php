@@ -17,9 +17,14 @@ class NotificationController extends Controller
     {
         $notifications = DatabaseNotification::where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
-            ->get();
-
-        Log::info('Data notifikasi yang diambil dari DB:', $notifications->toArray());
+            ->get()
+            ->map(function ($notification) {
+                // Pastikan 'data' selalu menjadi array/objek
+                if (is_string($notification->data)) {
+                    $notification->data = json_decode($notification->data, true);
+                }
+                return $notification;
+            });
 
         return Inertia::render('notifikasi', [
             'notifications' => $notifications,

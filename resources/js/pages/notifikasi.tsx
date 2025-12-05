@@ -51,6 +51,7 @@ type NotificationsProps = PageProps<{
 const PER_PAGE = 10;
 
 export default function NotificationsPage({ notifications }: NotificationsProps) {
+    console.log('Props di Frontend:', notifications);
     const { auth } = usePage<SharedData>().props;
 
     const [search, setSearch] = useState('');

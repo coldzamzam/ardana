@@ -22,8 +22,13 @@ import {
 } from '@/components/ui/table';
 import { Submisi, SubmisiFile } from '@/types';
 import { router, useForm } from '@inertiajs/react';
-import { Edit, File, Save, Trash2, X } from 'lucide-react';
+import { ChevronsUpDown, Edit, File, Save, Trash2, X } from 'lucide-react';
 import React from 'react';
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 
 interface DetailFileProps {
     submisi: Submisi;
@@ -36,6 +41,7 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
     const [validationError, setValidationError] = React.useState<string | null>(
         null,
     );
+    const [isOpen, setIsOpen] = React.useState(true);
 
     const { data, setData, post, reset, errors } = useForm<{
         id: string;
@@ -166,43 +172,196 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
     };
 
     return (
-        <Card className="overflow-hidden rounded-2xl border border-[#73AD86]/40 shadow-sm">
-            <CardHeader>
-                <CardTitle className="text-xl font-semibold text-[#427452]">
-                    Lampiran File
-                </CardTitle>
-            </CardHeader>
-            <CardContent>
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>No</TableHead>
-                            <TableHead>File</TableHead>
-                            <TableHead>Nama</TableHead>
-                            <TableHead>Deskripsi</TableHead>
-                            {isEditable && <TableHead>Aksi</TableHead>}
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {submisi.submisi_file?.map((file, index) => (
-                            <TableRow key={file.id}>
-                                {editingRow === file.id && isEditable ? (
-                                    <>
-                                        <TableCell>{index + 1}</TableCell>
+        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+            <Card className="overflow-hidden rounded-2xl border border-[#73AD86]/40 shadow-sm">
+                <CollapsibleTrigger asChild>
+                    <CardHeader className="flex cursor-pointer flex-row items-center justify-between">
+                        <CardTitle className="text-xl font-semibold text-[#427452]">
+                            Lampiran File
+                        </CardTitle>
+                        <Button variant="ghost" size="sm" className="w-9 px-0">
+                            <ChevronsUpDown className="h-4 w-4" />
+                            <span className="sr-only">Toggle</span>
+                        </Button>
+                    </CardHeader>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                    <CardContent>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>No</TableHead>
+                                    <TableHead>File</TableHead>
+                                    <TableHead>Nama</TableHead>
+                                    <TableHead>Deskripsi</TableHead>
+                                    {isEditable && <TableHead>Aksi</TableHead>}
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {submisi.submisi_file?.map((file, index) => (
+                                    <TableRow key={file.id}>
+                                        {editingRow === file.id && isEditable ? (
+                                            <>
+                                                <TableCell>{index + 1}</TableCell>
+                                                <TableCell>
+                                                    {data.file ? (
+                                                        <div className="flex items-center gap-2">
+                                                            {getFileIcon(
+                                                                data.file.name,
+                                                            )}
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="sm"
+                                                                onClick={() =>
+                                                                    setData(
+                                                                        'file',
+                                                                        null,
+                                                                    )
+                                                                }
+                                                            >
+                                                                <X className="h-4 w-4" />
+                                                            </Button>
+                                                        </div>
+                                                    ) : (
+                                                        <Button
+                                                            variant="outline"
+                                                            onClick={() =>
+                                                                fileInputRef.current?.click()
+                                                            }
+                                                        >
+                                                            Pilih File
+                                                        </Button>
+                                                    )}
+                                                    <Input
+                                                        ref={fileInputRef}
+                                                        type="file"
+                                                        className="hidden"
+                                                        onChange={handleFileChange}
+                                                        accept=".pdf,.jpg,.jpeg,.png"
+                                                    />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Input
+                                                        value={data.nama}
+                                                        onChange={(e) =>
+                                                            setData(
+                                                                'nama',
+                                                                e.target.value,
+                                                            )
+                                                        }
+                                                    />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Input
+                                                        value={data.deskripsi}
+                                                        onChange={(e) =>
+                                                            setData(
+                                                                'deskripsi',
+                                                                e.target.value,
+                                                            )
+                                                        }
+                                                    />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Button
+                                                        size="sm"
+                                                        onClick={handleUpdate}
+                                                    >
+                                                        <Save className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="ghost"
+                                                        onClick={handleCancelEdit}
+                                                    >
+                                                        <X className="h-4 w-4" />
+                                                    </Button>
+                                                </TableCell>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <TableCell>{index + 1}</TableCell>
+                                                <TableCell>
+                                                    <a
+                                                        href={`/dashboard/submisi-file/${file.id}/download`}
+                                                        target="_blank"
+                                                        rel="noopener noreferrer"
+                                                    >
+                                                        {getFileIcon(file.nama)}
+                                                    </a>
+                                                </TableCell>
+                                                <TableCell>{file.nama}</TableCell>
+                                                <TableCell>{file.deskripsi}</TableCell>
+                                                {isEditable && (
+                                                    <TableCell>
+                                                        <Button
+                                                            size="sm"
+                                                            onClick={() => handleEdit(file)}
+                                                            disabled={isAdding}
+                                                        >
+                                                            <Edit className="h-4 w-4" />
+                                                        </Button>
+                                                        <AlertDialog>
+                                                            <AlertDialogTrigger asChild>
+                                                                <Button
+                                                                    variant="destructive"
+                                                                    size="sm"
+                                                                    disabled={isAdding}
+                                                                >
+                                                                    <Trash2 className="h-4 w-4" />
+                                                                </Button>
+                                                            </AlertDialogTrigger>
+                                                            <AlertDialogContent>
+                                                                <AlertDialogHeader>
+                                                                    <AlertDialogTitle>
+                                                                        Are you absolutely
+                                                                        sure?
+                                                                    </AlertDialogTitle>
+                                                                    <AlertDialogDescription>
+                                                                        This action cannot
+                                                                        be undone. This will
+                                                                        permanently delete
+                                                                        the file.
+                                                                    </AlertDialogDescription>
+                                                                </AlertDialogHeader>
+                                                                <AlertDialogFooter>
+                                                                    <AlertDialogCancel>
+                                                                        Cancel
+                                                                    </AlertDialogCancel>
+                                                                    <AlertDialogAction
+                                                                        onClick={() =>
+                                                                            handleDelete(
+                                                                                file.id,
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        Continue
+                                                                    </AlertDialogAction>
+                                                                </AlertDialogFooter>
+                                                            </AlertDialogContent>
+                                                        </AlertDialog>
+                                                    </TableCell>
+                                                )}
+                                            </>
+                                        )}
+                                    </TableRow>
+                                ))}
+                                {isAdding && isEditable && (
+                                    <TableRow>
+                                        <TableCell>
+                                            {submisi.submisi_file?.length
+                                                ? submisi.submisi_file.length + 1
+                                                : 1}
+                                        </TableCell>
                                         <TableCell>
                                             {data.file ? (
                                                 <div className="flex items-center gap-2">
-                                                    {getFileIcon(
-                                                        data.file.name,
-                                                    )}
+                                                    {getFileIcon(data.file.name)}
                                                     <Button
                                                         variant="ghost"
                                                         size="sm"
                                                         onClick={() =>
-                                                            setData(
-                                                                'file',
-                                                                null,
-                                                            )
+                                                            setData('file', null)
                                                         }
                                                     >
                                                         <X className="h-4 w-4" />
@@ -228,205 +387,62 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                                         </TableCell>
                                         <TableCell>
                                             <Input
+                                                placeholder="Nama file"
                                                 value={data.nama}
                                                 onChange={(e) =>
-                                                    setData(
-                                                        'nama',
-                                                        e.target.value,
-                                                    )
+                                                    setData('nama', e.target.value)
                                                 }
+                                                disabled={!data.file}
                                             />
                                         </TableCell>
                                         <TableCell>
                                             <Input
+                                                placeholder="Deskripsi file"
                                                 value={data.deskripsi}
                                                 onChange={(e) =>
-                                                    setData(
-                                                        'deskripsi',
-                                                        e.target.value,
-                                                    )
+                                                    setData('deskripsi', e.target.value)
                                                 }
                                             />
                                         </TableCell>
                                         <TableCell>
-                                            <Button
-                                                size="sm"
-                                                onClick={handleUpdate}
-                                            >
+                                            <Button size="sm" onClick={handleSaveNew}>
                                                 <Save className="h-4 w-4" />
                                             </Button>
                                             <Button
                                                 size="sm"
                                                 variant="ghost"
-                                                onClick={handleCancelEdit}
+                                                onClick={handleCancelAddNew}
                                             >
                                                 <X className="h-4 w-4" />
                                             </Button>
                                         </TableCell>
-                                    </>
-                                ) : (
-                                    <>
-                                        <TableCell>{index + 1}</TableCell>
-                                        <TableCell>
-                                            <a
-                                                href={`/dashboard/submisi-file/${file.id}/download`}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                            >
-                                                {getFileIcon(file.nama)}
-                                            </a>
-                                        </TableCell>
-                                        <TableCell>{file.nama}</TableCell>
-                                        <TableCell>{file.deskripsi}</TableCell>
-                                        {isEditable && (
-                                            <TableCell>
-                                                <Button
-                                                    size="sm"
-                                                    onClick={() => handleEdit(file)}
-                                                    disabled={isAdding}
-                                                >
-                                                    <Edit className="h-4 w-4" />
-                                                </Button>
-                                                <AlertDialog>
-                                                    <AlertDialogTrigger asChild>
-                                                        <Button
-                                                            variant="destructive"
-                                                            size="sm"
-                                                            disabled={isAdding}
-                                                        >
-                                                            <Trash2 className="h-4 w-4" />
-                                                        </Button>
-                                                    </AlertDialogTrigger>
-                                                    <AlertDialogContent>
-                                                        <AlertDialogHeader>
-                                                            <AlertDialogTitle>
-                                                                Are you absolutely
-                                                                sure?
-                                                            </AlertDialogTitle>
-                                                            <AlertDialogDescription>
-                                                                This action cannot
-                                                                be undone. This will
-                                                                permanently delete
-                                                                the file.
-                                                            </AlertDialogDescription>
-                                                        </AlertDialogHeader>
-                                                        <AlertDialogFooter>
-                                                            <AlertDialogCancel>
-                                                                Cancel
-                                                            </AlertDialogCancel>
-                                                            <AlertDialogAction
-                                                                onClick={() =>
-                                                                    handleDelete(
-                                                                        file.id,
-                                                                    )
-                                                                }
-                                                            >
-                                                                Continue
-                                                            </AlertDialogAction>
-                                                        </AlertDialogFooter>
-                                                    </AlertDialogContent>
-                                                </AlertDialog>
-                                            </TableCell>
-                                        )}
-                                    </>
+                                    </TableRow>
                                 )}
-                            </TableRow>
-                        ))}
-                        {isAdding && isEditable && (
-                            <TableRow>
-                                <TableCell>
-                                    {submisi.submisi_file?.length
-                                        ? submisi.submisi_file.length + 1
-                                        : 1}
-                                </TableCell>
-                                <TableCell>
-                                    {data.file ? (
-                                        <div className="flex items-center gap-2">
-                                            {getFileIcon(data.file.name)}
-                                            <Button
-                                                variant="ghost"
-                                                size="sm"
-                                                onClick={() =>
-                                                    setData('file', null)
-                                                }
-                                            >
-                                                <X className="h-4 w-4" />
-                                            </Button>
-                                        </div>
-                                    ) : (
-                                        <Button
-                                            variant="outline"
-                                            onClick={() =>
-                                                fileInputRef.current?.click()
-                                            }
+                                {validationError && (
+                                    <TableRow>
+                                        <TableCell
+                                            colSpan={5}
+                                            className="text-center text-red-500"
                                         >
-                                            Pilih File
-                                        </Button>
-                                    )}
-                                    <Input
-                                        ref={fileInputRef}
-                                        type="file"
-                                        className="hidden"
-                                        onChange={handleFileChange}
-                                        accept=".pdf,.jpg,.jpeg,.png"
-                                    />
-                                </TableCell>
-                                <TableCell>
-                                    <Input
-                                        placeholder="Nama file"
-                                        value={data.nama}
-                                        onChange={(e) =>
-                                            setData('nama', e.target.value)
-                                        }
-                                        disabled={!data.file}
-                                    />
-                                </TableCell>
-                                <TableCell>
-                                    <Input
-                                        placeholder="Deskripsi file"
-                                        value={data.deskripsi}
-                                        onChange={(e) =>
-                                            setData('deskripsi', e.target.value)
-                                        }
-                                    />
-                                </TableCell>
-                                <TableCell>
-                                    <Button size="sm" onClick={handleSaveNew}>
-                                        <Save className="h-4 w-4" />
-                                    </Button>
-                                    <Button
-                                        size="sm"
-                                        variant="ghost"
-                                        onClick={handleCancelAddNew}
-                                    >
-                                        <X className="h-4 w-4" />
-                                    </Button>
-                                </TableCell>
-                            </TableRow>
-                        )}
-                        {validationError && (
-                            <TableRow>
-                                <TableCell
-                                    colSpan={5}
-                                    className="text-center text-red-500"
+                                            {validationError}
+                                        </TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                        {isEditable && (
+                            <div className="mt-4 flex justify-end">
+                                <Button
+                                    onClick={handleAddNew}
+                                    disabled={isAdding || !!editingRow}
                                 >
-                                    {validationError}
-                                </TableCell>
-                            </TableRow>
+                                    Tambah File
+                                </Button>
+                            </div>
                         )}
-                    </TableBody>
-                </Table>
-                {isEditable && (
-                    <div className="mt-4 flex justify-end">
-                        <Button
-                            onClick={handleAddNew}
-                            disabled={isAdding || !!editingRow}
-                        >
-                            Tambah File
-                        </Button>
-                    </div>
-                )}
-            </CardContent>
-        </Card>
+                    </CardContent>
+                </CollapsibleContent>
+            </Card>
+        </Collapsible>
     );
 }

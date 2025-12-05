@@ -22,8 +22,13 @@ import {
 } from '@/components/ui/table';
 import { type Biaya as BiayaType, type Submisi } from '@/types';
 import { router, useForm } from '@inertiajs/react';
-import { Edit, Save, Trash2, X } from 'lucide-react';
+import { ChevronsUpDown, Edit, Save, Trash2, X } from 'lucide-react';
 import React from 'react';
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 
 interface DetailBiayaProps {
     submisi: Submisi;
@@ -33,6 +38,7 @@ interface DetailBiayaProps {
 export default function DetailBiaya({ submisi, isEditable }: DetailBiayaProps) {
     const [isAdding, setIsAdding] = React.useState(false);
     const [editingRow, setEditingRow] = React.useState<string | null>(null);
+    const [isOpen, setIsOpen] = React.useState(true);
 
     const { data, setData, post, put, reset, errors } = useForm({
         id: '',
@@ -129,130 +135,140 @@ export default function DetailBiaya({ submisi, isEditable }: DetailBiayaProps) {
     };
 
     return (
-        <Card className="overflow-hidden rounded-2xl border border-[#73AD86]/40 shadow-sm">
-            <CardHeader>
-                <CardTitle className="text-xl font-semibold text-[#427452]">
-                    Anggaran Biaya
-                </CardTitle>
-            </CardHeader>
-            <CardContent>
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>No</TableHead>
-                            <TableHead>Biaya Satuan</TableHead>
-                            <TableHead>Satuan</TableHead>
-                            <TableHead>Jumlah Kali</TableHead>
-                            <TableHead>Jumlah Orang</TableHead>
-                            <TableHead>Deskripsi</TableHead>
-                            <TableHead>Total</TableHead>
-                            {isEditable && <TableHead>Aksi</TableHead>}
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {submisi.biaya?.map((item, index) => (
-                            <TableRow key={item.id}>
-                                {editingRow === item.id && isEditable ? (
-                                    <>
-                                        <TableCell>{index + 1}</TableCell>
-                                        <TableCell>
-                                            <Input type="number" value={data.biaya_satuan} onChange={(e) => setData('biaya_satuan', parseInt(e.target.value) || '')} min={0} max={999999999} />
-                                        </TableCell>
-                                        <TableCell>
-                                            <Input value={data.satuan} onChange={(e) => setData('satuan', e.target.value.toUpperCase())} maxLength={10} />
-                                        </TableCell>
-                                        <TableCell>
-                                            <Input type="number" value={data.jumlah_kali} onChange={(e) => setData('jumlah_kali', parseInt(e.target.value) || '')} min={0} max={999} />
-                                        </TableCell>
-                                        <TableCell>
-                                            <Input type="number" value={data.jumlah_org} onChange={(e) => setData('jumlah_org', parseInt(e.target.value) || '')} min={0} max={999} />
-                                        </TableCell>
-                                        <TableCell>
-                                            <Input value={data.deskripsi} onChange={(e) => setData('deskripsi', e.target.value)} />
-                                        </TableCell>
+        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+            <Card className="overflow-hidden rounded-2xl border border-[#73AD86]/40 shadow-sm">
+                <CollapsibleTrigger asChild>
+                    <CardHeader className="flex cursor-pointer flex-row items-center justify-between">
+                        <CardTitle className="text-xl font-semibold text-[#427452]">
+                            Anggaran Biaya
+                        </CardTitle>
+                        <Button variant="ghost" size="sm" className="w-9 px-0">
+                            <ChevronsUpDown className="h-4 w-4" />
+                            <span className="sr-only">Toggle</span>
+                        </Button>
+                    </CardHeader>
+                </CollapsibleTrigger>
+                <CollapsibleContent>
+                    <CardContent>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>No</TableHead>
+                                    <TableHead>Biaya Satuan</TableHead>
+                                    <TableHead>Satuan</TableHead>
+                                    <TableHead>Jumlah Kali</TableHead>
+                                    <TableHead>Jumlah Orang</TableHead>
+                                    <TableHead>Deskripsi</TableHead>
+                                    <TableHead>Total</TableHead>
+                                    {isEditable && <TableHead>Aksi</TableHead>}
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {submisi.biaya?.map((item, index) => (
+                                    <TableRow key={item.id}>
+                                        {editingRow === item.id && isEditable ? (
+                                            <>
+                                                <TableCell>{index + 1}</TableCell>
+                                                <TableCell>
+                                                    <Input type="number" value={data.biaya_satuan} onChange={(e) => setData('biaya_satuan', parseInt(e.target.value) || '')} min={0} max={999999999} />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Input value={data.satuan} onChange={(e) => setData('satuan', e.target.value.toUpperCase())} maxLength={10} />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Input type="number" value={data.jumlah_kali} onChange={(e) => setData('jumlah_kali', parseInt(e.target.value) || '')} min={0} max={999} />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Input type="number" value={data.jumlah_org} onChange={(e) => setData('jumlah_org', parseInt(e.target.value) || '')} min={0} max={999} />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Input value={data.deskripsi} onChange={(e) => setData('deskripsi', e.target.value)} />
+                                                </TableCell>
+                                                <TableCell>-</TableCell>
+                                                <TableCell>
+                                                    <Button size="sm" onClick={handleUpdate}><Save className="h-4 w-4" /></Button>
+                                                    <Button size="sm" variant="ghost" onClick={handleCancelEdit}><X className="h-4 w-4" /></Button>
+                                                </TableCell>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <TableCell>{index + 1}</TableCell>
+                                                <TableCell>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.biaya_satuan)}</TableCell>
+                                                <TableCell>{item.satuan}</TableCell>
+                                                <TableCell>{item.jumlah_kali}</TableCell>
+                                                <TableCell>{item.jumlah_org}</TableCell>
+                                                <TableCell>{item.deskripsi}</TableCell>
+                                                <TableCell>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.biaya_satuan * item.jumlah_kali * item.jumlah_org)}</TableCell>
+                                                {isEditable && (
+                                                    <TableCell>
+                                                        <Button size="sm" onClick={() => handleEdit(item)} disabled={isAdding}>
+                                                            <Edit className="h-4 w-4" />
+                                                        </Button>
+                                                        <AlertDialog>
+                                                            <AlertDialogTrigger asChild>
+                                                                <Button variant="destructive" size="sm" disabled={isAdding}>
+                                                                    <Trash2 className="h-4 w-4" />
+                                                                </Button>
+                                                            </AlertDialogTrigger>
+                                                            <AlertDialogContent>
+                                                                <AlertDialogHeader>
+                                                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                                                                    <AlertDialogDescription>
+                                                                        This action cannot be undone. This will permanently delete the cost item.
+                                                                    </AlertDialogDescription>
+                                                                </AlertDialogHeader>
+                                                                <AlertDialogFooter>
+                                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                    <AlertDialogAction onClick={() => handleDelete(item.id)}>Continue</AlertDialogAction>
+                                                                </AlertDialogFooter>
+                                                            </AlertDialogContent>
+                                                        </AlertDialog>
+                                                    </TableCell>
+                                                )}
+                                            </>
+                                        )}
+                                    </TableRow>
+                                ))}
+                                {isAdding && isEditable && (
+                                    <TableRow>
+                                        <TableCell>{(submisi.biaya?.length || 0) + 1}</TableCell>
+                                        <TableCell><Input type="number" placeholder="99999" value={data.biaya_satuan} onChange={(e) => setData('biaya_satuan', parseInt(e.target.value) || '')} min={0} max={999999999} /></TableCell>
+                                        <TableCell><Input placeholder="PCS" value={data.satuan} onChange={(e) => setData('satuan', e.target.value.toUpperCase())} maxLength={10} /></TableCell>
+                                        <TableCell><Input type="number" placeholder="1" value={data.jumlah_kali} onChange={(e) => setData('jumlah_kali', parseInt(e.target.value) || '')} min={0} max={999} /></TableCell>
+                                        <TableCell><Input type="number" placeholder="1" value={data.jumlah_org} onChange={(e) => setData('jumlah_org', parseInt(e.target.value) || '')} min={0} max={999} /></TableCell>
+                                        <TableCell><Input placeholder="Deskripsi biaya" value={data.deskripsi} onChange={(e) => setData('deskripsi', e.target.value)} /></TableCell>
                                         <TableCell>-</TableCell>
                                         <TableCell>
-                                            <Button size="sm" onClick={handleUpdate}><Save className="h-4 w-4" /></Button>
-                                            <Button size="sm" variant="ghost" onClick={handleCancelEdit}><X className="h-4 w-4" /></Button>
+                                            <Button size="sm" onClick={handleSaveNew}><Save className="h-4 w-4" /></Button>
+                                            <Button size="sm" variant="ghost" onClick={handleCancelAddNew}><X className="h-4 w-4" /></Button>
                                         </TableCell>
-                                    </>
-                                ) : (
-                                    <>
-                                        <TableCell>{index + 1}</TableCell>
-                                        <TableCell>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.biaya_satuan)}</TableCell>
-                                        <TableCell>{item.satuan}</TableCell>
-                                        <TableCell>{item.jumlah_kali}</TableCell>
-                                        <TableCell>{item.jumlah_org}</TableCell>
-                                        <TableCell>{item.deskripsi}</TableCell>
-                                        <TableCell>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.biaya_satuan * item.jumlah_kali * item.jumlah_org)}</TableCell>
-                                        {isEditable && (
-                                            <TableCell>
-                                                <Button size="sm" onClick={() => handleEdit(item)} disabled={isAdding}>
-                                                    <Edit className="h-4 w-4" />
-                                                </Button>
-                                                <AlertDialog>
-                                                    <AlertDialogTrigger asChild>
-                                                        <Button variant="destructive" size="sm" disabled={isAdding}>
-                                                            <Trash2 className="h-4 w-4" />
-                                                        </Button>
-                                                    </AlertDialogTrigger>
-                                                    <AlertDialogContent>
-                                                        <AlertDialogHeader>
-                                                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                            <AlertDialogDescription>
-                                                                This action cannot be undone. This will permanently delete the cost item.
-                                                            </AlertDialogDescription>
-                                                        </AlertDialogHeader>
-                                                        <AlertDialogFooter>
-                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                            <AlertDialogAction onClick={() => handleDelete(item.id)}>Continue</AlertDialogAction>
-                                                        </AlertDialogFooter>
-                                                    </AlertDialogContent>
-                                                </AlertDialog>
-                                            </TableCell>
-                                        )}
-                                    </>
+                                    </TableRow>
                                 )}
-                            </TableRow>
-                        ))}
-                        {isAdding && isEditable && (
-                            <TableRow>
-                                <TableCell>{(submisi.biaya?.length || 0) + 1}</TableCell>
-                                <TableCell><Input type="number" placeholder="99999" value={data.biaya_satuan} onChange={(e) => setData('biaya_satuan', parseInt(e.target.value) || '')} min={0} max={999999999} /></TableCell>
-                                <TableCell><Input placeholder="PCS" value={data.satuan} onChange={(e) => setData('satuan', e.target.value.toUpperCase())} maxLength={10} /></TableCell>
-                                <TableCell><Input type="number" placeholder="1" value={data.jumlah_kali} onChange={(e) => setData('jumlah_kali', parseInt(e.target.value) || '')} min={0} max={999} /></TableCell>
-                                <TableCell><Input type="number" placeholder="1" value={data.jumlah_org} onChange={(e) => setData('jumlah_org', parseInt(e.target.value) || '')} min={0} max={999} /></TableCell>
-                                <TableCell><Input placeholder="Deskripsi biaya" value={data.deskripsi} onChange={(e) => setData('deskripsi', e.target.value)} /></TableCell>
-                                <TableCell>-</TableCell>
-                                <TableCell>
-                                    <Button size="sm" onClick={handleSaveNew}><Save className="h-4 w-4" /></Button>
-                                    <Button size="sm" variant="ghost" onClick={handleCancelAddNew}><X className="h-4 w-4" /></Button>
-                                </TableCell>
-                            </TableRow>
+                                {validationError && (
+                                    <TableRow>
+                                        <TableCell colSpan={8} className="text-center text-red-500">
+                                            {validationError}
+                                        </TableCell>
+                                    </TableRow>
+                                )}
+                            </TableBody>
+                        </Table>
+                        {isEditable && (
+                            <div className="mt-4 flex justify-end">
+                                <Button onClick={handleAddNew} disabled={isAdding || !!editingRow}>
+                                    Tambah
+                                </Button>
+                            </div>
                         )}
-                        {validationError && (
-                            <TableRow>
-                                <TableCell colSpan={8} className="text-center text-red-500">
-                                    {validationError}
-                                </TableCell>
-                            </TableRow>
-                        )}
-                    </TableBody>
-                </Table>
-                {isEditable && (
-                    <div className="mt-4 flex justify-end">
-                        <Button onClick={handleAddNew} disabled={isAdding || !!editingRow}>
-                            Tambah
-                        </Button>
-                    </div>
-                )}
-                <div className="mt-6 flex justify-end border-t pt-4">
-                    <div className="text-lg font-bold">
-                        <span>Total Anggaran: </span>
-                        <span>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(submisi.total_anggaran)}</span>
-                    </div>
-                </div>
-            </CardContent>
-        </Card>
+                        <div className="mt-6 flex justify-end border-t pt-4">
+                            <div className="text-lg font-bold">
+                                <span>Total Anggaran: </span>
+                                <span>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(submisi.total_anggaran)}</span>
+                            </div>
+                        </div>
+                    </CardContent>
+                </CollapsibleContent>
+            </Card>
+        </Collapsible>
     );
 }

@@ -29,6 +29,7 @@ import DetailBiaya from './detail-biaya';
 import DetailFile from './detail-file';
 import DetailIndikator from './detail-indikator';
 import React, { useEffect, useRef } from 'react';
+import StatusHistoryCard from '@/components/status-history-card'; // Import StatusHistoryCard
 
 interface DosenForSelect {
     id: string;
@@ -143,7 +144,8 @@ export default function TorDetail({ submisi, dosens, kegiatanTypes }: TorDetailP
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Detail TOR - ${submisi.judul}`} />
 
-            <div className="flex h-full flex-1 flex-col gap-6 overflow-x-auto rounded-xl p-4">
+            <div className="flex h-full flex-1 flex-col gap-3 overflow-x-auto rounded-xl p-4">
+                <StatusHistoryCard submisi={submisi} /> {/* Render StatusHistoryCard */}
                 <Card className="overflow-hidden rounded-2xl border border-[#73AD86]/40 shadow-sm">
                     <CardContent className="space-y-4">
                         <div className="space-y-1">

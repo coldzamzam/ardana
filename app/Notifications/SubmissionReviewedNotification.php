@@ -2,20 +2,20 @@
 
 namespace App\Notifications;
 
+use App\Models\StatusSubmisi;
 use App\Models\Submisi;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
-use Illuminate\Support\Str;
 
-class SubmissionSubmitted extends Notification
+class SubmissionReviewedNotification extends Notification
 {
     use Queueable;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct(public Submisi $submisi)
+    public function __construct(public Submisi $submisi, public StatusSubmisi $newStatus)
     {
         //
     }
@@ -37,13 +37,14 @@ class SubmissionSubmitted extends Notification
      */
     public function toArray(object $notifiable): array
     {
-        $actorName = $this->submisi->createdBy->name;
+        $statusName = trim($this->newStatus->statusType->nama);
+        $reviewerName = $this->newStatus->createdBy->name;
 
         return [
-            'actor_name' => $actorName,
-            'action_text' => 'telah mengajukan TOR baru:',
+            'actor_name' => $reviewerName,
+            'action_text' => "telah mengubah status TOR Anda menjadi '{$statusName}' untuk:",
             'object_title' => $this->submisi->judul,
-            'link' => route('review.index'), // Link for the reviewer
+            'link' => route('tor.show', $this->submisi),
         ];
     }
 }

@@ -119,6 +119,9 @@ export interface StatusType {
 export interface StatusSubmisi {
     id: string;
     status_type: StatusType;
+    created_at: string;
+    detail_submisi_id: string;
+    keterangan: string | null;
     // tambahkan properti lain dari status_submisi jika diperlukan
 }
 

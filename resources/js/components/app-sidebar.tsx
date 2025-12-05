@@ -70,8 +70,8 @@ export function AppSidebar() {
 
     if (hasRole('admin') || hasRole('sekjur') || hasRole('kajur')) {
         mainNavItems.push({
-            title: 'Verifikasi TOR',
-            href: '/dashboard/verifikasi',
+            title: 'Review Submisi',
+            href: '/dashboard/review',
             icon: BookOpen,
         });
     }

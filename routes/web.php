@@ -10,6 +10,8 @@ use App\Http\Controllers\IndikatorKinerjaController;
 use App\Http\Controllers\SubmisiFileController;
 use App\Http\Controllers\BiayaController;
 use App\Http\Controllers\NotificationController; // <- dipakai
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\HistoryController;
 use App\Models\KegiatanType;
 use App\Models\Submisi;
 use Illuminate\Support\Facades\Auth;
@@ -37,9 +39,12 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
     Route::post('notifikasi/delete', [NotificationController::class, 'destroy'])
         ->name('notifikasi.delete');
 
+    Route::get('history/{detail_submisi}', [HistoryController::class, 'show'])->name('history.show');
+
     Route::middleware(['role:admin,sekjur,kajur'])->group(function () {
-        Route::get('verifikasi', [TorController::class, 'verifikasi'])->name('verifikasi.index');
-        Route::post('verifikasi/{submisi}', [TorController::class, 'approveOrReject'])->name('verifikasi.approveOrReject');
+        Route::get('review', [ReviewController::class, 'index'])->name('review.index');
+        Route::get('review/{submisi}', [ReviewController::class, 'show'])->name('review.show');
+        Route::post('review/{submisi}/status', [ReviewController::class, 'storeStatus'])->name('review.storeStatus');
     });
 
     Route::middleware(['role:mahasiswa,dosen'])->group(function () {
