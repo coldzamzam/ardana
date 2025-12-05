@@ -1,6 +1,5 @@
 import { useMemo, useState } from 'react';
 import { Head, usePage, router } from '@inertiajs/react';
-
 import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -58,25 +57,31 @@ export default function NotificationsPage({ notifications }: NotificationsProps)
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
 
-    // filter utama (hanya search untuk saat ini)
     const filteredNotifications = useMemo(() => {
-        let data = notifications;
+    let data = notifications;
 
-        if (search.trim()) {
-            const q = search.toLowerCase();
-            data = data.filter((n) =>
-                n.data.message.toLowerCase().includes(q),
-            );
-        }
+    if (search.trim()) {
+        const q = search.toLowerCase();
 
-        // sorting: terbaru
-        return [...data].sort(
-            (a, b) =>
-                new Date(b.created_at).getTime() -
-                new Date(a.created_at).getTime(),
-        );
-    }, [notifications, search]);
+        data = data.filter((n) => {
+            const text = `
+                ${n.data.actor_name ?? ''}
+                ${n.data.action_text ?? ''}
+                ${n.data.object_title ?? ''}
+            `
+                .toLowerCase()
+                .trim();
 
+            return text.includes(q);
+        });
+    }
+    
+    return [...data].sort(
+        (a, b) =>
+            new Date(b.created_at).getTime() -
+            new Date(a.created_at).getTime(),
+    );
+}, [notifications, search]);
 
     const totalPages = Math.max(1, Math.ceil(filteredNotifications.length / PER_PAGE));
     const pageItems = filteredNotifications.slice(
