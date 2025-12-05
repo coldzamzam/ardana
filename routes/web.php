@@ -57,7 +57,26 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
                 'kegiatanTypes' => $kegiatanTypes,
             ]);
         })->name('tor');
+Route::get('arsip', function () {
+        $arsip = Submisi::with([
+                'kegiatanType',
+                'createdBy',
+                'detailSubmisi',
+            ])
+            ->where('type', 'TOR') // atau ->whereIn('type', ['TOR','LPJ'])
+            ->whereHas('statusSubmisi', function ($q) {
+                $q->whereHas('statusType', function ($q2) {
+                    $q2->where('nama', 'Disetujui');
+                });
+            })
+            ->orderByDesc('created_at')
+            ->get();
 
+        return Inertia::render('arsip', [
+            'arsip' => $arsip,
+        ]);
+    })->name('arsip.index');
+    
         Route::post('tor', [TorController::class, 'store'])->name('tor.store');
         Route::get('tor/{submisi}', [TorController::class, 'show'])->name('tor.show');
         Route::put('tor/{submisi}', [TorController::class, 'update'])->name('tor.update');
