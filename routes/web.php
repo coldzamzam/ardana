@@ -63,7 +63,14 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
         Route::put('tor/{submisi}', [TorController::class, 'update'])->name('tor.update');
         Route::post('tor/{submisi}/draft', [TorController::class, 'updateDetail'])->name('tor.saveDraft');
         Route::post('tor/{submisi}/submit', [TorController::class, 'submit'])->name('tor.submit');
+        Route::get('tor/{submisi}/template', function (\App\Models\Submisi $submisi) {
+        $submisi->load('detailSubmisi');
 
+        return Inertia::render('tor/detail-template', [
+            'submisi' => $submisi,
+        ]);
+    })->name('tor.template');
+    
         Route::get('dosen/search', [TorController::class, 'searchDosen'])->name('dosen.search');
         Route::get('mahasiswa/search', [MahasiswaController::class, 'search'])->name('mahasiswa.search');
 

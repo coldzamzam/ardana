@@ -136,7 +136,9 @@ export default function TorDetail({ submisi, dosens, kegiatanTypes }: TorDetailP
     const handleSubmitSubmission = () => {
         router.post(`/dashboard/tor/${submisi.id}/submit`);
     };
-
+    const handleGenerateTemplateTor = () => {
+    router.get(`/dashboard/tor/${submisi.id}/template`);
+};
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Detail TOR - ${submisi.judul}`} />
@@ -424,45 +426,55 @@ export default function TorDetail({ submisi, dosens, kegiatanTypes }: TorDetailP
                 <DetailFile submisi={submisi} isEditable={isEditable} />
                 <DetailBiaya submisi={submisi} isEditable={isEditable} />
                 
-                <div className="flex justify-end pt-4 pb-10">
-                    {isEditable ? (
-                        <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <Button
-                                    disabled={!submisi.detail_submisi}
-                                    className="rounded-md bg-green-600 px-6 text-white hover:bg-green-700"
-                                >
-                                    Kirim Pengajuan
-                                </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>
-                                        Apakah Anda yakin ingin mengajukan TOR ini?
-                                    </AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        Setelah diajukan, TOR tidak dapat diedit kembali kecuali jika diminta untuk revisi oleh reviewer. Pastikan semua data sudah benar.
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel>Batal</AlertDialogCancel>
-                                    <AlertDialogAction
-                                        onClick={handleSubmitSubmission}
-                                    >
-                                        Lanjutkan
-                                    </AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
-                    ) : (
-                        <Button
-                            disabled
-                            className="rounded-md bg-gray-500 px-6 text-white"
-                        >
-                            Telah Diajukan
-                        </Button>
-                    )}
-                </div>
+                <div className="flex justify-end gap-3 pt-4 pb-10">
+    {isEditable ? (
+        <>
+            <Button
+                type="button"
+                className="bg-[#5D41D9] text-white hover:bg-[#392885]"
+                onClick={handleGenerateTemplateTor}
+            >
+                Buat Template TOR
+            </Button>
+            <AlertDialog>
+                <AlertDialogTrigger asChild>
+                    <Button
+                        disabled={!submisi.detail_submisi}
+                        className="rounded-md bg-green-600 px-6 text-white hover:bg-green-700"
+                    >
+                        Kirim Pengajuan
+                    </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>
+                            Apakah Anda yakin ingin mengajukan TOR ini?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Setelah diajukan, TOR tidak dapat diedit kembali
+                            kecuali jika diminta untuk revisi oleh reviewer.
+                            Pastikan semua data sudah benar.
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel>Batal</AlertDialogCancel>
+                        <AlertDialogAction onClick={handleSubmitSubmission}>
+                            Lanjutkan
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+        </>
+    ) : (
+        <Button
+            disabled
+            className="rounded-md bg-gray-500 px-6 text-white"
+        >
+            Telah Diajukan
+        </Button>
+    )}
+</div>
+
             </div>
         </AppLayout>
     );
