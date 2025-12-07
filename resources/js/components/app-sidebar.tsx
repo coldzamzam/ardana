@@ -11,6 +11,7 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { type NavItem, type Role, type SharedData } from '@/types';
+import { ClipboardCheck } from "lucide-react"
 import { Link, usePage } from '@inertiajs/react';
 import {
     Bell,
@@ -77,7 +78,7 @@ export function AppSidebar() {
         mainNavItems.push({
             title: 'Review Submisi',
             href: '/dashboard/review',
-            icon: BookOpen,
+            icon: ClipboardCheck,
         });
     }
 

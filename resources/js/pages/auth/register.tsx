@@ -14,7 +14,7 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
-import AppLayout from '@/layouts/app-layout'; // Changed from AuthLayout
+import AppLayout from '@/layouts/app-layout';
 import { login, register } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 
@@ -50,141 +50,151 @@ export default function Register({ roles }: { roles: Role[] }) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Register" />
 
-            <div className="flex h-full flex-1 flex-col gap-6 overflow-y-auto rounded-xl p-6">
-                <div className="w-full rounded-2xl bg-white p-8 shadow-xl">
-                    <div className="mb-6">
-                        <h1 className="text-3xl font-bold text-[#427452]">
-                            Create an account
-                        </h1>
-                        <p className="mt-2 text-sm text-gray-600">
-                            Enter your details below to create account
-                        </p>
-                    </div>
+            {/* Background hijau konsisten */}
+            <div className="flex h-full flex-1 rounded-3xl bg-[#CBEBD5]/70 p-4 md:p-6">
+                <div className="flex flex-1 items-center justify-center rounded-3xl bg-[#E6F5EC] p-4 md:p-6">
+                    {/* Card putih di tengah */}
+                    <div className="w-full max-w-5xl rounded-2xl border border-[#73AD86]/40 bg-white p-6 md:p-8 shadow-sm">
+                        {/* Header form */}
+                        <div className="mb-6">
+                            <h1 className="text-2xl font-semibold text-[#427452] md:text-3xl">
+                                Buat Akun Baru
+                            </h1>
+                            <p className="mt-2 text-sm text-gray-600">
+                                Isi data berikut untuk mendaftarkan akun ke sistem Ardana.
+                            </p>
+                        </div>
 
-                    <form onSubmit={submit} className="flex flex-col">
-                        {/* FORM FIELDS */}
-                        <div className="grid gap-6">
-                            {/* NAME */}
-                            <div className="grid gap-2">
-                                <Label htmlFor="name">Name</Label>
-                                <Input
-                                    id="name"
-                                    type="text"
-                                    required
-                                    autoFocus
-                                    tabIndex={1}
-                                    autoComplete="name"
-                                    placeholder="Full name"
-                                    value={data.name}
-                                    onChange={(e) =>
-                                        setData('name', e.target.value)
-                                    }
-                                />
-                                <InputError message={errors.name} />
+                        <form onSubmit={submit} className="space-y-6">
+                            {/* Form grid */}
+                            <div className="grid gap-4 md:grid-cols-2">
+                                {/* NAME */}
+                                <div className="space-y-2 md:col-span-2">
+                                    <Label htmlFor="name">Nama</Label>
+                                    <Input
+                                        id="name"
+                                        type="text"
+                                        required
+                                        autoFocus
+                                        tabIndex={1}
+                                        autoComplete="name"
+                                        placeholder="Nama lengkap"
+                                        value={data.name}
+                                        onChange={(e) =>
+                                            setData('name', e.target.value)
+                                        }
+                                        className="bg-white"
+                                    />
+                                    <InputError message={errors.name} />
+                                </div>
+
+                                {/* EMAIL */}
+                                <div className="space-y-2 md:col-span-2">
+                                    <Label htmlFor="email">Email</Label>
+                                    <Input
+                                        id="email"
+                                        type="email"
+                                        required
+                                        tabIndex={2}
+                                        autoComplete="email"
+                                        placeholder="email@example.com"
+                                        value={data.email}
+                                        onChange={(e) =>
+                                            setData('email', e.target.value)
+                                        }
+                                        className="bg-white"
+                                    />
+                                    <InputError message={errors.email} />
+                                </div>
+
+                                {/* PASSWORD */}
+                                <div className="space-y-2">
+                                    <Label htmlFor="password">Password</Label>
+                                    <Input
+                                        id="password"
+                                        type="password"
+                                        required
+                                        tabIndex={3}
+                                        autoComplete="new-password"
+                                        placeholder="Password"
+                                        value={data.password}
+                                        onChange={(e) =>
+                                            setData('password', e.target.value)
+                                        }
+                                        className="bg-white"
+                                    />
+                                    <InputError message={errors.password} />
+                                </div>
+
+                                {/* CONFIRM PASSWORD */}
+                                <div className="space-y-2">
+                                    <Label htmlFor="password_confirmation">
+                                        Konfirmasi password
+                                    </Label>
+                                    <Input
+                                        id="password_confirmation"
+                                        type="password"
+                                        required
+                                        tabIndex={4}
+                                        autoComplete="new-password"
+                                        placeholder="Ulangi password"
+                                        value={data.password_confirmation}
+                                        onChange={(e) =>
+                                            setData(
+                                                'password_confirmation',
+                                                e.target.value,
+                                            )
+                                        }
+                                        className="bg-white"
+                                    />
+                                    <InputError
+                                        message={errors.password_confirmation}
+                                    />
+                                </div>
+
+                                {/* ROLE */}
+                                <div className="space-y-2 md:col-span-2">
+                                    <Label>Role</Label>
+                                    <Select
+                                        onValueChange={(value) =>
+                                            setData('role_id', value)
+                                        }
+                                    >
+                                        <SelectTrigger className="bg-white">
+                                            <SelectValue placeholder="Pilih role" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {roles.map((role) => (
+                                                <SelectItem
+                                                    key={role.id}
+                                                    value={role.id}
+                                                >
+                                                    <span className="capitalize">
+                                                        {role.role_name}
+                                                    </span>
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                    <InputError message={errors.role_id} />
+                                </div>
                             </div>
 
-                            {/* EMAIL */}
-                            <div className="grid gap-2">
-                                <Label htmlFor="email">Email address</Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    required
-                                    tabIndex={2}
-                                    autoComplete="email"
-                                    placeholder="email@example.com"
-                                    value={data.email}
-                                    onChange={(e) =>
-                                        setData('email', e.target.value)
-                                    }
-                                />
-                                <InputError message={errors.email} />
-                            </div>
-
-                            {/* PASSWORD */}
-                            <div className="grid gap-2">
-                                <Label htmlFor="password">Password</Label>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    required
-                                    tabIndex={3}
-                                    autoComplete="new-password"
-                                    placeholder="Password"
-                                    value={data.password}
-                                    onChange={(e) =>
-                                        setData('password', e.target.value)
-                                    }
-                                />
-                                <InputError message={errors.password} />
-                            </div>
-
-                            {/* CONFIRM PASSWORD */}
-                            <div className="grid gap-2">
-                                <Label htmlFor="password_confirmation">
-                                    Confirm password
-                                </Label>
-                                <Input
-                                    id="password_confirmation"
-                                    type="password"
-                                    required
-                                    tabIndex={4}
-                                    autoComplete="new-password"
-                                    placeholder="Confirm password"
-                                    value={data.password_confirmation}
-                                    onChange={(e) =>
-                                        setData(
-                                            'password_confirmation',
-                                            e.target.value,
-                                        )
-                                    }
-                                />
-                                <InputError
-                                    message={errors.password_confirmation}
-                                />
-                            </div>
-
-                            {/* ROLE */}
-                            <div className="grid">
-                                <Label>Role</Label>
-                                <Select
-                                    onValueChange={(value) =>
-                                        setData('role_id', value)
-                                    }
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select a role" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {roles.map((role) => (
-                                            <SelectItem
-                                                key={role.id}
-                                                value={role.id}
-                                            >
-                                                <span className="capitalize">
-                                                    {role.role_name}
-                                                </span>
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                <InputError message={errors.role_id} />
-                            </div>
-
-                            {/* BUTTON */}
-                            <div className="flex justify-start md:justify-end">
+                            {/* BUTTON + link login */}
+                            <div className="mt-2 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                                 <Button
                                     type="submit"
                                     tabIndex={5}
                                     disabled={processing}
                                     data-test="register-user-button"
+                                    className="ml-auto flex items-center gap-2 rounded-md bg-[#427452] px-6 text-white hover:bg-[#365d42]"
                                 >
                                     {processing && <Spinner />}
-                                    Create account
+                                    Buat Akun
                                 </Button>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </AppLayout>

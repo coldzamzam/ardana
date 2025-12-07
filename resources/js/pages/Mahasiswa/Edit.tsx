@@ -55,75 +55,140 @@ export default function MahasiswaEdit({ mahasiswa }: MahasiswaEditProps) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Edit Mahasiswa - ${mahasiswa.user.name}`} />
 
-            <div className="flex h-full flex-1 flex-col gap-6 overflow-y-auto rounded-xl p-6">
-                <Card className="">
-                    <CardHeader>
-                        <CardTitle>Edit Mahasiswa</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <form onSubmit={handleSubmit} className="space-y-2">
-                            <div className="">
-                                <Label htmlFor="name">Name</Label>
-                                <Input
-                                    id="name"
-                                    value={data.name}
-                                    onChange={(e) => setData('name', e.target.value)}
-                                />
-                                <InputError message={errors.name} />
-                            </div>
+            {/* Background hijau lembut + card putih seperti halaman lain */}
+            <div className="flex h-full flex-1 rounded-3xl bg-[#CBEBD5]/70 p-4 md:p-6">
+                <div className="flex flex-1 flex-col gap-4 rounded-3xl bg-[#E6F5EC] p-4 md:p-6">
+                    {/* Header */}
+                    <div className="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
+                        <div>
+                            <h1 className="text-2xl font-semibold text-[#427452]">
+                                Edit Mahasiswa
+                            </h1>
+                            <p className="text-sm text-[#427452]/80">
+                                Perbarui data mahasiswa yang terdaftar di Ardana.
+                            </p>
+                        </div>
+                        <p className="text-xs md:text-sm text-[#427452]/70">
+                            {mahasiswa.user.email}
+                        </p>
+                    </div>
 
-                            <div className="">
-                                <Label htmlFor="email">Email</Label>
-                                <Input
-                                    id="email"
-                                    type="email"
-                                    value={data.email}
-                                    disabled
-                                    className="bg-gray-100"
-                                />
-                                <InputError message={errors.email} />
-                            </div>
+                    {/* Card form */}
+                    <Card className="w-full rounded-2xl border border-[#73AD86]/40 shadow-sm">
+                        <CardHeader className="pb-3">
+                            <CardTitle className="text-lg font-semibold text-[#427452]">
+                                Informasi Mahasiswa
+                            </CardTitle>
+                        </CardHeader>
 
-                            <div className="">
-                                <Label htmlFor="nim">NIM</Label>
-                                <Input
-                                    id="nim"
-                                    value={data.nim}
-                                    onChange={(e) => setData('nim', e.target.value)}
-                                />
-                                <InputError message={errors.nim} />
-                            </div>
+                        <CardContent>
+                            <form onSubmit={handleSubmit} className="space-y-6">
+                                {/* Grid dua kolom di desktop */}
+                                <div className="grid gap-4 md:grid-cols-2">
+                                    {/* Nama */}
+                                    <div className="space-y-2">
+                                        <Label
+                                            htmlFor="name"
+                                            className="text-sm font-medium text-slate-700"
+                                        >
+                                            Nama
+                                        </Label>
+                                        <Input
+                                            id="name"
+                                            value={data.name}
+                                            onChange={(e) =>
+                                                setData('name', e.target.value)
+                                            }
+                                            className="bg-white"
+                                        />
+                                        <InputError message={errors.name} />
+                                    </div>
 
-                            <div className="">
-                                <Label htmlFor="prodi">Prodi</Label>
-                                <Select
-                                    name="prodi"
-                                    required
-                                    value={data.prodi}
-                                    onValueChange={(value) => setData('prodi', value)}
-                                >
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Select a program" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {prodiOptions.map((prodi) => (
-                                            <SelectItem key={prodi} value={prodi}>
-                                                {prodi}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                                <InputError message={errors.prodi} />
-                            </div>
+                                    {/* Email (readonly) */}
+                                    <div className="space-y-2">
+                                        <Label
+                                            htmlFor="email"
+                                            className="text-sm font-medium text-slate-700"
+                                        >
+                                            Email
+                                        </Label>
+                                        <Input
+                                            id="email"
+                                            type="email"
+                                            value={data.email}
+                                            disabled
+                                            className="bg-neutral-100 text-slate-500"
+                                        />
+                                        <InputError message={errors.email} />
+                                    </div>
 
-                            <div className="mt-4 flex justify-start md:justify-end">
-                                <Button type="submit" disabled={processing}>
-                                    {processing ? 'Menyimpan...' : 'Simpan Perubahan'}
-                                </Button>
-                            </div>
-                        </form>
-                    </CardContent>
-                </Card>
+                                    {/* NIM */}
+                                    <div className="space-y-2">
+                                        <Label
+                                            htmlFor="nim"
+                                            className="text-sm font-medium text-slate-700"
+                                        >
+                                            NIM
+                                        </Label>
+                                        <Input
+                                            id="nim"
+                                            value={data.nim}
+                                            onChange={(e) =>
+                                                setData('nim', e.target.value)
+                                            }
+                                            className="bg-white"
+                                        />
+                                        <InputError message={errors.nim} />
+                                    </div>
+
+                                    {/* Prodi */}
+                                    <div className="space-y-2">
+                                        <Label
+                                            htmlFor="prodi"
+                                            className="text-sm font-medium text-slate-700"
+                                        >
+                                            Prodi
+                                        </Label>
+                                        <Select
+                                            name="prodi"
+                                            value={data.prodi}
+                                            onValueChange={(value) =>
+                                                setData('prodi', value)
+                                            }
+                                        >
+                                            <SelectTrigger className="bg-white">
+                                                <SelectValue placeholder="Pilih program studi" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {prodiOptions.map((prodi) => (
+                                                    <SelectItem
+                                                        key={prodi}
+                                                        value={prodi}
+                                                    >
+                                                        {prodi}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <InputError message={errors.prodi} />
+                                    </div>
+                                </div>
+
+                                <div className="flex justify-end pt-2">
+                                    <Button
+                                        type="submit"
+                                        disabled={processing}
+                                        className="rounded-md bg-[#427452] px-6 text-white hover:bg-[#365d42]"
+                                    >
+                                        {processing
+                                            ? 'Menyimpan...'
+                                            : 'Simpan Perubahan'}
+                                    </Button>
+                                </div>
+                            </form>
+                        </CardContent>
+                    </Card>
+                </div>
             </div>
         </AppLayout>
     );
