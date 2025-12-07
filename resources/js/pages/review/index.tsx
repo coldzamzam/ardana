@@ -1,7 +1,3 @@
-import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem, type PageProps, type Submisi } from '@/types';
-import { Head, Link } from '@inertiajs/react';
-import { format } from 'date-fns';
 import {
     Table,
     TableBody,
@@ -10,6 +6,10 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import AppLayout from '@/layouts/app-layout';
+import { type BreadcrumbItem, type PageProps, type Submisi } from '@/types';
+import { Head, Link } from '@inertiajs/react';
+import { format } from 'date-fns';
 
 interface ReviewIndexProps extends PageProps {
     submissions: {
@@ -37,37 +37,54 @@ export default function ReviewIndexPage({
             <div className="flex h-full flex-1 rounded-3xl bg-[#CBEBD5]/70 p-4 md:p-6">
                 {/* Inner frame */}
                 <div className="flex flex-1 flex-col gap-4 rounded-3xl bg-[#E6F5EC] p-4 md:p-6">
-
                     {/* HEADER */}
                     <div>
                         <h1 className="text-2xl font-semibold text-[#427452]">
                             {pageTitle}
                         </h1>
                         <p className="text-sm text-[#427452]/80">
-                            Berikut adalah daftar submisi yang memerlukan review Anda.
+                            Berikut adalah daftar submisi yang memerlukan review
+                            Anda.
                         </p>
                     </div>
 
                     {/* CARD PUTIH yang berisi tabel */}
                     <div className="mt-2 rounded-2xl border border-[#73AD86]/40 bg-white p-4 shadow-sm">
-
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead className="text-center">Tanggal</TableHead>
-                                    <TableHead className="text-center">Judul</TableHead>
-                                    <TableHead className="text-center">Tipe</TableHead>
-                                    <TableHead className="text-center">Jenis Kegiatan</TableHead>
-                                    <TableHead className="text-center">Dibuat oleh</TableHead>
+                                    <TableHead className="text-center">
+                                        Tanggal
+                                    </TableHead>
+                                    <TableHead className="text-center">
+                                        Judul
+                                    </TableHead>
+                                    <TableHead className="text-center">
+                                        Tipe
+                                    </TableHead>
+                                    <TableHead className="text-center">
+                                        Jenis Kegiatan
+                                    </TableHead>
+                                    <TableHead className="text-center">
+                                        Dibuat oleh
+                                    </TableHead>
                                 </TableRow>
                             </TableHeader>
 
                             <TableBody>
                                 {hasSubmissions ? (
                                     submissions.data.map((submisi) => (
-                                        <TableRow key={submisi.id} className="hover:bg-slate-50">
+                                        <TableRow
+                                            key={submisi.id}
+                                            className="hover:bg-slate-50"
+                                        >
                                             <TableCell>
-                                                {format(new Date(submisi.created_at), 'dd MMM yyyy')}
+                                                {format(
+                                                    new Date(
+                                                        submisi.created_at,
+                                                    ),
+                                                    'dd MMM yyyy',
+                                                )}
                                             </TableCell>
 
                                             {/* Link Judul */}
@@ -80,7 +97,7 @@ export default function ReviewIndexPage({
                                                 </Link>
                                             </TableCell>
 
-                                            <TableCell className="uppercase tracking-wide text-xs font-semibold text-[#427452]">
+                                            <TableCell className="text-xs font-semibold tracking-wide text-[#427452] uppercase">
                                                 {submisi.type}
                                             </TableCell>
 
@@ -97,9 +114,10 @@ export default function ReviewIndexPage({
                                     <TableRow>
                                         <TableCell
                                             colSpan={5}
-                                            className="text-center text-slate-600 py-6"
+                                            className="py-6 text-center text-slate-600"
                                         >
-                                            Tidak ada submisi yang perlu direview saat ini.
+                                            Tidak ada submisi yang perlu
+                                            direview saat ini.
                                         </TableCell>
                                     </TableRow>
                                 )}

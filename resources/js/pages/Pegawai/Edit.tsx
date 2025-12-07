@@ -1,3 +1,4 @@
+import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -5,7 +6,6 @@ import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem, type PageProps, type User } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
-import InputError from '@/components/input-error';
 
 interface PegawaiEditProps extends PageProps {
     user: User;
@@ -62,7 +62,7 @@ export default function PegawaiEdit({ user }: PegawaiEditProps) {
                                 Perbarui data pegawai di sistem Ardana.
                             </p>
                         </div>
-                        <p className="text-xs md:text-sm text-[#427452]/70">
+                        <p className="text-xs text-[#427452]/70 md:text-sm">
                             {user.email}
                         </p>
                     </div>
@@ -125,7 +125,10 @@ export default function PegawaiEdit({ user }: PegawaiEditProps) {
                                                 id="nip"
                                                 value={data.nip}
                                                 onChange={(e) =>
-                                                    setData('nip', e.target.value)
+                                                    setData(
+                                                        'nip',
+                                                        e.target.value,
+                                                    )
                                                 }
                                                 className="bg-white"
                                             />

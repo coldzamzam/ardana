@@ -11,6 +11,11 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import {
     Table,
@@ -24,11 +29,6 @@ import { type Biaya as BiayaType, type Submisi } from '@/types';
 import { router, useForm } from '@inertiajs/react';
 import { ChevronsUpDown, Edit, Save, Trash2, X } from 'lucide-react';
 import React from 'react';
-import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from '@/components/ui/collapsible';
 
 interface DetailBiayaProps {
     submisi: Submisi;
@@ -49,7 +49,9 @@ export default function DetailBiaya({ submisi, isEditable }: DetailBiayaProps) {
         deskripsi: '',
         submisi_id: submisi.id,
     });
-    const [validationError, setValidationError] = React.useState<string | null>(null);
+    const [validationError, setValidationError] = React.useState<string | null>(
+        null,
+    );
 
     React.useEffect(() => {
         if (Object.keys(errors).length > 0) {
@@ -73,7 +75,13 @@ export default function DetailBiaya({ submisi, isEditable }: DetailBiayaProps) {
     };
 
     const validateData = () => {
-        if (!data.biaya_satuan || !data.satuan || !data.jumlah_kali || !data.jumlah_org || !data.deskripsi) {
+        if (
+            !data.biaya_satuan ||
+            !data.satuan ||
+            !data.jumlah_kali ||
+            !data.jumlah_org ||
+            !data.deskripsi
+        ) {
             setValidationError('Semua field wajib diisi.');
             return false;
         }
@@ -150,7 +158,7 @@ export default function DetailBiaya({ submisi, isEditable }: DetailBiayaProps) {
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                     <CardContent>
-                        <Table className="[&_th]:text-center [&_td]:text-center">
+                        <Table className="[&_td]:text-center [&_th]:text-center">
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>No</TableHead>
@@ -166,64 +174,215 @@ export default function DetailBiaya({ submisi, isEditable }: DetailBiayaProps) {
                             <TableBody>
                                 {submisi.biaya?.map((item, index) => (
                                     <TableRow key={item.id}>
-                                        {editingRow === item.id && isEditable ? (
+                                        {editingRow === item.id &&
+                                        isEditable ? (
                                             <>
-                                                <TableCell>{index + 1}</TableCell>
                                                 <TableCell>
-                                                    <Input type="number" value={data.biaya_satuan} onChange={(e) => setData('biaya_satuan', parseInt(e.target.value) || '')} min={0} max={999999999} />
+                                                    {index + 1}
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Input value={data.satuan} onChange={(e) => setData('satuan', e.target.value.toUpperCase())} maxLength={10} />
+                                                    <Input
+                                                        type="number"
+                                                        value={
+                                                            data.biaya_satuan
+                                                        }
+                                                        onChange={(e) =>
+                                                            setData(
+                                                                'biaya_satuan',
+                                                                parseInt(
+                                                                    e.target
+                                                                        .value,
+                                                                ) || '',
+                                                            )
+                                                        }
+                                                        min={0}
+                                                        max={999999999}
+                                                    />
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Input type="number" value={data.jumlah_kali} onChange={(e) => setData('jumlah_kali', parseInt(e.target.value) || '')} min={0} max={999} />
+                                                    <Input
+                                                        value={data.satuan}
+                                                        onChange={(e) =>
+                                                            setData(
+                                                                'satuan',
+                                                                e.target.value.toUpperCase(),
+                                                            )
+                                                        }
+                                                        maxLength={10}
+                                                    />
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Input type="number" value={data.jumlah_org} onChange={(e) => setData('jumlah_org', parseInt(e.target.value) || '')} min={0} max={999} />
+                                                    <Input
+                                                        type="number"
+                                                        value={data.jumlah_kali}
+                                                        onChange={(e) =>
+                                                            setData(
+                                                                'jumlah_kali',
+                                                                parseInt(
+                                                                    e.target
+                                                                        .value,
+                                                                ) || '',
+                                                            )
+                                                        }
+                                                        min={0}
+                                                        max={999}
+                                                    />
                                                 </TableCell>
                                                 <TableCell>
-                                                    <Input value={data.deskripsi} onChange={(e) => setData('deskripsi', e.target.value)} />
+                                                    <Input
+                                                        type="number"
+                                                        value={data.jumlah_org}
+                                                        onChange={(e) =>
+                                                            setData(
+                                                                'jumlah_org',
+                                                                parseInt(
+                                                                    e.target
+                                                                        .value,
+                                                                ) || '',
+                                                            )
+                                                        }
+                                                        min={0}
+                                                        max={999}
+                                                    />
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Input
+                                                        value={data.deskripsi}
+                                                        onChange={(e) =>
+                                                            setData(
+                                                                'deskripsi',
+                                                                e.target.value,
+                                                            )
+                                                        }
+                                                    />
                                                 </TableCell>
                                                 <TableCell>-</TableCell>
                                                 <TableCell>
-                                                    <Button size="sm" onClick={handleUpdate}><Save className="h-4 w-4" /></Button>
-                                                    <Button size="sm" variant="ghost" onClick={handleCancelEdit}><X className="h-4 w-4" /></Button>
+                                                    <Button
+                                                        size="sm"
+                                                        onClick={handleUpdate}
+                                                    >
+                                                        <Save className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="ghost"
+                                                        onClick={
+                                                            handleCancelEdit
+                                                        }
+                                                    >
+                                                        <X className="h-4 w-4" />
+                                                    </Button>
                                                 </TableCell>
                                             </>
                                         ) : (
                                             <>
-                                                <TableCell>{index + 1}</TableCell>
-                                                <TableCell>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.biaya_satuan)}</TableCell>
-                                                <TableCell>{item.satuan}</TableCell>
-                                                <TableCell>{item.jumlah_kali}</TableCell>
-                                                <TableCell>{item.jumlah_org}</TableCell>
-                                                <TableCell>{item.deskripsi}</TableCell>
-                                                <TableCell>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.biaya_satuan * item.jumlah_kali * item.jumlah_org)}</TableCell>
+                                                <TableCell>
+                                                    {index + 1}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {new Intl.NumberFormat(
+                                                        'id-ID',
+                                                        {
+                                                            style: 'currency',
+                                                            currency: 'IDR',
+                                                        },
+                                                    ).format(item.biaya_satuan)}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {item.satuan}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {item.jumlah_kali}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {item.jumlah_org}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {item.deskripsi}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {new Intl.NumberFormat(
+                                                        'id-ID',
+                                                        {
+                                                            style: 'currency',
+                                                            currency: 'IDR',
+                                                        },
+                                                    ).format(
+                                                        item.biaya_satuan *
+                                                            item.jumlah_kali *
+                                                            item.jumlah_org,
+                                                    )}
+                                                </TableCell>
                                                 {isEditable && (
                                                     <TableCell>
                                                         <div className="flex items-center justify-center gap-3">
-                                                        <Button size="sm" onClick={() => handleEdit(item)} disabled={isAdding}>
-                                                            <Edit className="h-4 w-4" />
-                                                        </Button>
-                                                        <AlertDialog>
-                                                            <AlertDialogTrigger asChild>
-                                                                <Button variant="destructive" size="sm" disabled={isAdding}>
-                                                                    <Trash2 className="h-4 w-4" />
-                                                                </Button>
-                                                            </AlertDialogTrigger>
-                                                            <AlertDialogContent>
-                                                                <AlertDialogHeader>
-                                                                    <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                                                                    <AlertDialogDescription>
-                                                                        This action cannot be undone. This will permanently delete the cost item.
-                                                                    </AlertDialogDescription>
-                                                                </AlertDialogHeader>
-                                                                <AlertDialogFooter>
-                                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                    <AlertDialogAction onClick={() => handleDelete(item.id)}>Continue</AlertDialogAction>
-                                                                </AlertDialogFooter>
-                                                            </AlertDialogContent>
-                                                        </AlertDialog>
+                                                            <Button
+                                                                size="sm"
+                                                                onClick={() =>
+                                                                    handleEdit(
+                                                                        item,
+                                                                    )
+                                                                }
+                                                                disabled={
+                                                                    isAdding
+                                                                }
+                                                            >
+                                                                <Edit className="h-4 w-4" />
+                                                            </Button>
+                                                            <AlertDialog>
+                                                                <AlertDialogTrigger
+                                                                    asChild
+                                                                >
+                                                                    <Button
+                                                                        variant="destructive"
+                                                                        size="sm"
+                                                                        disabled={
+                                                                            isAdding
+                                                                        }
+                                                                    >
+                                                                        <Trash2 className="h-4 w-4" />
+                                                                    </Button>
+                                                                </AlertDialogTrigger>
+                                                                <AlertDialogContent>
+                                                                    <AlertDialogHeader>
+                                                                        <AlertDialogTitle>
+                                                                            Are
+                                                                            you
+                                                                            absolutely
+                                                                            sure?
+                                                                        </AlertDialogTitle>
+                                                                        <AlertDialogDescription>
+                                                                            This
+                                                                            action
+                                                                            cannot
+                                                                            be
+                                                                            undone.
+                                                                            This
+                                                                            will
+                                                                            permanently
+                                                                            delete
+                                                                            the
+                                                                            cost
+                                                                            item.
+                                                                        </AlertDialogDescription>
+                                                                    </AlertDialogHeader>
+                                                                    <AlertDialogFooter>
+                                                                        <AlertDialogCancel>
+                                                                            Cancel
+                                                                        </AlertDialogCancel>
+                                                                        <AlertDialogAction
+                                                                            onClick={() =>
+                                                                                handleDelete(
+                                                                                    item.id,
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            Continue
+                                                                        </AlertDialogAction>
+                                                                    </AlertDialogFooter>
+                                                                </AlertDialogContent>
+                                                            </AlertDialog>
                                                         </div>
                                                     </TableCell>
                                                 )}
@@ -233,22 +392,109 @@ export default function DetailBiaya({ submisi, isEditable }: DetailBiayaProps) {
                                 ))}
                                 {isAdding && isEditable && (
                                     <TableRow>
-                                        <TableCell>{(submisi.biaya?.length || 0) + 1}</TableCell>
-                                        <TableCell><Input type="number" placeholder="99999" value={data.biaya_satuan} onChange={(e) => setData('biaya_satuan', parseInt(e.target.value) || '')} min={0} max={999999999} /></TableCell>
-                                        <TableCell><Input placeholder="PCS" value={data.satuan} onChange={(e) => setData('satuan', e.target.value.toUpperCase())} maxLength={10} /></TableCell>
-                                        <TableCell><Input type="number" placeholder="1" value={data.jumlah_kali} onChange={(e) => setData('jumlah_kali', parseInt(e.target.value) || '')} min={0} max={999} /></TableCell>
-                                        <TableCell><Input type="number" placeholder="1" value={data.jumlah_org} onChange={(e) => setData('jumlah_org', parseInt(e.target.value) || '')} min={0} max={999} /></TableCell>
-                                        <TableCell><Input placeholder="Deskripsi biaya" value={data.deskripsi} onChange={(e) => setData('deskripsi', e.target.value)} /></TableCell>
+                                        <TableCell>
+                                            {(submisi.biaya?.length || 0) + 1}
+                                        </TableCell>
+                                        <TableCell>
+                                            <Input
+                                                type="number"
+                                                placeholder="99999"
+                                                value={data.biaya_satuan}
+                                                onChange={(e) =>
+                                                    setData(
+                                                        'biaya_satuan',
+                                                        parseInt(
+                                                            e.target.value,
+                                                        ) || '',
+                                                    )
+                                                }
+                                                min={0}
+                                                max={999999999}
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Input
+                                                placeholder="PCS"
+                                                value={data.satuan}
+                                                onChange={(e) =>
+                                                    setData(
+                                                        'satuan',
+                                                        e.target.value.toUpperCase(),
+                                                    )
+                                                }
+                                                maxLength={10}
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Input
+                                                type="number"
+                                                placeholder="1"
+                                                value={data.jumlah_kali}
+                                                onChange={(e) =>
+                                                    setData(
+                                                        'jumlah_kali',
+                                                        parseInt(
+                                                            e.target.value,
+                                                        ) || '',
+                                                    )
+                                                }
+                                                min={0}
+                                                max={999}
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Input
+                                                type="number"
+                                                placeholder="1"
+                                                value={data.jumlah_org}
+                                                onChange={(e) =>
+                                                    setData(
+                                                        'jumlah_org',
+                                                        parseInt(
+                                                            e.target.value,
+                                                        ) || '',
+                                                    )
+                                                }
+                                                min={0}
+                                                max={999}
+                                            />
+                                        </TableCell>
+                                        <TableCell>
+                                            <Input
+                                                placeholder="Deskripsi biaya"
+                                                value={data.deskripsi}
+                                                onChange={(e) =>
+                                                    setData(
+                                                        'deskripsi',
+                                                        e.target.value,
+                                                    )
+                                                }
+                                            />
+                                        </TableCell>
                                         <TableCell>-</TableCell>
                                         <TableCell>
-                                            <Button size="sm" onClick={handleSaveNew}><Save className="h-4 w-4" /></Button>
-                                            <Button size="sm" variant="ghost" onClick={handleCancelAddNew}><X className="h-4 w-4" /></Button>
+                                            <Button
+                                                size="sm"
+                                                onClick={handleSaveNew}
+                                            >
+                                                <Save className="h-4 w-4" />
+                                            </Button>
+                                            <Button
+                                                size="sm"
+                                                variant="ghost"
+                                                onClick={handleCancelAddNew}
+                                            >
+                                                <X className="h-4 w-4" />
+                                            </Button>
                                         </TableCell>
                                     </TableRow>
                                 )}
                                 {validationError && (
                                     <TableRow>
-                                        <TableCell colSpan={8} className="text-center text-red-500">
+                                        <TableCell
+                                            colSpan={8}
+                                            className="text-center text-red-500"
+                                        >
                                             {validationError}
                                         </TableCell>
                                     </TableRow>
@@ -260,7 +506,7 @@ export default function DetailBiaya({ submisi, isEditable }: DetailBiayaProps) {
                                 <Button
                                     onClick={handleAddNew}
                                     disabled={isAdding || !!editingRow}
-                                    className="bg-[#427452] hover:bg-[#365d42] text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="rounded-lg bg-[#427452] text-white transition-colors hover:bg-[#365d42] disabled:cursor-not-allowed disabled:opacity-50"
                                 >
                                     Tambah Anggaran
                                 </Button>
@@ -269,7 +515,12 @@ export default function DetailBiaya({ submisi, isEditable }: DetailBiayaProps) {
                         <div className="mt-6 flex justify-end border-t pt-4">
                             <div className="text-lg font-bold">
                                 <span>Total Anggaran: </span>
-                                <span>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(submisi.total_anggaran)}</span>
+                                <span>
+                                    {new Intl.NumberFormat('id-ID', {
+                                        style: 'currency',
+                                        currency: 'IDR',
+                                    }).format(submisi.total_anggaran)}
+                                </span>
                             </div>
                         </div>
                     </CardContent>

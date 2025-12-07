@@ -42,19 +42,20 @@ export default function UserIndex({ users: userList }: UserIndexProps) {
                                 List Mahasiswa
                             </h1>
                             <p className="text-sm text-[#427452]/80">
-                                Kelola akun mahasiswa yang terdaftar di sistem Ardana.
+                                Kelola akun mahasiswa yang terdaftar di sistem
+                                Ardana.
                             </p>
                         </div>
 
                         {hasUsers && (
-                            <p className="text-xs md:text-sm text-[#427452]/70">
+                            <p className="text-xs text-[#427452]/70 md:text-sm">
                                 Total: {userList.length} mahasiswa
                             </p>
                         )}
                     </div>
 
                     {/* CARD PUTIH BERISI TABEL */}
-                    <div className="mt-2 w-full rounded-2xl border border-[#73AD86]/40 bg-white p-4 md:p-6 shadow-sm">
+                    <div className="mt-2 w-full rounded-2xl border border-[#73AD86]/40 bg-white p-4 shadow-sm md:p-6">
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -80,7 +81,9 @@ export default function UserIndex({ users: userList }: UserIndexProps) {
                                             className="cursor-pointer transition-colors hover:bg-[#F5FFFA]"
                                             onClick={() =>
                                                 user.mahasiswa &&
-                                                handleRowClick(user.mahasiswa.id)
+                                                handleRowClick(
+                                                    user.mahasiswa.id,
+                                                )
                                             }
                                         >
                                             <TableCell className="text-center text-sm">

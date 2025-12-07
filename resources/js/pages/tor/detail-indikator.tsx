@@ -11,6 +11,11 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import {
     Table,
@@ -24,18 +29,16 @@ import { IndikatorKinerja as IndikatorKinerjaType, Submisi } from '@/types';
 import { router, useForm } from '@inertiajs/react';
 import { ChevronsUpDown, Edit, Save, Trash2, X } from 'lucide-react';
 import React from 'react';
-import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from '@/components/ui/collapsible';
 
 interface DetailIndikatorProps {
     submisi: Submisi;
     isEditable: boolean;
 }
 
-export default function DetailIndikator({ submisi, isEditable }: DetailIndikatorProps) {
+export default function DetailIndikator({
+    submisi,
+    isEditable,
+}: DetailIndikatorProps) {
     const [isAdding, setIsAdding] = React.useState(false);
     const [editingRow, setEditingRow] = React.useState<string | null>(null);
     const [isOpen, setIsOpen] = React.useState(true);
@@ -157,172 +160,224 @@ export default function DetailIndikator({ submisi, isEditable }: DetailIndikator
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                     <CardContent>
-                        <Table className="[&_th]:text-center [&_td]:text-center">
+                        <Table className="[&_td]:text-center [&_th]:text-center">
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>No</TableHead>
                                     <TableHead>Bulan</TableHead>
-                                    <TableHead>Deskripsi Keberhasilan</TableHead>
+                                    <TableHead>
+                                        Deskripsi Keberhasilan
+                                    </TableHead>
                                     <TableHead>Target (%)</TableHead>
                                     {isEditable && <TableHead>Aksi</TableHead>}
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {submisi.indikator_kinerja?.map((indikator, index) => (
-                                    <TableRow key={indikator.id}>
-                                        {editingRow === indikator.id && isEditable ? (
-                                            <>
-                                                <TableCell>{index + 1}</TableCell>
-                                                <TableCell>
-                                                    <Input
-                                                        type="month"
-                                                        value={
-                                                            data.bulan.split(' ')[1]
-                                                                ? `${data.bulan.split(' ')[1]}-${String(bulanOptions.indexOf(data.bulan.split(' ')[0]) + 1).padStart(2, '0')}`
-                                                                : ''
-                                                        }
-                                                        onChange={(e) => {
-                                                            const [year, month] =
-                                                                e.target.value.split(
-                                                                    '-',
-                                                                );
-                                                            const monthName = new Date(
-                                                                parseInt(year),
-                                                                parseInt(month) - 1,
-                                                                1,
-                                                            ).toLocaleString('id-ID', {
-                                                                month: 'long',
-                                                            });
-                                                            setData(
-                                                                'bulan',
-                                                                `${monthName} ${year}`,
-                                                            );
-                                                        }}
-                                                        className="w-full rounded-md border border-gray-300 bg-white p-2"
-                                                    />
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Input
-                                                        value={data.keberhasilan}
-                                                        onChange={(e) =>
-                                                            setData(
-                                                                'keberhasilan',
-                                                                e.target.value,
-                                                            )
-                                                        }
-                                                    />
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Input
-                                                        type="number"
-                                                        value={data.target}
-                                                        onChange={(e) =>
-                                                            setData(
-                                                                'target',
-                                                                parseInt(
-                                                                    e.target.value,
-                                                                ) || '',
-                                                            )
-                                                        }
-                                                        min={1}
-                                                        max={100}
-                                                    />
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Button
-                                                        size="sm"
-                                                        onClick={handleUpdate}
-                                                    >
-                                                        <Save className="h-4 w-4" />
-                                                    </Button>
-                                                    <Button
-                                                        size="sm"
-                                                        variant="ghost"
-                                                        onClick={handleCancelEdit}
-                                                    >
-                                                        <X className="h-4 w-4" />
-                                                    </Button>
-                                                </TableCell>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <TableCell>{index + 1}</TableCell>
-                                                <TableCell>{indikator.bulan}</TableCell>
-                                                <TableCell>
-                                                    {indikator.keberhasilan}
-                                                </TableCell>
-                                                <TableCell>
-                                                    {indikator.target}
-                                                </TableCell>
-                                                {isEditable && (
+                                {submisi.indikator_kinerja?.map(
+                                    (indikator, index) => (
+                                        <TableRow key={indikator.id}>
+                                            {editingRow === indikator.id &&
+                                            isEditable ? (
+                                                <>
                                                     <TableCell>
-                                                        <div className="flex items-center justify-center gap-2">
+                                                        {index + 1}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Input
+                                                            type="month"
+                                                            value={
+                                                                data.bulan.split(
+                                                                    ' ',
+                                                                )[1]
+                                                                    ? `${data.bulan.split(' ')[1]}-${String(bulanOptions.indexOf(data.bulan.split(' ')[0]) + 1).padStart(2, '0')}`
+                                                                    : ''
+                                                            }
+                                                            onChange={(e) => {
+                                                                const [
+                                                                    year,
+                                                                    month,
+                                                                ] =
+                                                                    e.target.value.split(
+                                                                        '-',
+                                                                    );
+                                                                const monthName =
+                                                                    new Date(
+                                                                        parseInt(
+                                                                            year,
+                                                                        ),
+                                                                        parseInt(
+                                                                            month,
+                                                                        ) - 1,
+                                                                        1,
+                                                                    ).toLocaleString(
+                                                                        'id-ID',
+                                                                        {
+                                                                            month: 'long',
+                                                                        },
+                                                                    );
+                                                                setData(
+                                                                    'bulan',
+                                                                    `${monthName} ${year}`,
+                                                                );
+                                                            }}
+                                                            className="w-full rounded-md border border-gray-300 bg-white p-2"
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Input
+                                                            value={
+                                                                data.keberhasilan
+                                                            }
+                                                            onChange={(e) =>
+                                                                setData(
+                                                                    'keberhasilan',
+                                                                    e.target
+                                                                        .value,
+                                                                )
+                                                            }
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Input
+                                                            type="number"
+                                                            value={data.target}
+                                                            onChange={(e) =>
+                                                                setData(
+                                                                    'target',
+                                                                    parseInt(
+                                                                        e.target
+                                                                            .value,
+                                                                    ) || '',
+                                                                )
+                                                            }
+                                                            min={1}
+                                                            max={100}
+                                                        />
+                                                    </TableCell>
+                                                    <TableCell>
                                                         <Button
                                                             size="sm"
-                                                            onClick={() =>
-                                                                handleEdit(indikator)
+                                                            onClick={
+                                                                handleUpdate
                                                             }
-                                                            disabled={isAdding}
                                                         >
-                                                            <Edit className="h-4 w-4" />
+                                                            <Save className="h-4 w-4" />
                                                         </Button>
-                                                        <AlertDialog>
-                                                            <AlertDialogTrigger asChild>
-                                                                <Button
-                                                                    variant="destructive"
-                                                                    size="sm"
-                                                                    disabled={isAdding}
-                                                                >
-                                                                    <Trash2 className="h-4 w-4" />
-                                                                </Button>
-                                                            </AlertDialogTrigger>
-                                                            <AlertDialogContent>
-                                                                <AlertDialogHeader>
-                                                                    <AlertDialogTitle>
-                                                                        Are you absolutely
-                                                                        sure?
-                                                                    </AlertDialogTitle>
-                                                                    <AlertDialogDescription>
-                                                                        This action cannot
-                                                                        be undone. This will
-                                                                        permanently delete
-                                                                        the indicator.
-                                                                    </AlertDialogDescription>
-                                                                </AlertDialogHeader>
-                                                                <AlertDialogFooter>
-                                                                    <AlertDialogCancel>
-                                                                        Cancel
-                                                                    </AlertDialogCancel>
-                                                                    <AlertDialogAction
-                                                                        onClick={() =>
-                                                                            handleDelete(
-                                                                                indikator.id,
-                                                                            )
-                                                                        }
-                                                                    >
-                                                                        Continue
-                                                                    </AlertDialogAction>
-                                                                </AlertDialogFooter>
-                                                            </AlertDialogContent>
-                                                        </AlertDialog>
-                                                        </div>
+                                                        <Button
+                                                            size="sm"
+                                                            variant="ghost"
+                                                            onClick={
+                                                                handleCancelEdit
+                                                            }
+                                                        >
+                                                            <X className="h-4 w-4" />
+                                                        </Button>
                                                     </TableCell>
-                                                )}
-                                            </>
-                                        )}
-                                    </TableRow>
-                                ))}
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <TableCell>
+                                                        {index + 1}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {indikator.bulan}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {indikator.keberhasilan}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {indikator.target}
+                                                    </TableCell>
+                                                    {isEditable && (
+                                                        <TableCell>
+                                                            <div className="flex items-center justify-center gap-2">
+                                                                <Button
+                                                                    size="sm"
+                                                                    onClick={() =>
+                                                                        handleEdit(
+                                                                            indikator,
+                                                                        )
+                                                                    }
+                                                                    disabled={
+                                                                        isAdding
+                                                                    }
+                                                                >
+                                                                    <Edit className="h-4 w-4" />
+                                                                </Button>
+                                                                <AlertDialog>
+                                                                    <AlertDialogTrigger
+                                                                        asChild
+                                                                    >
+                                                                        <Button
+                                                                            variant="destructive"
+                                                                            size="sm"
+                                                                            disabled={
+                                                                                isAdding
+                                                                            }
+                                                                        >
+                                                                            <Trash2 className="h-4 w-4" />
+                                                                        </Button>
+                                                                    </AlertDialogTrigger>
+                                                                    <AlertDialogContent>
+                                                                        <AlertDialogHeader>
+                                                                            <AlertDialogTitle>
+                                                                                Are
+                                                                                you
+                                                                                absolutely
+                                                                                sure?
+                                                                            </AlertDialogTitle>
+                                                                            <AlertDialogDescription>
+                                                                                This
+                                                                                action
+                                                                                cannot
+                                                                                be
+                                                                                undone.
+                                                                                This
+                                                                                will
+                                                                                permanently
+                                                                                delete
+                                                                                the
+                                                                                indicator.
+                                                                            </AlertDialogDescription>
+                                                                        </AlertDialogHeader>
+                                                                        <AlertDialogFooter>
+                                                                            <AlertDialogCancel>
+                                                                                Cancel
+                                                                            </AlertDialogCancel>
+                                                                            <AlertDialogAction
+                                                                                onClick={() =>
+                                                                                    handleDelete(
+                                                                                        indikator.id,
+                                                                                    )
+                                                                                }
+                                                                            >
+                                                                                Continue
+                                                                            </AlertDialogAction>
+                                                                        </AlertDialogFooter>
+                                                                    </AlertDialogContent>
+                                                                </AlertDialog>
+                                                            </div>
+                                                        </TableCell>
+                                                    )}
+                                                </>
+                                            )}
+                                        </TableRow>
+                                    ),
+                                )}
                                 {isAdding && isEditable && (
                                     <TableRow>
                                         <TableCell className="text-center align-middle">
-                                            {submisi.indikator_kinerja?.length + 1}
+                                            {submisi.indikator_kinerja?.length +
+                                                1}
                                         </TableCell>
                                         <TableCell className="text-center align-middle">
                                             <Input
                                                 type="month"
                                                 onChange={(e) => {
                                                     const [year, month] =
-                                                        e.target.value.split('-');
+                                                        e.target.value.split(
+                                                            '-',
+                                                        );
                                                     const monthName = new Date(
                                                         parseInt(year),
                                                         parseInt(month) - 1,
@@ -359,7 +414,9 @@ export default function DetailIndikator({ submisi, isEditable }: DetailIndikator
                                                 onChange={(e) =>
                                                     setData(
                                                         'target',
-                                                        parseInt(e.target.value) || '',
+                                                        parseInt(
+                                                            e.target.value,
+                                                        ) || '',
                                                     )
                                                 }
                                                 min={1}
@@ -369,16 +426,19 @@ export default function DetailIndikator({ submisi, isEditable }: DetailIndikator
                                         </TableCell>
                                         <TableCell className="align-middle">
                                             <div className="flex items-center justify-center gap-3">
-                                            <Button size="sm" onClick={handleSaveNew}>
-                                                <Save className="h-4 w-4" />
-                                            </Button>
-                                            <Button
-                                                size="sm"
-                                                variant="ghost"
-                                                onClick={handleCancelAddNew}
-                                            >
-                                                <X className="h-4 w-4" />
-                                            </Button>
+                                                <Button
+                                                    size="sm"
+                                                    onClick={handleSaveNew}
+                                                >
+                                                    <Save className="h-4 w-4" />
+                                                </Button>
+                                                <Button
+                                                    size="sm"
+                                                    variant="ghost"
+                                                    onClick={handleCancelAddNew}
+                                                >
+                                                    <X className="h-4 w-4" />
+                                                </Button>
                                             </div>
                                         </TableCell>
                                     </TableRow>
@@ -397,14 +457,14 @@ export default function DetailIndikator({ submisi, isEditable }: DetailIndikator
                         </Table>
                         {isEditable && (
                             <div className="mt-4 flex justify-end">
-                        <Button
-                            onClick={handleAddNew}
-                            disabled={isAdding || !!editingRow}
-                            className="bg-[#427452] hover:bg-[#365d42] text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            Tambah Indikator
-                        </Button>
-                    </div>
+                                <Button
+                                    onClick={handleAddNew}
+                                    disabled={isAdding || !!editingRow}
+                                    className="rounded-lg bg-[#427452] text-white transition-colors hover:bg-[#365d42] disabled:cursor-not-allowed disabled:opacity-50"
+                                >
+                                    Tambah Indikator
+                                </Button>
+                            </div>
                         )}
                     </CardContent>
                 </CollapsibleContent>

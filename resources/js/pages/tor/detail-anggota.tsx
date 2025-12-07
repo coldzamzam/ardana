@@ -11,6 +11,11 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from '@/components/ui/collapsible'; // Import Collapsible components
 import { Input } from '@/components/ui/input';
 import {
     Table,
@@ -24,18 +29,16 @@ import { Submisi, User } from '@/types';
 import { router } from '@inertiajs/react';
 import { ChevronsUpDown, Loader2, Save, Trash2, X } from 'lucide-react'; // Import ChevronsUpDown
 import React from 'react';
-import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from '@/components/ui/collapsible'; // Import Collapsible components
 
 interface DetailAnggotaProps {
     submisi: Submisi;
     isEditable: boolean;
 }
 
-export default function DetailAnggota({ submisi, isEditable }: DetailAnggotaProps) {
+export default function DetailAnggota({
+    submisi,
+    isEditable,
+}: DetailAnggotaProps) {
     const [showSearch, setShowSearch] = React.useState(false);
     const [mahasiswaSearch, setMahasiswaSearch] = React.useState('');
     const [mahasiswaResult, setMahasiswaResult] = React.useState<User | null>(
@@ -114,7 +117,7 @@ export default function DetailAnggota({ submisi, isEditable }: DetailAnggotaProp
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                     <CardContent>
-                        <Table className="[&_th]:text-center [&_td]:text-center">
+                        <Table className="[&_td]:text-center [&_th]:text-center">
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>Nama</TableHead>
@@ -139,45 +142,57 @@ export default function DetailAnggota({ submisi, isEditable }: DetailAnggotaProp
                                             {isEditable && (
                                                 <TableCell>
                                                     <div className="flex items-center justify-center gap-3">
-                                                    <AlertDialog>
-                                                        <AlertDialogTrigger asChild>
-                                                            <Button
-                                                                variant="destructive"
-                                                                size="sm"
+                                                        <AlertDialog>
+                                                            <AlertDialogTrigger
+                                                                asChild
                                                             >
-                                                                <Trash2 className="h-4 w-4" />
-                                                            </Button>
-                                                        </AlertDialogTrigger>
-                                                        <AlertDialogContent>
-                                                            <AlertDialogHeader>
-                                                                <AlertDialogTitle>
-                                                                    Apakah anda yakin ingin
-                                                                    menghapus peserta?
-                                                                </AlertDialogTitle>
-                                                                <AlertDialogDescription>
-                                                                    Ini akan menghapus
-                                                                    peserta dari kegiatan
-                                                                    ini. Anda dapat
-                                                                    menambahkannya kembali
-                                                                    nanti.
-                                                                </AlertDialogDescription>
-                                                            </AlertDialogHeader>
-                                                            <AlertDialogFooter>
-                                                                <AlertDialogCancel>
-                                                                    Batal
-                                                                </AlertDialogCancel>
-                                                                <AlertDialogAction
-                                                                    onClick={() =>
-                                                                        handleDeleteAnggota(
-                                                                            anggota.id,
-                                                                        )
-                                                                    }
+                                                                <Button
+                                                                    variant="destructive"
+                                                                    size="sm"
                                                                 >
-                                                                    Lanjutkan
-                                                                </AlertDialogAction>
-                                                            </AlertDialogFooter>
-                                                        </AlertDialogContent>
-                                                    </AlertDialog>
+                                                                    <Trash2 className="h-4 w-4" />
+                                                                </Button>
+                                                            </AlertDialogTrigger>
+                                                            <AlertDialogContent>
+                                                                <AlertDialogHeader>
+                                                                    <AlertDialogTitle>
+                                                                        Apakah
+                                                                        anda
+                                                                        yakin
+                                                                        ingin
+                                                                        menghapus
+                                                                        peserta?
+                                                                    </AlertDialogTitle>
+                                                                    <AlertDialogDescription>
+                                                                        Ini akan
+                                                                        menghapus
+                                                                        peserta
+                                                                        dari
+                                                                        kegiatan
+                                                                        ini.
+                                                                        Anda
+                                                                        dapat
+                                                                        menambahkannya
+                                                                        kembali
+                                                                        nanti.
+                                                                    </AlertDialogDescription>
+                                                                </AlertDialogHeader>
+                                                                <AlertDialogFooter>
+                                                                    <AlertDialogCancel>
+                                                                        Batal
+                                                                    </AlertDialogCancel>
+                                                                    <AlertDialogAction
+                                                                        onClick={() =>
+                                                                            handleDeleteAnggota(
+                                                                                anggota.id,
+                                                                            )
+                                                                        }
+                                                                    >
+                                                                        Lanjutkan
+                                                                    </AlertDialogAction>
+                                                                </AlertDialogFooter>
+                                                            </AlertDialogContent>
+                                                        </AlertDialog>
                                                     </div>
                                                 </TableCell>
                                             )}
@@ -187,25 +202,29 @@ export default function DetailAnggota({ submisi, isEditable }: DetailAnggotaProp
                         </Table>
                         {isEditable && (
                             <>
-                 <div className="mt-4 flex justify-end">
-                <Button
-                    onClick={() => setShowSearch(!showSearch)}
-                    className="bg-[#427452] hover:bg-[#365d42] text-white"
-                >
-                    {showSearch ? (
-                        <X className="h-4 w-4" />
-                    ) : (
-                        'Tambah Peserta'
-                    )}
-                </Button>
-            </div>
+                                <div className="mt-4 flex justify-end">
+                                    <Button
+                                        onClick={() =>
+                                            setShowSearch(!showSearch)
+                                        }
+                                        className="bg-[#427452] text-white hover:bg-[#365d42]"
+                                    >
+                                        {showSearch ? (
+                                            <X className="h-4 w-4" />
+                                        ) : (
+                                            'Tambah Peserta'
+                                        )}
+                                    </Button>
+                                </div>
                                 {showSearch && (
                                     <div className="space-y-4">
                                         <div className="my-4 flex items-center gap-2">
                                             <Input
                                                 value={mahasiswaSearch}
                                                 onChange={(e) =>
-                                                    setMahasiswaSearch(e.target.value)
+                                                    setMahasiswaSearch(
+                                                        e.target.value,
+                                                    )
                                                 }
                                                 placeholder="Cari NIM mahasiswa..."
                                             />
@@ -224,22 +243,36 @@ export default function DetailAnggota({ submisi, isEditable }: DetailAnggotaProp
                                             <Table className="">
                                                 <TableHeader>
                                                     <TableRow>
-                                                        <TableHead>Nama</TableHead>
-                                                        <TableHead>NIM</TableHead>
-                                                        <TableHead>Prodi</TableHead>
-                                                        <TableHead>Aksi</TableHead>
+                                                        <TableHead>
+                                                            Nama
+                                                        </TableHead>
+                                                        <TableHead>
+                                                            NIM
+                                                        </TableHead>
+                                                        <TableHead>
+                                                            Prodi
+                                                        </TableHead>
+                                                        <TableHead>
+                                                            Aksi
+                                                        </TableHead>
                                                     </TableRow>
                                                 </TableHeader>
                                                 <TableBody>
                                                     <TableRow>
                                                         <TableCell>
-                                                            {mahasiswaResult.name}
+                                                            {
+                                                                mahasiswaResult.name
+                                                            }
                                                         </TableCell>
                                                         <TableCell>
-                                                            {mahasiswaResult.nim}
+                                                            {
+                                                                mahasiswaResult.nim
+                                                            }
                                                         </TableCell>
                                                         <TableCell>
-                                                            {mahasiswaResult.prodi}
+                                                            {
+                                                                mahasiswaResult.prodi
+                                                            }
                                                         </TableCell>
                                                         <TableCell>
                                                             <Button

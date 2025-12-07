@@ -35,7 +35,6 @@ export default function PegawaiIndex({ users: userList }: PegawaiIndexProps) {
             {/* Background hijau konsisten */}
             <div className="flex h-full flex-1 rounded-3xl bg-[#CBEBD5]/70 p-4 md:p-6">
                 <div className="flex flex-1 flex-col gap-4 rounded-3xl bg-[#E6F5EC] p-4 md:p-6">
-                    
                     {/* HEADER */}
                     <div className="flex flex-col gap-1 md:flex-row md:items-baseline md:justify-between">
                         <div>
@@ -43,19 +42,20 @@ export default function PegawaiIndex({ users: userList }: PegawaiIndexProps) {
                                 List Pegawai
                             </h1>
                             <p className="text-sm text-[#427452]/80">
-                                Kelola akun pegawai yang terdaftar di sistem Ardana.
+                                Kelola akun pegawai yang terdaftar di sistem
+                                Ardana.
                             </p>
                         </div>
 
                         {hasUsers && (
-                            <p className="text-xs md:text-sm text-[#427452]/70">
+                            <p className="text-xs text-[#427452]/70 md:text-sm">
                                 Total: {userList.length} pegawai
                             </p>
                         )}
                     </div>
 
                     {/* CARD PUTIH TABEL */}
-                    <div className="mt-2 w-full rounded-2xl border border-[#73AD86]/40 bg-white p-4 md:p-6 shadow-sm">
+                    <div className="mt-2 w-full rounded-2xl border border-[#73AD86]/40 bg-white p-4 shadow-sm md:p-6">
                         <Table>
                             <TableHeader>
                                 <TableRow>
@@ -76,7 +76,9 @@ export default function PegawaiIndex({ users: userList }: PegawaiIndexProps) {
                                         <TableRow
                                             key={user.id}
                                             className="cursor-pointer transition-colors hover:bg-[#F5FFFA]"
-                                            onClick={() => handleRowClick(user.id)}
+                                            onClick={() =>
+                                                handleRowClick(user.id)
+                                            }
                                         >
                                             <TableCell className="text-center text-sm">
                                                 {index + 1}

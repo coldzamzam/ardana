@@ -1,6 +1,4 @@
-import Heading from '@/components/heading';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { edit as editAppearance } from '@/routes/appearance';
 import { edit as editPassword } from '@/routes/password';
@@ -8,8 +6,8 @@ import { edit } from '@/routes/profile';
 import { show } from '@/routes/two-factor';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
+import { Lock, Palette, ShieldCheck, User } from 'lucide-react';
 import { type PropsWithChildren } from 'react';
-import { User, Lock, ShieldCheck, Palette } from 'lucide-react';
 
 const sidebarNavItems: NavItem[] = [
     {
@@ -41,7 +39,6 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
     return (
         <div className="flex h-full flex-1 bg-[#CBEBD5]/70 p-4 md:p-6">
             <div className="flex flex-1 flex-col gap-6 rounded-2xl bg-[#E6F5EC] p-4 md:p-6">
-
                 {/* TITLE (dibikin sama seperti TOR & LPJ) */}
                 <div>
                     <h1 className="text-2xl font-semibold text-[#427452]">
@@ -53,7 +50,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                     {/* SIDEBAR */}
                     <aside className="w-full lg:w-64 lg:flex-shrink-0">
                         <div className="rounded-2xl border border-[#73AD86]/40 bg-white/90 p-3 shadow-sm">
-                            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                            <p className="mb-2 text-xs font-semibold tracking-wide text-slate-500 uppercase">
                                 Menu
                             </p>
                             <nav className="flex flex-col gap-1">

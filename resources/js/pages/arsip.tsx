@@ -1,14 +1,9 @@
-import { useMemo, useState } from 'react';
 import { Head } from '@inertiajs/react';
+import { useMemo, useState } from 'react';
 
-import AppLayout from '@/layouts/app-layout';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import {
-    type BreadcrumbItem,
-    type PageProps,
-    type Submisi,
-} from '@/types';
+import AppLayout from '@/layouts/app-layout';
+import { type BreadcrumbItem, type PageProps, type Submisi } from '@/types';
 
 import { Search } from 'lucide-react';
 
@@ -37,16 +32,12 @@ export default function ArsipPage({ arsip }: ArsipPageProps) {
         return arsip.filter((item) => {
             const judul = item.judul?.toLowerCase() ?? '';
             const jenis = item.kegiatan_type?.nama?.toLowerCase() ?? '';
-            const indikator =
-                item.detail_submisi?.iku?.toLowerCase() ?? '';
-            const tahun =
-                item.detail_submisi?.tanggal_mulai
-                    ? String(
-                          new Date(
-                              item.detail_submisi.tanggal_mulai,
-                          ).getFullYear(),
-                      ).toLowerCase()
-                    : '';
+            const indikator = item.detail_submisi?.iku?.toLowerCase() ?? '';
+            const tahun = item.detail_submisi?.tanggal_mulai
+                ? String(
+                      new Date(item.detail_submisi.tanggal_mulai).getFullYear(),
+                  ).toLowerCase()
+                : '';
 
             const combined = `${judul} ${jenis} ${indikator} ${tahun}`;
 
@@ -60,8 +51,7 @@ export default function ArsipPage({ arsip }: ArsipPageProps) {
         null;
 
     const getYear = (item: Submisi) => {
-        const tanggal =
-            item.detail_submisi?.tanggal_mulai ?? item.created_at;
+        const tanggal = item.detail_submisi?.tanggal_mulai ?? item.created_at;
         return new Date(tanggal).getFullYear();
     };
 
@@ -153,7 +143,7 @@ export default function ArsipPage({ arsip }: ArsipPageProps) {
                                                         </p>
                                                     </div>
                                                     <div className="flex flex-col items-end gap-1">
-                                                        <span className="rounded-full bg-[#E6F5EC] px-3 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-[#427452]">
+                                                        <span className="rounded-full bg-[#E6F5EC] px-3 py-0.5 text-[11px] font-semibold tracking-wide text-[#427452] uppercase">
                                                             {item.type ?? 'TOR'}
                                                         </span>
                                                         <span className="text-[11px] text-slate-500">
@@ -218,7 +208,8 @@ export default function ArsipPage({ arsip }: ArsipPageProps) {
                                                 <span className="rounded-full bg-[#E6F5EC] px-3 py-0.5 font-medium text-[#427452]">
                                                     {selected.type ?? 'TOR'}
                                                 </span>
-                                                {selected.kegiatan_type?.nama && (
+                                                {selected.kegiatan_type
+                                                    ?.nama && (
                                                     <span className="rounded-full bg-slate-100 px-3 py-0.5">
                                                         {
                                                             selected

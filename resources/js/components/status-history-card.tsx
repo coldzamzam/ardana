@@ -1,13 +1,10 @@
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     Collapsible,
     CollapsibleContent,
     CollapsibleTrigger,
 } from '@/components/ui/collapsible';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { ChevronsUpDown } from 'lucide-react';
-import React from 'react';
-import { Submisi } from '@/types';
 import {
     Table,
     TableBody,
@@ -16,8 +13,11 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { format } from 'date-fns';
+import { Submisi } from '@/types';
 import { Link } from '@inertiajs/react';
+import { format } from 'date-fns';
+import { ChevronsUpDown } from 'lucide-react';
+import React from 'react';
 
 interface StatusHistoryCardProps {
     submisi: Submisi;
@@ -54,36 +54,61 @@ export default function StatusHistoryCard({ submisi }: StatusHistoryCardProps) {
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead className="w-[100px]">ID Status</TableHead>
-                                        <TableHead className="w-[150px]">Tanggal</TableHead>
+                                        <TableHead className="w-[100px]">
+                                            ID Status
+                                        </TableHead>
+                                        <TableHead className="w-[150px]">
+                                            Tanggal
+                                        </TableHead>
                                         <TableHead>Status</TableHead>
                                         <TableHead>Keterangan</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {sortedStatusHistory.length > 0 ? (
-                                        sortedStatusHistory.map((statusEntry) => (
-                                            <TableRow key={statusEntry.id}>
-                                                <TableCell className="font-medium">
-                                                    <Link
-                                                        href={`/dashboard/history/${statusEntry.detail_submisi_id}`}
-                                                        className="text-blue-600 hover:underline"
-                                                    >
-                                                        {statusEntry.id.substring(0, 10)}...
-                                                    </Link>
-                                                </TableCell>
-                                                <TableCell>
-                                                    {format(new Date(statusEntry.created_at), 'dd MMM yyyy HH:mm')}
-                                                </TableCell>
-                                                <TableCell>{statusEntry.status_type?.nama}</TableCell>
-                                                <TableCell className="max-w-[200px] truncate">
-                                                    {statusEntry.keterangan || '-'}
-                                                </TableCell>
-                                            </TableRow>
-                                        ))
+                                        sortedStatusHistory.map(
+                                            (statusEntry) => (
+                                                <TableRow key={statusEntry.id}>
+                                                    <TableCell className="font-medium">
+                                                        <Link
+                                                            href={`/dashboard/history/${statusEntry.detail_submisi_id}`}
+                                                            className="text-blue-600 hover:underline"
+                                                        >
+                                                            {statusEntry.id.substring(
+                                                                0,
+                                                                10,
+                                                            )}
+                                                            ...
+                                                        </Link>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {format(
+                                                            new Date(
+                                                                statusEntry.created_at,
+                                                            ),
+                                                            'dd MMM yyyy HH:mm',
+                                                        )}
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        {
+                                                            statusEntry
+                                                                .status_type
+                                                                ?.nama
+                                                        }
+                                                    </TableCell>
+                                                    <TableCell className="max-w-[200px] truncate">
+                                                        {statusEntry.keterangan ||
+                                                            '-'}
+                                                    </TableCell>
+                                                </TableRow>
+                                            ),
+                                        )
                                     ) : (
                                         <TableRow>
-                                            <TableCell colSpan={4} className="text-center">
+                                            <TableCell
+                                                colSpan={4}
+                                                className="text-center"
+                                            >
                                                 Tidak ada riwayat status.
                                             </TableCell>
                                         </TableRow>

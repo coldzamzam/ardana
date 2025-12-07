@@ -1,3 +1,4 @@
+import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -11,9 +12,8 @@ import {
 } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
 import { prodiOptions } from '@/lib/constants';
-import { type BreadcrumbItem, type PageProps, type Mahasiswa } from '@/types';
+import { type BreadcrumbItem, type Mahasiswa, type PageProps } from '@/types';
 import { Head, useForm } from '@inertiajs/react';
-import InputError from '@/components/input-error';
 
 interface MahasiswaEditProps extends PageProps {
     mahasiswa: Mahasiswa & {
@@ -65,10 +65,11 @@ export default function MahasiswaEdit({ mahasiswa }: MahasiswaEditProps) {
                                 Edit Mahasiswa
                             </h1>
                             <p className="text-sm text-[#427452]/80">
-                                Perbarui data mahasiswa yang terdaftar di Ardana.
+                                Perbarui data mahasiswa yang terdaftar di
+                                Ardana.
                             </p>
                         </div>
-                        <p className="text-xs md:text-sm text-[#427452]/70">
+                        <p className="text-xs text-[#427452]/70 md:text-sm">
                             {mahasiswa.user.email}
                         </p>
                     </div>

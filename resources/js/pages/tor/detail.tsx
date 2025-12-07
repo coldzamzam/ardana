@@ -1,3 +1,5 @@
+import StatusHistoryCard from '@/components/status-history-card'; // Import StatusHistoryCard
+import TiptapEditor from '@/components/tiptap-editor';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -9,7 +11,6 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import TiptapEditor from '@/components/tiptap-editor';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -22,14 +23,13 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem, type KegiatanType, type Submisi, type User } from '@/types';
+import { type BreadcrumbItem, type KegiatanType, type Submisi } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
+import React, { useEffect, useRef } from 'react';
 import DetailAnggota from './detail-anggota';
 import DetailBiaya from './detail-biaya';
 import DetailFile from './detail-file';
 import DetailIndikator from './detail-indikator';
-import React, { useEffect, useRef } from 'react';
-import StatusHistoryCard from '@/components/status-history-card'; // Import StatusHistoryCard
 
 interface DosenForSelect {
     id: string;
@@ -43,7 +43,11 @@ interface TorDetailProps {
     kegiatanTypes: KegiatanType[];
 }
 
-export default function TorDetail({ submisi, dosens, kegiatanTypes }: TorDetailProps) {
+export default function TorDetail({
+    submisi,
+    dosens,
+    kegiatanTypes,
+}: TorDetailProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'TOR',
@@ -77,8 +81,10 @@ export default function TorDetail({ submisi, dosens, kegiatanTypes }: TorDetailP
         pic_nip: '',
     });
 
-    const latestStatus = submisi.status_submisi?.[submisi.status_submisi.length - 1];
-    const isEditable = !latestStatus || latestStatus.status_type.nama === 'Revisi';
+    const latestStatus =
+        submisi.status_submisi?.[submisi.status_submisi.length - 1];
+    const isEditable =
+        !latestStatus || latestStatus.status_type.nama === 'Revisi';
 
     const isInitialMount = useRef(true);
 
@@ -133,19 +139,20 @@ export default function TorDetail({ submisi, dosens, kegiatanTypes }: TorDetailP
             preserveScroll: true,
         });
     };
-    
+
     const handleSubmitSubmission = () => {
         router.post(`/dashboard/tor/${submisi.id}/submit`);
     };
     const handleGenerateTemplateTor = () => {
-    router.get(`/dashboard/tor/${submisi.id}/template`);
-};
+        router.get(`/dashboard/tor/${submisi.id}/template`);
+    };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Detail TOR - ${submisi.judul}`} />
 
             <div className="flex h-full flex-1 flex-col gap-3 overflow-x-auto rounded-xl p-4">
-                <StatusHistoryCard submisi={submisi} /> {/* Render StatusHistoryCard */}
+                <StatusHistoryCard submisi={submisi} />{' '}
+                {/* Render StatusHistoryCard */}
                 <Card className="overflow-hidden rounded-2xl border border-[#73AD86]/40 shadow-sm">
                     <CardContent className="space-y-4">
                         <div className="space-y-1">
@@ -217,7 +224,8 @@ export default function TorDetail({ submisi, dosens, kegiatanTypes }: TorDetailP
                                 <Input
                                     id="status"
                                     value={
-                                        latestStatus?.status_type.nama || 'Draft'
+                                        latestStatus?.status_type.nama ||
+                                        'Draft'
                                     }
                                     readOnly
                                     className="bg-neutral-100 capitalize"
@@ -226,7 +234,6 @@ export default function TorDetail({ submisi, dosens, kegiatanTypes }: TorDetailP
                         </div>
                     </CardContent>
                 </Card>
-
                 <Card className="overflow-hidden rounded-2xl border border-[#73AD86]/40 shadow-sm">
                     <CardHeader className="">
                         <CardTitle className="text-xl font-semibold text-[#427452]">
@@ -422,75 +429,67 @@ export default function TorDetail({ submisi, dosens, kegiatanTypes }: TorDetailP
                         )}
                     </CardContent>
                 </Card>
-
                 <DetailAnggota submisi={submisi} isEditable={isEditable} />
                 <DetailIndikator submisi={submisi} isEditable={isEditable} />
                 <DetailFile submisi={submisi} isEditable={isEditable} />
                 <DetailBiaya submisi={submisi} isEditable={isEditable} />
-                
                 <div className="flex justify-end gap-3 pt-4 pb-10">
-    {isEditable ? (
-        <>
-            <Button
-                type="button"
-                className="bg-[#5D41D9] text-white hover:bg-[#392885]"
-                onClick={handleGenerateTemplateTor}
-            >
-                Buat Template TOR
-            </Button>
-<AlertDialog>
-    <AlertDialogTrigger asChild>
-        <Button
-            disabled={!submisi.detail_submisi}
-            className="rounded-md bg-[#427452] hover:bg-[#365d42] text-white"
-        >
-            Kirim Pengajuan
-        </Button>
-    </AlertDialogTrigger>
+                    {isEditable ? (
+                        <>
+                            <Button
+                                type="button"
+                                className="bg-[#5D41D9] text-white hover:bg-[#392885]"
+                                onClick={handleGenerateTemplateTor}
+                            >
+                                Buat Template TOR
+                            </Button>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button
+                                        disabled={!submisi.detail_submisi}
+                                        className="rounded-md bg-[#427452] text-white hover:bg-[#365d42]"
+                                    >
+                                        Kirim Pengajuan
+                                    </Button>
+                                </AlertDialogTrigger>
 
-    <AlertDialogContent
-        className="
-            sm:max-w-lg rounded-3xl border border-[#73AD86]/40 bg-white/95 shadow-2xl
-            data-[state=open]:animate-in data-[state=open]:fade-in-0
-            data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-bottom-10
-            data-[state=closed]:animate-out data-[state=closed]:fade-out-0
-            data-[state=closed]:zoom-out-95 data-[state=closed]:slide-out-to-bottom-10
-        "
-    >
-        <AlertDialogHeader>
-            <AlertDialogTitle className="text-lg font-semibold text-[#111827]">
-                Apakah Anda yakin ingin mengajukan TOR ini?
-            </AlertDialogTitle>
-            <AlertDialogDescription className="text-sm text-slate-600">
-                Setelah diajukan, TOR tidak dapat diedit kembali kecuali jika
-                diminta untuk revisi oleh reviewer. Pastikan semua data sudah benar.
-            </AlertDialogDescription>
-        </AlertDialogHeader>
+                                <AlertDialogContent className="rounded-3xl border border-[#73AD86]/40 bg-white/95 shadow-2xl data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:slide-out-to-bottom-10 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-bottom-10 data-[state=open]:zoom-in-95 sm:max-w-lg">
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle className="text-lg font-semibold text-[#111827]">
+                                            Apakah Anda yakin ingin mengajukan
+                                            TOR ini?
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription className="text-sm text-slate-600">
+                                            Setelah diajukan, TOR tidak dapat
+                                            diedit kembali kecuali jika diminta
+                                            untuk revisi oleh reviewer. Pastikan
+                                            semua data sudah benar.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
 
-        <AlertDialogFooter className="mt-2">
-            <AlertDialogCancel className="rounded-md border-slate-300 px-5">
-                Batal
-            </AlertDialogCancel>
-            <AlertDialogAction
-                onClick={handleSubmitSubmission}
-                className="rounded-md bg-[#427452] px-6 hover:bg-[#365d42]"
-            >
-                Lanjutkan
-            </AlertDialogAction>
-        </AlertDialogFooter>
-    </AlertDialogContent>
-</AlertDialog>
-        </>
-    ) : (
-        <Button
-            disabled
-            className="rounded-md bg-gray-500 px-6 text-white"
-        >
-            Telah Diajukan
-        </Button>
-    )}
-</div>
-
+                                    <AlertDialogFooter className="mt-2">
+                                        <AlertDialogCancel className="rounded-md border-slate-300 px-5">
+                                            Batal
+                                        </AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={handleSubmitSubmission}
+                                            className="rounded-md bg-[#427452] px-6 hover:bg-[#365d42]"
+                                        >
+                                            Lanjutkan
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                        </>
+                    ) : (
+                        <Button
+                            disabled
+                            className="rounded-md bg-gray-500 px-6 text-white"
+                        >
+                            Telah Diajukan
+                        </Button>
+                    )}
+                </div>
             </div>
         </AppLayout>
     );

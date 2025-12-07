@@ -2,7 +2,6 @@ import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
 import InputError from '@/components/input-error';
-import TextLink from '@/components/text-link';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,7 +14,7 @@ import {
 } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
 import AppLayout from '@/layouts/app-layout';
-import { login, register } from '@/routes';
+import { register } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
 
 interface Role {
@@ -54,14 +53,15 @@ export default function Register({ roles }: { roles: Role[] }) {
             <div className="flex h-full flex-1 rounded-3xl bg-[#CBEBD5]/70 p-4 md:p-6">
                 <div className="flex flex-1 items-center justify-center rounded-3xl bg-[#E6F5EC] p-4 md:p-6">
                     {/* Card putih di tengah */}
-                    <div className="w-full max-w-5xl rounded-2xl border border-[#73AD86]/40 bg-white p-6 md:p-8 shadow-sm">
+                    <div className="w-full max-w-5xl rounded-2xl border border-[#73AD86]/40 bg-white p-6 shadow-sm md:p-8">
                         {/* Header form */}
                         <div className="mb-6">
                             <h1 className="text-2xl font-semibold text-[#427452] md:text-3xl">
                                 Buat Akun Baru
                             </h1>
                             <p className="mt-2 text-sm text-gray-600">
-                                Isi data berikut untuk mendaftarkan akun ke sistem Ardana.
+                                Isi data berikut untuk mendaftarkan akun ke
+                                sistem Ardana.
                             </p>
                         </div>
 

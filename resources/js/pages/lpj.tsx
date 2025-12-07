@@ -1,4 +1,3 @@
-import AppLayout from '@/layouts/app-layout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -8,6 +7,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import AppLayout from '@/layouts/app-layout';
 import { type BreadcrumbItem } from '@/types';
 import { Head } from '@inertiajs/react';
 import { Search } from 'lucide-react';
@@ -52,7 +52,7 @@ export default function LpjPage() {
                                     className="w-full rounded-md border border-gray-300 bg-white pr-4 pl-10 shadow-sm"
                                     placeholder="Cari LPJ"
                                 />
-                                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+                                <Search className="pointer-events-none absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-gray-400" />
                             </div>
                         </div>
 

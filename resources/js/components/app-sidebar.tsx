@@ -11,11 +11,11 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { type NavItem, type Role, type SharedData } from '@/types';
-import { ClipboardCheck } from "lucide-react"
 import { Link, usePage } from '@inertiajs/react';
 import {
     Bell,
     BookOpen,
+    ClipboardCheck,
     Folder,
     LayoutGrid,
     UserPlus,
@@ -101,9 +101,9 @@ export function AppSidebar() {
         <Sidebar
             collapsible="icon"
             variant="inset"
-            className="bg-[#F6FBF8] border-r border-slate-200/70"
+            className="border-r border-slate-200/70 bg-[#F6FBF8]"
         >
-            <SidebarHeader className="border-b border-slate-200/70 px-4 h-[64px] flex items-center">
+            <SidebarHeader className="flex h-[64px] items-center border-b border-slate-200/70 px-4">
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>

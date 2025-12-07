@@ -89,7 +89,9 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             type="password"
                             name="password"
                             value={data.password}
-                            onChange={(e) => setData('password', e.target.value)}
+                            onChange={(e) =>
+                                setData('password', e.target.value)
+                            }
                             required
                             tabIndex={2}
                             autoComplete="current-password"
@@ -105,7 +107,9 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                 id="remember"
                                 name="remember"
                                 checked={data.remember}
-                                onCheckedChange={(checked) => setData('remember', !!checked)}
+                                onCheckedChange={(checked) =>
+                                    setData('remember', !!checked)
+                                }
                                 tabIndex={3}
                                 className="border-white bg-transparent data-[state=checked]:bg-white data-[state=checked]:text-[#73AD86]"
                             />

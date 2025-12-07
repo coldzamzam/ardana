@@ -11,6 +11,11 @@ import {
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from '@/components/ui/collapsible';
 import { Input } from '@/components/ui/input';
 import {
     Table,
@@ -20,29 +25,24 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { Submisi, SubmisiFile } from '@/types';
-import { router, useForm } from '@inertiajs/react';
-import {
-    ChevronsUpDown,
-    Edit,
-    File,
-    Save,
-    Trash2,
-    X,
-    Info,
-} from 'lucide-react';
 import {
     Tooltip,
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
 } from '@/components/ui/tooltip';
-import React from 'react';
+import { Submisi, SubmisiFile } from '@/types';
+import { router, useForm } from '@inertiajs/react';
 import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from '@/components/ui/collapsible';
+    ChevronsUpDown,
+    Edit,
+    File,
+    Info,
+    Save,
+    Trash2,
+    X,
+} from 'lucide-react';
+import React from 'react';
 
 interface DetailFileProps {
     submisi: Submisi;
@@ -189,43 +189,43 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
             <Card className="overflow-hidden rounded-2xl border border-[#73AD86]/40 shadow-sm">
                 <CollapsibleTrigger asChild>
-  <CardHeader className="flex cursor-pointer flex-row items-center justify-between">
-    {/* Kiri: title + info */}
-    <CardTitle className="flex items-center gap-1 text-xl font-semibold text-[#427452]">
-      Lampiran File
+                    <CardHeader className="flex cursor-pointer flex-row items-center justify-between">
+                        {/* Kiri: title + info */}
+                        <CardTitle className="flex items-center gap-1 text-xl font-semibold text-[#427452]">
+                            Lampiran File
+                            <TooltipProvider delayDuration={100}>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <span
+                                            onClick={(e) => e.preventDefault()}
+                                            className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#E6F5EC]"
+                                        >
+                                            <Info className="h-3 w-3 text-[#427452]" />
+                                        </span>
+                                    </TooltipTrigger>
 
-      <TooltipProvider delayDuration={100}>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <span
-              onClick={(e) => e.preventDefault()}
-              className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#E6F5EC]"
-            >
-              <Info className="h-3 w-3 text-[#427452]" />
-            </span>
-          </TooltipTrigger>
+                                    <TooltipContent
+                                        side="right"
+                                        sideOffset={6}
+                                        className="rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-700 shadow-md"
+                                    >
+                                        Hanya file JPG, JPEG, PNG, dan PDF yang
+                                        diperbolehkan.
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
+                        </CardTitle>
 
-          <TooltipContent
-            side="right"
-            sideOffset={6}
-            className="bg-white border border-gray-300 text-gray-700 shadow-md rounded-md px-3 py-2"
-          >
-            Hanya file JPG, JPEG, PNG, dan PDF yang diperbolehkan.
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-    </CardTitle>
-
-    {/* Kanan: tombol collapse */}
-    <Button variant="ghost" size="sm" className="w-9 px-0">
-      <ChevronsUpDown className="h-4 w-4" />
-      <span className="sr-only">Toggle</span>
-    </Button>
-  </CardHeader>
+                        {/* Kanan: tombol collapse */}
+                        <Button variant="ghost" size="sm" className="w-9 px-0">
+                            <ChevronsUpDown className="h-4 w-4" />
+                            <span className="sr-only">Toggle</span>
+                        </Button>
+                    </CardHeader>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                     <CardContent>
-                        <Table className="[&_th]:text-center [&_td]:text-center">
+                        <Table className="[&_td]:text-center [&_th]:text-center">
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>No</TableHead>
@@ -238,9 +238,12 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                             <TableBody>
                                 {submisi.submisi_file?.map((file, index) => (
                                     <TableRow key={file.id}>
-                                        {editingRow === file.id && isEditable ? (
+                                        {editingRow === file.id &&
+                                        isEditable ? (
                                             <>
-                                                <TableCell>{index + 1}</TableCell>
+                                                <TableCell>
+                                                    {index + 1}
+                                                </TableCell>
                                                 <TableCell>
                                                     {data.file ? (
                                                         <div className="flex items-center gap-2">
@@ -274,7 +277,9 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                                                         ref={fileInputRef}
                                                         type="file"
                                                         className="hidden"
-                                                        onChange={handleFileChange}
+                                                        onChange={
+                                                            handleFileChange
+                                                        }
                                                         accept=".pdf,.jpg,.jpeg,.png"
                                                     />
                                                 </TableCell>
@@ -310,7 +315,9 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                                                     <Button
                                                         size="sm"
                                                         variant="ghost"
-                                                        onClick={handleCancelEdit}
+                                                        onClick={
+                                                            handleCancelEdit
+                                                        }
                                                     >
                                                         <X className="h-4 w-4" />
                                                     </Button>
@@ -318,7 +325,9 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                                             </>
                                         ) : (
                                             <>
-                                                <TableCell>{index + 1}</TableCell>
+                                                <TableCell>
+                                                    {index + 1}
+                                                </TableCell>
                                                 <TableCell>
                                                     <a
                                                         href={`/dashboard/submisi-file/${file.id}/download`}
@@ -328,57 +337,80 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                                                         {getFileIcon(file.nama)}
                                                     </a>
                                                 </TableCell>
-                                                <TableCell>{file.nama}</TableCell>
-                                                <TableCell>{file.deskripsi}</TableCell>
+                                                <TableCell>
+                                                    {file.nama}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {file.deskripsi}
+                                                </TableCell>
                                                 {isEditable && (
                                                     <TableCell>
                                                         <div className="flex items-center justify-center gap-3">
-                                                        <Button
-                                                            size="sm"
-                                                            onClick={() => handleEdit(file)}
-                                                            disabled={isAdding}
-                                                        >
-                                                            <Edit className="h-4 w-4" />
-                                                        </Button>
-                                                        <AlertDialog>
-                                                            <AlertDialogTrigger asChild>
-                                                                <Button
-                                                                    variant="destructive"
-                                                                    size="sm"
-                                                                    disabled={isAdding}
+                                                            <Button
+                                                                size="sm"
+                                                                onClick={() =>
+                                                                    handleEdit(
+                                                                        file,
+                                                                    )
+                                                                }
+                                                                disabled={
+                                                                    isAdding
+                                                                }
+                                                            >
+                                                                <Edit className="h-4 w-4" />
+                                                            </Button>
+                                                            <AlertDialog>
+                                                                <AlertDialogTrigger
+                                                                    asChild
                                                                 >
-                                                                    <Trash2 className="h-4 w-4" />
-                                                                </Button>
-                                                            </AlertDialogTrigger>
-                                                            <AlertDialogContent>
-                                                                <AlertDialogHeader>
-                                                                    <AlertDialogTitle>
-                                                                        Are you absolutely
-                                                                        sure?
-                                                                    </AlertDialogTitle>
-                                                                    <AlertDialogDescription>
-                                                                        This action cannot
-                                                                        be undone. This will
-                                                                        permanently delete
-                                                                        the file.
-                                                                    </AlertDialogDescription>
-                                                                </AlertDialogHeader>
-                                                                <AlertDialogFooter>
-                                                                    <AlertDialogCancel>
-                                                                        Cancel
-                                                                    </AlertDialogCancel>
-                                                                    <AlertDialogAction
-                                                                        onClick={() =>
-                                                                            handleDelete(
-                                                                                file.id,
-                                                                            )
+                                                                    <Button
+                                                                        variant="destructive"
+                                                                        size="sm"
+                                                                        disabled={
+                                                                            isAdding
                                                                         }
                                                                     >
-                                                                        Continue
-                                                                    </AlertDialogAction>
-                                                                </AlertDialogFooter>
-                                                            </AlertDialogContent>
-                                                        </AlertDialog>
+                                                                        <Trash2 className="h-4 w-4" />
+                                                                    </Button>
+                                                                </AlertDialogTrigger>
+                                                                <AlertDialogContent>
+                                                                    <AlertDialogHeader>
+                                                                        <AlertDialogTitle>
+                                                                            Are
+                                                                            you
+                                                                            absolutely
+                                                                            sure?
+                                                                        </AlertDialogTitle>
+                                                                        <AlertDialogDescription>
+                                                                            This
+                                                                            action
+                                                                            cannot
+                                                                            be
+                                                                            undone.
+                                                                            This
+                                                                            will
+                                                                            permanently
+                                                                            delete
+                                                                            the
+                                                                            file.
+                                                                        </AlertDialogDescription>
+                                                                    </AlertDialogHeader>
+                                                                    <AlertDialogFooter>
+                                                                        <AlertDialogCancel>
+                                                                            Cancel
+                                                                        </AlertDialogCancel>
+                                                                        <AlertDialogAction
+                                                                            onClick={() =>
+                                                                                handleDelete(
+                                                                                    file.id,
+                                                                                )
+                                                                            }
+                                                                        >
+                                                                            Continue
+                                                                        </AlertDialogAction>
+                                                                    </AlertDialogFooter>
+                                                                </AlertDialogContent>
+                                                            </AlertDialog>
                                                         </div>
                                                     </TableCell>
                                                 )}
@@ -390,18 +422,24 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                                     <TableRow>
                                         <TableCell>
                                             {submisi.submisi_file?.length
-                                                ? submisi.submisi_file.length + 1
+                                                ? submisi.submisi_file.length +
+                                                  1
                                                 : 1}
                                         </TableCell>
                                         <TableCell>
                                             {data.file ? (
                                                 <div className="flex items-center gap-2">
-                                                    {getFileIcon(data.file.name)}
+                                                    {getFileIcon(
+                                                        data.file.name,
+                                                    )}
                                                     <Button
                                                         variant="ghost"
                                                         size="sm"
                                                         onClick={() =>
-                                                            setData('file', null)
+                                                            setData(
+                                                                'file',
+                                                                null,
+                                                            )
                                                         }
                                                     >
                                                         <X className="h-4 w-4" />
@@ -430,7 +468,10 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                                                 placeholder="Nama file"
                                                 value={data.nama}
                                                 onChange={(e) =>
-                                                    setData('nama', e.target.value)
+                                                    setData(
+                                                        'nama',
+                                                        e.target.value,
+                                                    )
                                                 }
                                                 disabled={!data.file}
                                             />
@@ -440,12 +481,18 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                                                 placeholder="Deskripsi file"
                                                 value={data.deskripsi}
                                                 onChange={(e) =>
-                                                    setData('deskripsi', e.target.value)
+                                                    setData(
+                                                        'deskripsi',
+                                                        e.target.value,
+                                                    )
                                                 }
                                             />
                                         </TableCell>
                                         <TableCell>
-                                            <Button size="sm" onClick={handleSaveNew}>
+                                            <Button
+                                                size="sm"
+                                                onClick={handleSaveNew}
+                                            >
                                                 <Save className="h-4 w-4" />
                                             </Button>
                                             <Button
@@ -471,15 +518,15 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                             </TableBody>
                         </Table>
                         {isEditable && (
-                        <div className="mt-4 flex justify-end">
-                            <Button
-                                onClick={handleAddNew}
-                                disabled={isAdding || !!editingRow}
-                                className="bg-[#427452] hover:bg-[#365d42] text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                Tambah Lampiran
-                            </Button>
-                        </div>
+                            <div className="mt-4 flex justify-end">
+                                <Button
+                                    onClick={handleAddNew}
+                                    disabled={isAdding || !!editingRow}
+                                    className="rounded-lg bg-[#427452] text-white transition-colors hover:bg-[#365d42] disabled:cursor-not-allowed disabled:opacity-50"
+                                >
+                                    Tambah Lampiran
+                                </Button>
+                            </div>
                         )}
                     </CardContent>
                 </CollapsibleContent>

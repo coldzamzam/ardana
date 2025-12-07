@@ -1,8 +1,7 @@
-import AppLayout from '@/layouts/app-layout';
-import { Head, router } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
+import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem, Submisi } from '@/types';
-
+import { Head, router } from '@inertiajs/react';
 
 interface DetailTemplateProps {
     submisi: Submisi;
@@ -14,10 +13,9 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
         { title: 'Template TOR', href: window.location.pathname },
     ];
 
-    const year =
-        submisi.detail_submisi?.tanggal_mulai
-            ? new Date(submisi.detail_submisi.tanggal_mulai).getFullYear()
-            : new Date().getFullYear();
+    const year = submisi.detail_submisi?.tanggal_mulai
+        ? new Date(submisi.detail_submisi.tanggal_mulai).getFullYear()
+        : new Date().getFullYear();
 
     const handlePrintTor = () => {
         window.print();
@@ -36,26 +34,26 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
 
             <div className="flex h-full flex-1 flex-col gap-6 overflow-y-auto bg-slate-100 p-4 print:bg-white">
                 {/* =================== HALAMAN 1 – COVER =================== */}
-                            <div className="mb-4 flex justify-end gap-3 print:hidden">
-                <Button
-                    type="button"
-                    variant="outline"
-                    className="border-slate-400 text-slate-700 hover:bg-slate-100"
-                    onClick={handlePrintTor}
-                >
-                    Print TOR
-                </Button>
+                <div className="mb-4 flex justify-end gap-3 print:hidden">
+                    <Button
+                        type="button"
+                        variant="outline"
+                        className="border-slate-400 text-slate-700 hover:bg-slate-100"
+                        onClick={handlePrintTor}
+                    >
+                        Print TOR
+                    </Button>
 
-                <Button
-                    type="button"
-                    className="bg-[#2B6CB0] text-white hover:bg-[#245a94]"
-                    onClick={handleDownloadTor}
-                >
-                    Download TOR
-                </Button>
-            </div>
+                    <Button
+                        type="button"
+                        className="bg-[#2B6CB0] text-white hover:bg-[#245a94]"
+                        onClick={handleDownloadTor}
+                    >
+                        Download TOR
+                    </Button>
+                </div>
                 <div
-                    className="mx-auto my-4 w-[794px] min-h-[1123px] bg-white p-12 shadow-md border border-black"
+                    className="mx-auto my-4 min-h-[1123px] w-[794px] border border-black bg-white p-12 shadow-md"
                     style={{ pageBreakAfter: 'always' as any }}
                 >
                     <div className="flex h-full flex-col items-center justify-between">
@@ -87,7 +85,7 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
                             <p className="mt-1 font-semibold italic">
                                 Kompetensi Dosen ENSA
                             </p>
-                            <p className="italic text-xs">
+                            <p className="text-xs italic">
                                 (Enterprise Networking, Security and Automation)
                             </p>
                         </div>
@@ -101,7 +99,7 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
                         </div>
 
                         {/* Kementerian & Tahun */}
-                        <div className="mb-8 mt-10 text-center text-sm leading-relaxed">
+                        <div className="mt-10 mb-8 text-center text-sm leading-relaxed">
                             <p>Kementerian Pendidikan Tinggi,</p>
                             <p>Sains, dan Teknologi</p>
 
@@ -112,7 +110,7 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
 
                 {/* =================== HALAMAN 2 – ISI LAPORAN =================== */}
                 <div
-                    className="mx-auto my-4 w-[794px] min-h-[1123px] bg-white px-12 py-10 shadow-md border border-black"
+                    className="mx-auto my-4 min-h-[1123px] w-[794px] border border-black bg-white px-12 py-10 shadow-md"
                     style={{ pageBreakAfter: 'always' as any }}
                 >
                     {/* Header */}
@@ -120,11 +118,10 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
                         <p className="font-semibold uppercase">
                             KERANGKA ACUAN KERJA
                         </p>
-                        <p className="mt-1">
-                            Tahun Anggaran {year}
-                        </p>
+                        <p className="mt-1">Tahun Anggaran {year}</p>
                         <p className="mt-2 text-[11px]">
-                            Kementerian/Lembaga : Kementerian Pendidikan Tinggi, Sains, dan Teknologi
+                            Kementerian/Lembaga : Kementerian Pendidikan Tinggi,
+                            Sains, dan Teknologi
                         </p>
                         <p className="text-[11px]">
                             PTN/Keperitis : Politeknik Negeri Jakarta
@@ -138,17 +135,17 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
                     </div>
 
                     {/* Contoh tabel Program – Indikator Kinerja (sederhana) */}
-                    <div className="mb-6 mt-4 text-[11px]">
+                    <div className="mt-4 mb-6 text-[11px]">
                         <table className="w-full table-fixed border-collapse border border-black text-[11px]">
                             <thead>
                                 <tr className="bg-slate-100">
-                                    <th className="border border-black px-2 py-1 w-1/3">
+                                    <th className="w-1/3 border border-black px-2 py-1">
                                         Program
                                     </th>
-                                    <th className="border border-black px-2 py-1 w-1/3">
+                                    <th className="w-1/3 border border-black px-2 py-1">
                                         Indikator Kinerja
                                     </th>
-                                    <th className="border border-black px-2 py-1 w-1/3">
+                                    <th className="w-1/3 border border-black px-2 py-1">
                                         Target
                                     </th>
                                 </tr>
@@ -157,14 +154,14 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
                                 <tr>
                                     <td className="border border-black px-2 py-1 align-top">
                                         Peningkatan kualitas dosen melalui
-                                        sertifikasi kompetensi di bidang jaringan
-                                        dan keamanan.
+                                        sertifikasi kompetensi di bidang
+                                        jaringan dan keamanan.
                                     </td>
                                     <td className="border border-black px-2 py-1 align-top">
                                         Persentase dosen yang mengikuti dan
                                         lulus pelatihan/sertifikasi ENSA.
                                     </td>
-                                    <td className="border border-black px-2 py-1 align-top text-center">
+                                    <td className="border border-black px-2 py-1 text-center align-top">
                                         85%
                                     </td>
                                 </tr>
@@ -178,36 +175,51 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
 
                         <h3 className="mt-1 font-semibold">1. Dasar Hukum</h3>
                         <ol className="ml-4 list-decimal space-y-1">
-                            <li>Undang-Undang Nomor 17 Tahun 2003 tentang Keuangan Negara.</li>
-                            <li>Undang-Undang Nomor 20 Tahun 2003 tentang Sistem Pendidikan Nasional.</li>
-                            <li>Undang-Undang Nomor 12 Tahun 2012 tentang Pendidikan Tinggi.</li>
                             <li>
-                                Peraturan Pemerintah Republik Indonesia Nomor 21 Tahun 2004 tentang
-                                Penyusunan Rencana Kerja dan Anggaran Kementerian Negara/Lembaga.
+                                Undang-Undang Nomor 17 Tahun 2003 tentang
+                                Keuangan Negara.
                             </li>
                             <li>
-                                Peraturan Pemerintah Nomor 90 Tahun 2010 tentang Penyusunan RKA-K/L.
+                                Undang-Undang Nomor 20 Tahun 2003 tentang Sistem
+                                Pendidikan Nasional.
                             </li>
                             <li>
-                                Peraturan Pemerintah Nomor 17 Tahun 2010 tentang Pengelolaan dan
-                                Penyelenggaraan Pendidikan.
+                                Undang-Undang Nomor 12 Tahun 2012 tentang
+                                Pendidikan Tinggi.
                             </li>
                             <li>
-                                Rencana Strategis Politeknik Negeri Jakarta serta Rencana Strategis
-                                Jurusan Teknik Informatika dan Komputer.
+                                Peraturan Pemerintah Republik Indonesia Nomor 21
+                                Tahun 2004 tentang Penyusunan Rencana Kerja dan
+                                Anggaran Kementerian Negara/Lembaga.
+                            </li>
+                            <li>
+                                Peraturan Pemerintah Nomor 90 Tahun 2010 tentang
+                                Penyusunan RKA-K/L.
+                            </li>
+                            <li>
+                                Peraturan Pemerintah Nomor 17 Tahun 2010 tentang
+                                Pengelolaan dan Penyelenggaraan Pendidikan.
+                            </li>
+                            <li>
+                                Rencana Strategis Politeknik Negeri Jakarta
+                                serta Rencana Strategis Jurusan Teknik
+                                Informatika dan Komputer.
                             </li>
                         </ol>
 
                         <h3 className="mt-2 font-semibold">2. Gambaran Umum</h3>
                         <p>
-                            Pelatihan ENSA (Enterprise Networking, Security and Automation)
-                            diselenggarakan untuk meningkatkan kompetensi dosen Program Studi
-                            di bidang Jaringan dan Keamanan Jaringan. Kegiatan ini dirancang
-                            untuk membekali dosen dengan keterampilan praktis yang relevan
-                            dengan kebutuhan industri, khususnya terkait manajemen jaringan,
-                            keamanan, dan otomatisasi jaringan. Hasil dari pelatihan ini
-                            diharapkan dapat diintegrasikan dalam kurikulum dan proses
-                            pembelajaran sehingga mendukung peningkatan mutu lulusan.
+                            Pelatihan ENSA (Enterprise Networking, Security and
+                            Automation) diselenggarakan untuk meningkatkan
+                            kompetensi dosen Program Studi di bidang Jaringan
+                            dan Keamanan Jaringan. Kegiatan ini dirancang untuk
+                            membekali dosen dengan keterampilan praktis yang
+                            relevan dengan kebutuhan industri, khususnya terkait
+                            manajemen jaringan, keamanan, dan otomatisasi
+                            jaringan. Hasil dari pelatihan ini diharapkan dapat
+                            diintegrasikan dalam kurikulum dan proses
+                            pembelajaran sehingga mendukung peningkatan mutu
+                            lulusan.
                         </p>
                     </section>
 
@@ -215,51 +227,79 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
                     <section className="mt-4 space-y-2 text-[11px] leading-relaxed">
                         <h2 className="font-bold">B. Penerima Manfaat</h2>
                         <p>
-                            Kegiatan pelatihan dan sertifikasi ENSA ini dilaksanakan dalam
-                            rangka meningkatkan kompetensi dosen Program Studi di bawah Jurusan
-                            Teknik Informatika dan Komputer. Peserta pelatihan ditargetkan
-                            berasal dari dosen pengampu mata kuliah yang berkaitan dengan
-                            jaringan komputer dan keamanan jaringan.
+                            Kegiatan pelatihan dan sertifikasi ENSA ini
+                            dilaksanakan dalam rangka meningkatkan kompetensi
+                            dosen Program Studi di bawah Jurusan Teknik
+                            Informatika dan Komputer. Peserta pelatihan
+                            ditargetkan berasal dari dosen pengampu mata kuliah
+                            yang berkaitan dengan jaringan komputer dan keamanan
+                            jaringan.
                         </p>
                         <ul className="ml-4 list-disc space-y-1">
                             <li>
-                                <span className="font-semibold">Dosen:</span> memperoleh
-                                peningkatan kompetensi dan peluang sertifikasi.
+                                <span className="font-semibold">Dosen:</span>{' '}
+                                memperoleh peningkatan kompetensi dan peluang
+                                sertifikasi.
                             </li>
                             <li>
-                                <span className="font-semibold">Mahasiswa:</span> mendapatkan
-                                materi pembelajaran yang lebih aplikatif dan mutakhir.
+                                <span className="font-semibold">
+                                    Mahasiswa:
+                                </span>{' '}
+                                mendapatkan materi pembelajaran yang lebih
+                                aplikatif dan mutakhir.
                             </li>
                             <li>
-                                <span className="font-semibold">Institusi:</span> terbantu
-                                dalam pencapaian indikator kinerja dan akreditasi.
+                                <span className="font-semibold">
+                                    Institusi:
+                                </span>{' '}
+                                terbantu dalam pencapaian indikator kinerja dan
+                                akreditasi.
                             </li>
                         </ul>
                     </section>
 
                     {/* C. Strategi Pencapaian Keluaran (ringkas) */}
                     <section className="mt-4 space-y-2 text-[11px] leading-relaxed">
-                        <h2 className="font-bold">C. Strategi Pencapaian Keluaran</h2>
+                        <h2 className="font-bold">
+                            C. Strategi Pencapaian Keluaran
+                        </h2>
 
-                        <h3 className="mt-1 font-semibold">1. Metode Pelaksanaan</h3>
+                        <h3 className="mt-1 font-semibold">
+                            1. Metode Pelaksanaan
+                        </h3>
                         <p>
-                            Pelatihan ENSA akan diikuti oleh dosen homebase Program Studi di
-                            lingkungan Jurusan Teknik Informatika dan Komputer. Kegiatan
-                            dilaksanakan secara daring/luring dengan kombinasi pemaparan
+                            Pelatihan ENSA akan diikuti oleh dosen homebase
+                            Program Studi di lingkungan Jurusan Teknik
+                            Informatika dan Komputer. Kegiatan dilaksanakan
+                            secara daring/luring dengan kombinasi pemaparan
                             materi, diskusi, dan praktik konfigurasi jaringan.
                         </p>
                         <ul className="ml-4 list-disc space-y-1">
-                            <li>Pemaparan konsep jaringan, keamanan, dan otomatisasi.</li>
-                            <li>Latihan konfigurasi perangkat dan studi kasus jaringan.</li>
-                            <li>Diskusi dan tanya jawab terkait penerapan materi.</li>
-                            <li>Persiapan ujian sertifikasi dari penyelenggara resmi.</li>
+                            <li>
+                                Pemaparan konsep jaringan, keamanan, dan
+                                otomatisasi.
+                            </li>
+                            <li>
+                                Latihan konfigurasi perangkat dan studi kasus
+                                jaringan.
+                            </li>
+                            <li>
+                                Diskusi dan tanya jawab terkait penerapan
+                                materi.
+                            </li>
+                            <li>
+                                Persiapan ujian sertifikasi dari penyelenggara
+                                resmi.
+                            </li>
                         </ul>
 
-                        <h3 className="mt-2 font-semibold">2. Indikator Kinerja</h3>
+                        <h3 className="mt-2 font-semibold">
+                            2. Indikator Kinerja
+                        </h3>
                         <table className="mt-1 w-full table-fixed border-collapse border border-black text-[11px]">
                             <thead>
                                 <tr className="bg-slate-100">
-                                    <th className="border border-black px-2 py-1 w-[60px]">
+                                    <th className="w-[60px] border border-black px-2 py-1">
                                         No
                                     </th>
                                     <th className="border border-black px-2 py-1">
@@ -268,7 +308,7 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
                                     <th className="border border-black px-2 py-1">
                                         Indikator Keberhasilan
                                     </th>
-                                    <th className="border border-black px-2 py-1 w-[80px]">
+                                    <th className="w-[80px] border border-black px-2 py-1">
                                         Target
                                     </th>
                                 </tr>
@@ -278,7 +318,9 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
                                     <td className="border border-black px-2 py-1 text-center">
                                         1
                                     </td>
-                                    <td className="border border-black px-2 py-1">Agustus</td>
+                                    <td className="border border-black px-2 py-1">
+                                        Agustus
+                                    </td>
                                     <td className="border border-black px-2 py-1">
                                         Perencanaan kegiatan, koordinasi, dan
                                         penyiapan administrasi pelatihan.
@@ -291,7 +333,9 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
                                     <td className="border border-black px-2 py-1 text-center">
                                         2
                                     </td>
-                                    <td className="border border-black px-2 py-1">September</td>
+                                    <td className="border border-black px-2 py-1">
+                                        September
+                                    </td>
                                     <td className="border border-black px-2 py-1">
                                         Pelaksanaan pelatihan dan sertifikasi
                                         ENSA serta penyusunan laporan kegiatan.
@@ -306,12 +350,15 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
 
                     {/* D. Kurun Waktu Pelaksanaan */}
                     <section className="mt-4 space-y-2 text-[11px] leading-relaxed">
-                        <h2 className="font-bold">D. Kurun Waktu Pelaksanaan</h2>
+                        <h2 className="font-bold">
+                            D. Kurun Waktu Pelaksanaan
+                        </h2>
                         <p>
-                            Kegiatan Pelatihan dan Sertifikasi Kompetensi ENSA ini akan
-                            dilaksanakan dalam jangka waktu 4 (empat) hari pada tanggal
-                            15–18 September {year}, secara online/berbasis daring melalui
-                            platform yang ditetapkan penyelenggara.
+                            Kegiatan Pelatihan dan Sertifikasi Kompetensi ENSA
+                            ini akan dilaksanakan dalam jangka waktu 4 (empat)
+                            hari pada tanggal 15–18 September {year}, secara
+                            online/berbasis daring melalui platform yang
+                            ditetapkan penyelenggara.
                         </p>
                     </section>
 
@@ -319,14 +366,16 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
                     <section className="mt-4 space-y-2 text-[11px] leading-relaxed">
                         <h2 className="font-bold">E. Biaya Yang Diperlukan</h2>
                         <p>
-                            Biaya yang diperlukan untuk pelaksanaan kegiatan ini akan
-                            dirinci dalam Rencana Anggaran Biaya (RAB) pada modul keuangan
-                            sistem ARDANA, meliputi komponen belanja barang, pelatihan, dan
-                            kebutuhan pendukung lainnya.
+                            Biaya yang diperlukan untuk pelaksanaan kegiatan ini
+                            akan dirinci dalam Rencana Anggaran Biaya (RAB) pada
+                            modul keuangan sistem ARDANA, meliputi komponen
+                            belanja barang, pelatihan, dan kebutuhan pendukung
+                            lainnya.
                         </p>
                         <p className="italic">
-                            *Catatan: Rincian tabel RAB diinput melalui fitur RAB/biaya pada
-                            sistem, dan akan tergenerate tersendiri pada dokumen akhir.*
+                            *Catatan: Rincian tabel RAB diinput melalui fitur
+                            RAB/biaya pada sistem, dan akan tergenerate
+                            tersendiri pada dokumen akhir.*
                         </p>
                     </section>
                 </div>
