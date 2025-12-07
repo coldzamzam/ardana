@@ -36,7 +36,22 @@ class TorController extends Controller
 
     public function show(Request $request, Submisi $submisi)
     {
-        $submisi->load('anggotaTim.user.mahasiswa', 'statusSubmisi.statusType', 'indikatorKinerja', 'submisiFile', 'biaya', 'detailSubmisi', 'kegiatanType', 'createdBy');
+        // Urutkan statusSubmisi dari yang terbaru
+        $submisi->load([
+            'anggotaTim.user.mahasiswa',
+            'statusSubmisi' => function ($query) {
+                $query->orderBy('created_at', 'desc');
+            },
+            'statusSubmisi.statusType',
+            'indikatorKinerja',
+            'submisiFile',
+            'biaya',
+            'detailSubmisi',
+            'kegiatanType',
+            'createdBy',
+        ]);
+
+        $latestStatus = $submisi->statusSubmisi->first();
 
         $rolesToInclude = ['dosen', 'sekjur', 'kajur'];
         $dosens = User::whereHas('roles', function ($q) use ($rolesToInclude) {
@@ -62,6 +77,7 @@ class TorController extends Controller
             'submisi' => $submisi,
             'dosens' => $dosens,
             'kegiatanTypes' => $kegiatanTypes,
+            'latestStatus' => $latestStatus, // Pass latest status to the view
         ]);
     }
 
@@ -92,6 +108,7 @@ class TorController extends Controller
         ]);
 
         $dbData = [
+            'submisi_id' => $submisi->id,
             'iku' => $validatedData['indikator_kinerja'],
             'tanggal_mulai' => $validatedData['tanggal_mulai'],
             'tanggal_selesai' => $validatedData['tanggal_selesai'],
@@ -103,12 +120,46 @@ class TorController extends Controller
             'pic_id' => $validatedData['pic_id'],
         ];
 
-        DetailSubmisi::updateOrCreate(
-            ['submisi_id' => $submisi->id],
-            $dbData
-        );
+        // This method now only updates the latest detail submission.
+        $latestDetail = $submisi->detailSubmisi()->latest()->first();
+        if ($latestDetail) {
+            $latestDetail->update($dbData);
+        } else {
+            DetailSubmisi::create($dbData);
+        }
 
         return Redirect::back()->with('success', 'Detail TOR berhasil disimpan.');
+    }
+
+    public function storeNewVersion(Request $request, Submisi $submisi)
+    {
+        $validatedData = $request->validate([
+            'indikator_kinerja' => 'required|string',
+            'tanggal_mulai' => 'required|date',
+            'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
+            'gambaran_umum' => 'required|string',
+            'tujuan' => 'required|string',
+            'manfaat' => 'required|string',
+            'metode_pelaksanaan' => 'required|string',
+            'waktu_pelaksanaan' => 'required|string',
+            'pic_id' => 'required|string|exists:users,id',
+        ]);
+
+        // Create a new DetailSubmisi record
+        DetailSubmisi::create([
+            'submisi_id' => $submisi->id,
+            'iku' => $validatedData['indikator_kinerja'],
+            'tanggal_mulai' => $validatedData['tanggal_mulai'],
+            'tanggal_selesai' => $validatedData['tanggal_selesai'],
+            'gambaran_umum' => $validatedData['gambaran_umum'],
+            'tujuan' => $validatedData['tujuan'],
+            'manfaat' => $validatedData['manfaat'],
+            'metode_pelaksanaan' => $validatedData['metode_pelaksanaan'],
+            'waktu_pelaksanaan' => $validatedData['waktu_pelaksanaan'],
+            'pic_id' => $validatedData['pic_id'],
+        ]);
+
+        return Redirect::back()->with('success', 'Versi revisi baru berhasil disimpan.');
     }
 
     public function verifikasi()
@@ -141,8 +192,10 @@ class TorController extends Controller
 
     public function submit(Request $request, Submisi $submisi)
     {
-        // Pastikan detail submisi sudah diisi
-        if (! $submisi->detailSubmisi) {
+        // Find the latest detail submission associated with this TOR
+        $latestDetail = $submisi->detailSubmisi()->latest()->first();
+
+        if (! $latestDetail) {
             return Redirect::back()->with('error', 'Detail TOR harus diisi lengkap sebelum diajukan.');
         }
 
@@ -150,7 +203,7 @@ class TorController extends Controller
 
         StatusSubmisi::create([
             'submisi_id' => $submisi->id,
-            'detail_submisi_id' => $submisi->detailSubmisi->id,
+            'detail_submisi_id' => $latestDetail->id, // Use the latest detail ID
             'status_type_id' => $statusType->id,
             'created_by' => Auth::id(),
         ]);

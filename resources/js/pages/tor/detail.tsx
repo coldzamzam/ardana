@@ -41,12 +41,14 @@ interface TorDetailProps {
     submisi: Submisi;
     dosens: DosenForSelect[];
     kegiatanTypes: KegiatanType[];
+    latestStatus: StatusSubmisi | null;
 }
 
 export default function TorDetail({
     submisi,
     dosens,
     kegiatanTypes,
+    latestStatus,
 }: TorDetailProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -81,10 +83,17 @@ export default function TorDetail({
         pic_nip: '',
     });
 
-    const latestStatus =
-        submisi.status_submisi?.[submisi.status_submisi.length - 1];
     const isEditable =
-        !latestStatus || latestStatus.status_type.nama === 'Revisi';
+        !latestStatus || latestStatus.status_type.nama.trim() === 'Revisi';
+
+    const isRevision = latestStatus?.status_type.nama.trim() === 'Revisi';
+
+    const hasNewDetailForRevision =
+        isRevision &&
+        latestStatus?.detail_submisi_id !== submisi.detail_submisi?.id;
+    const hasDetailForDraft = !isRevision && !!submisi.detail_submisi;
+
+    const isSubmittable = hasNewDetailForRevision || hasDetailForDraft;
 
     const isInitialMount = useRef(true);
 
@@ -135,9 +144,24 @@ export default function TorDetail({
 
     const handleUpdateDetail = () => {
         if (!isEditable) return;
-        post(`/dashboard/tor/${submisi.id}/draft`, {
-            preserveScroll: true,
-        });
+
+        const isRevision = latestStatus?.status_type.nama.trim() === 'Revisi';
+        // Cek jika ini save pertama pada mode revisi
+        const isFirstSaveInRevision =
+            isRevision &&
+            latestStatus?.detail_submisi_id === submisi.detail_submisi?.id;
+
+        if (isFirstSaveInRevision) {
+            // Buat versi baru
+            post(`/dashboard/tor/${submisi.id}/new-version`, {
+                preserveScroll: true,
+            });
+        } else {
+            // Update draft yang ada (baik draft awal atau draft revisi)
+            post(`/dashboard/tor/${submisi.id}/draft`, {
+                preserveScroll: true,
+            });
+        }
     };
 
     const handleSubmitSubmission = () => {
@@ -433,62 +457,71 @@ export default function TorDetail({
                 <DetailIndikator submisi={submisi} isEditable={isEditable} />
                 <DetailFile submisi={submisi} isEditable={isEditable} />
                 <DetailBiaya submisi={submisi} isEditable={isEditable} />
-                <div className="flex justify-end gap-3 pt-4 pb-10">
-                    {isEditable ? (
-                        <>
-                            <Button
-                                type="button"
-                                className="bg-[#5D41D9] text-white hover:bg-[#392885]"
-                                onClick={handleGenerateTemplateTor}
-                            >
-                                Buat Template TOR
-                            </Button>
-                            <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                    <Button
-                                        disabled={!submisi.detail_submisi}
-                                        className="rounded-md bg-[#427452] text-white hover:bg-[#365d42]"
-                                    >
-                                        Kirim Pengajuan
-                                    </Button>
-                                </AlertDialogTrigger>
-
-                                <AlertDialogContent className="rounded-3xl border border-[#73AD86]/40 bg-white/95 shadow-2xl data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:slide-out-to-bottom-10 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-bottom-10 data-[state=open]:zoom-in-95 sm:max-w-lg">
-                                    <AlertDialogHeader>
-                                        <AlertDialogTitle className="text-lg font-semibold text-[#111827]">
-                                            Apakah Anda yakin ingin mengajukan
-                                            TOR ini?
-                                        </AlertDialogTitle>
-                                        <AlertDialogDescription className="text-sm text-slate-600">
-                                            Setelah diajukan, TOR tidak dapat
-                                            diedit kembali kecuali jika diminta
-                                            untuk revisi oleh reviewer. Pastikan
-                                            semua data sudah benar.
-                                        </AlertDialogDescription>
-                                    </AlertDialogHeader>
-
-                                    <AlertDialogFooter className="mt-2">
-                                        <AlertDialogCancel className="rounded-md border-slate-300 px-5">
-                                            Batal
-                                        </AlertDialogCancel>
-                                        <AlertDialogAction
-                                            onClick={handleSubmitSubmission}
-                                            className="rounded-md bg-[#427452] px-6 hover:bg-[#365d42]"
-                                        >
-                                            Lanjutkan
-                                        </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                </AlertDialogContent>
-                            </AlertDialog>
-                        </>
-                    ) : (
-                        <Button
-                            disabled
-                            className="rounded-md bg-gray-500 px-6 text-white"
-                        >
-                            Telah Diajukan
-                        </Button>
+                <div className="flex flex-col items-end pt-4 pb-10">
+                    {isEditable && !isSubmittable && (
+                        <p className="pb-2 text-xs text-slate-600">
+                            Silakan simpan detail submisi terbaru untuk mengirim
+                            pengajuan
+                        </p>
                     )}
+                    <div className="flex gap-3">
+                        {isEditable ? (
+                            <>
+                                <Button
+                                    type="button"
+                                    className="bg-[#5D41D9] text-white hover:bg-[#392885]"
+                                    onClick={handleGenerateTemplateTor}
+                                >
+                                    Buat Template TOR
+                                </Button>
+                                <AlertDialog>
+                                    <AlertDialogTrigger asChild>
+                                        <Button
+                                            disabled={!isSubmittable}
+                                            className="rounded-md bg-[#427452] text-white hover:bg-[#365d42]"
+                                        >
+                                            Kirim Pengajuan
+                                        </Button>
+                                    </AlertDialogTrigger>
+
+                                    <AlertDialogContent className="rounded-3xl border border-[#73AD86]/40 bg-white/95 shadow-2xl data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:slide-out-to-bottom-10 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-bottom-10 data-[state=open]:zoom-in-95 sm:max-w-lg">
+                                        <AlertDialogHeader>
+                                            <AlertDialogTitle className="text-lg font-semibold text-[#111827]">
+                                                Apakah Anda yakin ingin
+                                                mengajukan TOR ini?
+                                            </AlertDialogTitle>
+                                            <AlertDialogDescription className="text-sm text-slate-600">
+                                                Setelah diajukan, TOR tidak
+                                                dapat diedit kembali kecuali
+                                                jika diminta untuk revisi oleh
+                                                reviewer. Pastikan semua data
+                                                sudah benar.
+                                            </AlertDialogDescription>
+                                        </AlertDialogHeader>
+
+                                        <AlertDialogFooter className="mt-2">
+                                            <AlertDialogCancel className="rounded-md border-slate-300 px-5">
+                                                Batal
+                                            </AlertDialogCancel>
+                                            <AlertDialogAction
+                                                onClick={handleSubmitSubmission}
+                                                className="rounded-md bg-[#427452] px-6 hover:bg-[#365d42]"
+                                            >
+                                                Lanjutkan
+                                            </AlertDialogAction>
+                                        </AlertDialogFooter>
+                                    </AlertDialogContent>
+                                </AlertDialog>
+                            </>
+                        ) : (
+                            <Button
+                                disabled
+                                className="rounded-md bg-gray-500 px-6 text-white"
+                            >
+                                Telah Diajukan
+                            </Button>
+                        )}
+                    </div>
                 </div>
             </div>
         </AppLayout>
