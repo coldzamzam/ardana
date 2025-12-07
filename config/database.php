@@ -84,7 +84,7 @@ return [
 
         'pgsql' => [
             'driver' => 'pgsql',
-            'url' => env('DB_URL'),
+            'url' => env('DATABASE_URL'),
             'host' => env('PGHOST', env('DB_HOST', '127.0.0.1')),
             'port' => env('PGPORT', env('DB_PORT', '5432')),
             'database' => env('PGDATABASE', env('DB_DATABASE', 'laravel')),
