@@ -7,81 +7,105 @@ import { edit as editPassword } from '@/routes/password';
 import { edit } from '@/routes/profile';
 import { show } from '@/routes/two-factor';
 import { type NavItem } from '@/types';
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 import { type PropsWithChildren } from 'react';
+import { User, Lock, ShieldCheck, Palette } from 'lucide-react';
 
 const sidebarNavItems: NavItem[] = [
     {
-        title: 'Profile',
+        title: 'Profil',
         href: edit(),
-        icon: null,
+        icon: User,
     },
     {
         title: 'Password',
         href: editPassword(),
-        icon: null,
+        icon: Lock,
     },
     {
         title: 'Two-Factor Auth',
         href: show(),
-        icon: null,
+        icon: ShieldCheck,
     },
     {
         title: 'Appearance',
         href: editAppearance(),
-        icon: null,
+        icon: Palette,
     },
 ];
 
 export default function SettingsLayout({ children }: PropsWithChildren) {
-    // When server-side rendering, we only render the layout on the client...
-    if (typeof window === 'undefined') {
-        return null;
-    }
-
-    const currentPath = window.location.pathname;
+    const { url } = usePage();
+    const currentPath = url.split('?')[0];
 
     return (
-        <div className="px-4 py-6">
-            <Heading
-                title="Settings"
-                description="Manage your profile and account settings"
-            />
+        <div className="flex h-full flex-1 bg-[#CBEBD5]/70 p-4 md:p-6">
+            <div className="flex flex-1 flex-col gap-6 rounded-2xl bg-[#E6F5EC] p-4 md:p-6">
 
-            <div className="flex flex-col lg:flex-row lg:space-x-12">
-                <aside className="w-full max-w-xl lg:w-48">
-                    <nav className="flex flex-col space-y-1 space-x-0">
-                        {sidebarNavItems.map((item, index) => (
-                            <Button
-                                key={`${typeof item.href === 'string' ? item.href : item.href.url}-${index}`}
-                                size="sm"
-                                variant="ghost"
-                                asChild
-                                className={cn('w-full justify-start', {
-                                    'bg-muted':
-                                        currentPath ===
-                                        (typeof item.href === 'string'
+                {/* TITLE (dibikin sama seperti TOR & LPJ) */}
+                <div>
+                    <h1 className="text-2xl font-semibold text-[#427452]">
+                        Pengaturan
+                    </h1>
+                </div>
+
+                <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
+                    {/* SIDEBAR */}
+                    <aside className="w-full lg:w-64 lg:flex-shrink-0">
+                        <div className="rounded-2xl border border-[#73AD86]/40 bg-white/90 p-3 shadow-sm">
+                            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                                Menu
+                            </p>
+                            <nav className="flex flex-col gap-1">
+                                {sidebarNavItems.map((item, index) => {
+                                    const href =
+                                        typeof item.href === 'string'
                                             ? item.href
-                                            : item.href.url),
+                                            : item.href.url;
+                                    const isActive = currentPath === href;
+                                    const Icon = item.icon;
+
+                                    return (
+                                        <Button
+                                            key={`${href}-${index}`}
+                                            size="sm"
+                                            variant="ghost"
+                                            asChild
+                                            className={cn(
+                                                'w-full justify-start rounded-xl px-3 py-2 text-sm font-medium transition-colors',
+                                                isActive
+                                                    ? 'bg-[#427452] text-white hover:bg-[#365d42]'
+                                                    : 'bg-transparent text-slate-700 hover:bg-white/70 hover:text-[#427452]',
+                                            )}
+                                        >
+                                            <Link href={item.href}>
+                                                <span className="flex items-center gap-2">
+                                                    {Icon && (
+                                                        <Icon
+                                                            className={cn(
+                                                                'h-4 w-4',
+                                                                isActive
+                                                                    ? 'text-white'
+                                                                    : 'text-[#427452]',
+                                                            )}
+                                                        />
+                                                    )}
+                                                    <span>{item.title}</span>
+                                                </span>
+                                            </Link>
+                                        </Button>
+                                    );
                                 })}
-                            >
-                                <Link href={item.href}>
-                                    {item.icon && (
-                                        <item.icon className="h-4 w-4" />
-                                    )}
-                                    {item.title}
-                                </Link>
-                            </Button>
-                        ))}
-                    </nav>
-                </aside>
+                            </nav>
+                        </div>
+                    </aside>
 
-                <Separator className="my-6 lg:hidden" />
-
-                <div className="flex-1 md:max-w-2xl">
-                    <section className="max-w-xl space-y-12">
-                        {children}
-                    </section>
+                    {/* CONTENT CARD */}
+                    <div className="flex-1">
+                        <div className="max-w-2xl rounded-2xl border border-[#73AD86]/40 bg-white/90 p-4 shadow-sm md:p-6">
+                            <section className="space-y-8">{children}</section>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
