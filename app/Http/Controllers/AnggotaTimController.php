@@ -16,7 +16,7 @@ class AnggotaTimController extends Controller
             'anggota_id' => 'required|string|exists:users,id',
         ]);
 
-        $anggotaTim = new AnggotaTim;
+        $anggotaTim = new AnggotaTim();
         $anggotaTim->id = Str::uuid();
         $anggotaTim->submisi_id = $request->submisi_id;
         $anggotaTim->anggota_id = $request->anggota_id;

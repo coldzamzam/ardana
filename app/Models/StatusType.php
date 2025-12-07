@@ -9,7 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class StatusType extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory;
+    use HasUuids;
 
     protected $table = 'status_types';
 
