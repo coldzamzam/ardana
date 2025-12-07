@@ -187,7 +187,7 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                     <CardContent>
-                        <Table>
+                        <Table className="[&_th]:text-center [&_td]:text-center">
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>No</TableHead>
@@ -294,6 +294,7 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                                                 <TableCell>{file.deskripsi}</TableCell>
                                                 {isEditable && (
                                                     <TableCell>
+                                                        <div className="flex items-center justify-center gap-3">
                                                         <Button
                                                             size="sm"
                                                             onClick={() => handleEdit(file)}
@@ -340,6 +341,7 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                                                                 </AlertDialogFooter>
                                                             </AlertDialogContent>
                                                         </AlertDialog>
+                                                        </div>
                                                     </TableCell>
                                                 )}
                                             </>
@@ -431,14 +433,15 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                             </TableBody>
                         </Table>
                         {isEditable && (
-                            <div className="mt-4 flex justify-end">
-                                <Button
-                                    onClick={handleAddNew}
-                                    disabled={isAdding || !!editingRow}
-                                >
-                                    Tambah File
-                                </Button>
-                            </div>
+                        <div className="mt-4 flex justify-end">
+                            <Button
+                                onClick={handleAddNew}
+                                disabled={isAdding || !!editingRow}
+                                className="bg-[#427452] hover:bg-[#365d42] text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                Tambah Lampiran
+                            </Button>
+                        </div>
                         )}
                     </CardContent>
                 </CollapsibleContent>

@@ -157,7 +157,7 @@ export default function DetailIndikator({ submisi, isEditable }: DetailIndikator
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                     <CardContent>
-                        <Table>
+                        <Table className="[&_th]:text-center [&_td]:text-center">
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>No</TableHead>
@@ -256,6 +256,7 @@ export default function DetailIndikator({ submisi, isEditable }: DetailIndikator
                                                 </TableCell>
                                                 {isEditable && (
                                                     <TableCell>
+                                                        <div className="flex items-center justify-center gap-2">
                                                         <Button
                                                             size="sm"
                                                             onClick={() =>
@@ -304,6 +305,7 @@ export default function DetailIndikator({ submisi, isEditable }: DetailIndikator
                                                                 </AlertDialogFooter>
                                                             </AlertDialogContent>
                                                         </AlertDialog>
+                                                        </div>
                                                     </TableCell>
                                                 )}
                                             </>
@@ -312,10 +314,10 @@ export default function DetailIndikator({ submisi, isEditable }: DetailIndikator
                                 ))}
                                 {isAdding && isEditable && (
                                     <TableRow>
-                                        <TableCell>
+                                        <TableCell className="text-center align-middle">
                                             {submisi.indikator_kinerja?.length + 1}
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell className="text-center align-middle">
                                             <Input
                                                 type="month"
                                                 onChange={(e) => {
@@ -333,10 +335,10 @@ export default function DetailIndikator({ submisi, isEditable }: DetailIndikator
                                                         `${monthName} ${year}`,
                                                     );
                                                 }}
-                                                className="w-full rounded-md border border-gray-300 bg-white p-2"
+                                                className="w-full rounded-md border border-gray-300 bg-white p-2 text-center"
                                             />
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell className="text-center align-middle">
                                             <Input
                                                 placeholder="Deskripsi Keberhasilan"
                                                 value={data.keberhasilan}
@@ -346,9 +348,10 @@ export default function DetailIndikator({ submisi, isEditable }: DetailIndikator
                                                         e.target.value,
                                                     )
                                                 }
+                                                className="text-center"
                                             />
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell className="text-center align-middle">
                                             <Input
                                                 type="number"
                                                 placeholder="1-100"
@@ -361,9 +364,11 @@ export default function DetailIndikator({ submisi, isEditable }: DetailIndikator
                                                 }
                                                 min={1}
                                                 max={100}
+                                                className="text-center"
                                             />
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell className="align-middle">
+                                            <div className="flex items-center justify-center gap-3">
                                             <Button size="sm" onClick={handleSaveNew}>
                                                 <Save className="h-4 w-4" />
                                             </Button>
@@ -374,6 +379,7 @@ export default function DetailIndikator({ submisi, isEditable }: DetailIndikator
                                             >
                                                 <X className="h-4 w-4" />
                                             </Button>
+                                            </div>
                                         </TableCell>
                                     </TableRow>
                                 )}
@@ -391,13 +397,14 @@ export default function DetailIndikator({ submisi, isEditable }: DetailIndikator
                         </Table>
                         {isEditable && (
                             <div className="mt-4 flex justify-end">
-                                <Button
-                                    onClick={handleAddNew}
-                                    disabled={isAdding || !!editingRow}
-                                >
-                                    Tambah
-                                </Button>
-                            </div>
+                        <Button
+                            onClick={handleAddNew}
+                            disabled={isAdding || !!editingRow}
+                            className="bg-[#427452] hover:bg-[#365d42] text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            Tambah Indikator
+                        </Button>
+                    </div>
                         )}
                     </CardContent>
                 </CollapsibleContent>

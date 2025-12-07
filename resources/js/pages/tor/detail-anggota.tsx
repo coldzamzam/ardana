@@ -114,7 +114,7 @@ export default function DetailAnggota({ submisi, isEditable }: DetailAnggotaProp
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                     <CardContent>
-                        <Table>
+                        <Table className="[&_th]:text-center [&_td]:text-center">
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>Nama</TableHead>
@@ -138,6 +138,7 @@ export default function DetailAnggota({ submisi, isEditable }: DetailAnggotaProp
                                             </TableCell>
                                             {isEditable && (
                                                 <TableCell>
+                                                    <div className="flex items-center justify-center gap-3">
                                                     <AlertDialog>
                                                         <AlertDialogTrigger asChild>
                                                             <Button
@@ -177,6 +178,7 @@ export default function DetailAnggota({ submisi, isEditable }: DetailAnggotaProp
                                                             </AlertDialogFooter>
                                                         </AlertDialogContent>
                                                     </AlertDialog>
+                                                    </div>
                                                 </TableCell>
                                             )}
                                         </TableRow>
@@ -185,18 +187,18 @@ export default function DetailAnggota({ submisi, isEditable }: DetailAnggotaProp
                         </Table>
                         {isEditable && (
                             <>
-                                <div className="mt-4 flex justify-end">
-                                    <Button
-                                        onClick={() => setShowSearch(!showSearch)}
-                                    >
-                                        {showSearch ? (
-                                            <X className="h-4 w-4" />
-                                        ) : (
-                                            'Tambah Peserta'
-                                        )}
-                                    </Button>
-                                </div>
-
+                 <div className="mt-4 flex justify-end">
+                <Button
+                    onClick={() => setShowSearch(!showSearch)}
+                    className="bg-[#427452] hover:bg-[#365d42] text-white"
+                >
+                    {showSearch ? (
+                        <X className="h-4 w-4" />
+                    ) : (
+                        'Tambah Peserta'
+                    )}
+                </Button>
+            </div>
                                 {showSearch && (
                                     <div className="space-y-4">
                                         <div className="my-4 flex items-center gap-2">

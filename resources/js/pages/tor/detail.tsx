@@ -442,7 +442,7 @@ export default function TorDetail({ submisi, dosens, kegiatanTypes }: TorDetailP
                 <AlertDialogTrigger asChild>
                     <Button
                         disabled={!submisi.detail_submisi}
-                        className="rounded-md bg-green-600 px-6 text-white hover:bg-green-700"
+                        className="rounded-md bg-[#427452] hover:bg-[#365d42] text-white"
                     >
                         Kirim Pengajuan
                     </Button>

@@ -150,7 +150,7 @@ export default function DetailBiaya({ submisi, isEditable }: DetailBiayaProps) {
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                     <CardContent>
-                        <Table>
+                        <Table className="[&_th]:text-center [&_td]:text-center">
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>No</TableHead>
@@ -201,6 +201,7 @@ export default function DetailBiaya({ submisi, isEditable }: DetailBiayaProps) {
                                                 <TableCell>{new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(item.biaya_satuan * item.jumlah_kali * item.jumlah_org)}</TableCell>
                                                 {isEditable && (
                                                     <TableCell>
+                                                        <div className="flex items-center justify-center gap-3">
                                                         <Button size="sm" onClick={() => handleEdit(item)} disabled={isAdding}>
                                                             <Edit className="h-4 w-4" />
                                                         </Button>
@@ -223,6 +224,7 @@ export default function DetailBiaya({ submisi, isEditable }: DetailBiayaProps) {
                                                                 </AlertDialogFooter>
                                                             </AlertDialogContent>
                                                         </AlertDialog>
+                                                        </div>
                                                     </TableCell>
                                                 )}
                                             </>
@@ -255,8 +257,12 @@ export default function DetailBiaya({ submisi, isEditable }: DetailBiayaProps) {
                         </Table>
                         {isEditable && (
                             <div className="mt-4 flex justify-end">
-                                <Button onClick={handleAddNew} disabled={isAdding || !!editingRow}>
-                                    Tambah
+                                <Button
+                                    onClick={handleAddNew}
+                                    disabled={isAdding || !!editingRow}
+                                    className="bg-[#427452] hover:bg-[#365d42] text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    Tambah Anggaran
                                 </Button>
                             </div>
                         )}
