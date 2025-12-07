@@ -141,8 +141,8 @@ export default function NotificationsPage({ notifications }: NotificationsProps)
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Notifikasi" />
 
-            <div className="flex h-full flex-1 rounded-3xl bg-[#CBEBD5]/70 p-4 md:p-6">
-                <div className="flex flex-1 flex-col gap-4 rounded-3xl bg-[#E6F5EC] p-4 md:p-6">
+            <div className="flex h-full flex-1 bg-[#CBEBD5]/70 p-4 md:p-6">
+                <div className="flex flex-1 flex-col gap-4 rounded-2xl bg-[#E6F5EC] p-4 md:p-6">
                     {/* HEADER */}
                     <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                         <div className="flex items-center gap-3">
@@ -156,16 +156,17 @@ export default function NotificationsPage({ notifications }: NotificationsProps)
                             )}
                         </div>
 
-                        <div className="flex w-full max-w-md items-center gap-2 rounded-full bg-white px-4 py-2 shadow-sm">
-                            <Search className="mr-1 h-4 w-4 text-slate-400" />
+                        <div className="relative w-[300px]">
+                            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+
                             <Input
                                 value={search}
                                 onChange={(e) => {
                                     setSearch(e.target.value);
                                     setCurrentPage(1);
                                 }}
-                                placeholder="Cari notifikasi..."
-                                className="border-0 bg-transparent p-0 text-sm shadow-none focus-visible:ring-0"
+                                placeholder="Cari Notifikasi"
+                                className="w-full rounded-md border border-gray-300 bg-white pl-10 pr-4 shadow-sm"
                             />
                         </div>
                     </div>

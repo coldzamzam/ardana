@@ -99,9 +99,13 @@ export default function TorPage({ tors, kegiatanTypes }: { tors: Submisi[]; kegi
     };
 
     return (
-        <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="TOR" />
-            <div className="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+    <AppLayout breadcrumbs={breadcrumbs}>
+        <Head title="TOR" />
+
+        {/* OUTER sama seperti notifikasi */}
+        <div className="flex h-full flex-1 bg-[#CBEBD5]/70 p-4 md:p-6">
+            {/* INNER panel hijau muda */}
+            <div className="flex flex-1 flex-col gap-4 rounded-2xl bg-[#E6F5EC] p-4 md:p-6">
                 {/* TITLE */}
                 <div className="w-full">
                     <h1 className="text-2xl font-semibold text-[#427452]">
@@ -110,12 +114,12 @@ export default function TorPage({ tors, kegiatanTypes }: { tors: Submisi[]; kegi
                 </div>
 
                 {/* BARIS KONTROL: Tambah + Search + Filter Tahun */}
-                <div className="mt-2 flex w-full items-center gap-4">
+                <div className="mt-2 flex w-full flex-col gap-3 md:flex-row md:items-center md:gap-4">
                     {/* KIRI: Dialog Tambah Pengajuan */}
                     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
                         <DialogTrigger asChild>
                             <Button className="rounded-md bg-[#73AD86] px-5 py-2 text-white hover:bg-[#5f9772]">
-                                + Tambah Pengajuan
+                                Tambah Pengajuan
                             </Button>
                         </DialogTrigger>
                         <DialogContent>
@@ -155,16 +159,14 @@ export default function TorPage({ tors, kegiatanTypes }: { tors: Submisi[]; kegi
                                             <SelectValue placeholder="Pilih jenis kegiatan" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {kegiatanTypes.map(
-                                                (option) => (
-                                                    <SelectItem
-                                                        key={option.id}
-                                                        value={option.id}
-                                                    >
-                                                        {option.nama}
-                                                    </SelectItem>
-                                                ),
-                                            )}
+                                            {kegiatanTypes.map((option) => (
+                                                <SelectItem
+                                                    key={option.id}
+                                                    value={option.id}
+                                                >
+                                                    {option.nama}
+                                                </SelectItem>
+                                            ))}
                                         </SelectContent>
                                     </Select>
                                     {errors.kegiatan_type_id && (
@@ -182,16 +184,16 @@ export default function TorPage({ tors, kegiatanTypes }: { tors: Submisi[]; kegi
                         </DialogContent>
                     </Dialog>
 
-                    {/* TENGAH: Search bar (turun & sejajar) */}
+                    {/* TENGAH: Search (desain mirip notifikasi, tapi tetap di tengah) */}
                     <div className="flex flex-1 justify-center">
                         <div className="relative w-full max-w-md">
                             <Input
                                 className="w-full rounded-md border border-gray-300 bg-white pr-4 pl-10 shadow-sm"
-                                placeholder="Search"
+                                placeholder="Cari TOR"
                                 value={search}
                                 onChange={(e) => setSearch(e.target.value)}
                             />
-                            <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 text-gray-400">
+                            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     className="h-4 w-4"
@@ -210,8 +212,8 @@ export default function TorPage({ tors, kegiatanTypes }: { tors: Submisi[]; kegi
                         </div>
                     </div>
 
-                    {/* KANAN: Filter Tahun */}
-                    <div className="flex items-center">
+                    {/* KANAN: Filter Tahun (dibikin seperti “chip” putih ala notifikasi) */}
+                    <div className="flex justify-start md:justify-end">
                         <Select
                             value={selectedYear}
                             onValueChange={(value) =>
@@ -234,16 +236,13 @@ export default function TorPage({ tors, kegiatanTypes }: { tors: Submisi[]; kegi
                                             d="M3 4h18M6 10h12M10 16h4"
                                         />
                                     </svg>
-                                    <SelectValue placeholder="Pilih Berdasarkan Tahun" />
+                                    <SelectValue placeholder="Pilih berdasarkan tahun" />
                                 </div>
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="all">Semua Tahun</SelectItem>
                                 {years.map((year) => (
-                                    <SelectItem
-                                        key={year}
-                                        value={year.toString()}
-                                    >
+                                    <SelectItem key={year} value={year.toString()}>
                                         {year}
                                     </SelectItem>
                                 ))}
@@ -252,9 +251,9 @@ export default function TorPage({ tors, kegiatanTypes }: { tors: Submisi[]; kegi
                     </div>
                 </div>
 
-                {/* LIST TOR */}
+                {/* LIST TOR – sekarang pakai “white card” seperti notifikasi, tanpa background hijau pekat */}
                 {filteredTors.length > 0 ? (
-                    <div className="mt-4 space-y-4 rounded-2xl bg-[#73AD86] p-4">
+                    <div className="mt-2 flex-1 space-y-3 overflow-y-auto rounded-2xl">
                         {paginatedTors.map((tor) => (
                             <div
                                 key={tor.id}
@@ -312,8 +311,7 @@ export default function TorPage({ tors, kegiatanTypes }: { tors: Submisi[]; kegi
                                         <p className="font-medium">
                                             {tor.status_submisi.length > 0
                                                 ? tor.status_submisi[
-                                                      tor.status_submisi
-                                                          .length - 1
+                                                      tor.status_submisi.length - 1
                                                   ].status_type.nama
                                                 : 'Draft'}
                                         </p>
@@ -340,9 +338,9 @@ export default function TorPage({ tors, kegiatanTypes }: { tors: Submisi[]; kegi
                             </div>
                         ))}
 
-                        {/* PAGINATION */}
+                        {/* PAGINATION ala “footer kecil” */}
                         {filteredTors.length > itemsPerPage && (
-                            <div className="mt-4 flex items-center justify-center gap-2">
+                            <div className="mt-2 flex items-center justify-center gap-2 text-sm text-slate-600">
                                 <Button
                                     disabled={page === 1}
                                     onClick={() =>
@@ -360,11 +358,7 @@ export default function TorPage({ tors, kegiatanTypes }: { tors: Submisi[]; kegi
                                         <Button
                                             key={pg}
                                             onClick={() => setPage(pg)}
-                                            variant={
-                                                page === pg
-                                                    ? 'default'
-                                                    : 'outline'
-                                            }
+                                            variant={page === pg ? 'default' : 'outline'}
                                             className={`rounded-md px-4 ${
                                                 page === pg
                                                     ? 'bg-[#427452] text-white'
@@ -392,11 +386,13 @@ export default function TorPage({ tors, kegiatanTypes }: { tors: Submisi[]; kegi
                         )}
                     </div>
                 ) : (
-                    <div className="py-10 text-center">
-                        <p>Belum ada TOR yang dibuat.</p>
+                    // EMPTY STATE mirip notifikasi
+                    <div className="mt-2 flex h-40 items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white text-sm text-slate-600">
+                        Belum ada TOR yang dibuat.
                     </div>
                 )}
             </div>
-        </AppLayout>
-    );
+        </div>
+    </AppLayout>
+);
 }
