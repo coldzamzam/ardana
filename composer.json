@@ -85,6 +85,7 @@
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require-dev": {
-        "laravel/pint": "^1.26"
+        "laravel/pint": "^1.26",
+        "pestphp/pest": "^4.1"
     }
 }
