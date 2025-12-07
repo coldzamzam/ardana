@@ -22,7 +22,21 @@ import {
 } from '@/components/ui/table';
 import { Submisi, SubmisiFile } from '@/types';
 import { router, useForm } from '@inertiajs/react';
-import { ChevronsUpDown, Edit, File, Save, Trash2, X } from 'lucide-react';
+import {
+    ChevronsUpDown,
+    Edit,
+    File,
+    Save,
+    Trash2,
+    X,
+    Info,
+} from 'lucide-react';
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipProvider,
+    TooltipTrigger,
+} from '@/components/ui/tooltip';
 import React from 'react';
 import {
     Collapsible,
@@ -175,15 +189,39 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
         <Collapsible open={isOpen} onOpenChange={setIsOpen}>
             <Card className="overflow-hidden rounded-2xl border border-[#73AD86]/40 shadow-sm">
                 <CollapsibleTrigger asChild>
-                    <CardHeader className="flex cursor-pointer flex-row items-center justify-between">
-                        <CardTitle className="text-xl font-semibold text-[#427452]">
-                            Lampiran File
-                        </CardTitle>
-                        <Button variant="ghost" size="sm" className="w-9 px-0">
-                            <ChevronsUpDown className="h-4 w-4" />
-                            <span className="sr-only">Toggle</span>
-                        </Button>
-                    </CardHeader>
+  <CardHeader className="flex cursor-pointer flex-row items-center justify-between">
+    {/* Kiri: title + info */}
+    <CardTitle className="flex items-center gap-1 text-xl font-semibold text-[#427452]">
+      Lampiran File
+
+      <TooltipProvider delayDuration={100}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <span
+              onClick={(e) => e.preventDefault()}
+              className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-[#E6F5EC]"
+            >
+              <Info className="h-3 w-3 text-[#427452]" />
+            </span>
+          </TooltipTrigger>
+
+          <TooltipContent
+            side="right"
+            sideOffset={6}
+            className="bg-white border border-gray-300 text-gray-700 shadow-md rounded-md px-3 py-2"
+          >
+            Hanya file JPG, JPEG, PNG, dan PDF yang diperbolehkan.
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    </CardTitle>
+
+    {/* Kanan: tombol collapse */}
+    <Button variant="ghost" size="sm" className="w-9 px-0">
+      <ChevronsUpDown className="h-4 w-4" />
+      <span className="sr-only">Toggle</span>
+    </Button>
+  </CardHeader>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                     <CardContent>

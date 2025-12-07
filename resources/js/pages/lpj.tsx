@@ -25,9 +25,9 @@ export default function LpjPage() {
             <Head title="LPJ" />
 
             {/* OUTER: sama gaya Notifikasi & TOR */}
-            <div className="flex h-full flex-1 rounded-3xl bg-[#CBEBD5]/70 p-4 md:p-6">
+            <div className="flex h-full flex-1 bg-[#CBEBD5]/70 p-4 md:p-6">
                 {/* INNER panel hijau muda */}
-                <div className="flex flex-1 flex-col gap-4 rounded-3xl bg-[#E6F5EC] p-4 md:p-6">
+                <div className="flex flex-1 flex-col gap-4 rounded-2xl bg-[#E6F5EC] p-4 md:p-6">
                     {/* TITLE */}
                     <div className="w-full">
                         <h1 className="text-2xl font-semibold text-[#427452]">

@@ -438,34 +438,48 @@ export default function TorDetail({ submisi, dosens, kegiatanTypes }: TorDetailP
             >
                 Buat Template TOR
             </Button>
-            <AlertDialog>
-                <AlertDialogTrigger asChild>
-                    <Button
-                        disabled={!submisi.detail_submisi}
-                        className="rounded-md bg-[#427452] hover:bg-[#365d42] text-white"
-                    >
-                        Kirim Pengajuan
-                    </Button>
-                </AlertDialogTrigger>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>
-                            Apakah Anda yakin ingin mengajukan TOR ini?
-                        </AlertDialogTitle>
-                        <AlertDialogDescription>
-                            Setelah diajukan, TOR tidak dapat diedit kembali
-                            kecuali jika diminta untuk revisi oleh reviewer.
-                            Pastikan semua data sudah benar.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>Batal</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleSubmitSubmission}>
-                            Lanjutkan
-                        </AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+<AlertDialog>
+    <AlertDialogTrigger asChild>
+        <Button
+            disabled={!submisi.detail_submisi}
+            className="rounded-md bg-[#427452] hover:bg-[#365d42] text-white"
+        >
+            Kirim Pengajuan
+        </Button>
+    </AlertDialogTrigger>
+
+    <AlertDialogContent
+        className="
+            sm:max-w-lg rounded-3xl border border-[#73AD86]/40 bg-white/95 shadow-2xl
+            data-[state=open]:animate-in data-[state=open]:fade-in-0
+            data-[state=open]:zoom-in-95 data-[state=open]:slide-in-from-bottom-10
+            data-[state=closed]:animate-out data-[state=closed]:fade-out-0
+            data-[state=closed]:zoom-out-95 data-[state=closed]:slide-out-to-bottom-10
+        "
+    >
+        <AlertDialogHeader>
+            <AlertDialogTitle className="text-lg font-semibold text-[#111827]">
+                Apakah Anda yakin ingin mengajukan TOR ini?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-sm text-slate-600">
+                Setelah diajukan, TOR tidak dapat diedit kembali kecuali jika
+                diminta untuk revisi oleh reviewer. Pastikan semua data sudah benar.
+            </AlertDialogDescription>
+        </AlertDialogHeader>
+
+        <AlertDialogFooter className="mt-2">
+            <AlertDialogCancel className="rounded-md border-slate-300 px-5">
+                Batal
+            </AlertDialogCancel>
+            <AlertDialogAction
+                onClick={handleSubmitSubmission}
+                className="rounded-md bg-[#427452] px-6 hover:bg-[#365d42]"
+            >
+                Lanjutkan
+            </AlertDialogAction>
+        </AlertDialogFooter>
+    </AlertDialogContent>
+</AlertDialog>
         </>
     ) : (
         <Button

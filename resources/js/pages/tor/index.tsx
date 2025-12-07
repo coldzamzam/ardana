@@ -119,7 +119,7 @@ export default function TorPage({ tors, kegiatanTypes }: { tors: Submisi[]; kegi
                     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
                         <DialogTrigger asChild>
                             <Button className="rounded-md bg-[#73AD86] px-5 py-2 text-white hover:bg-[#5f9772]">
-                                Tambah Pengajuan
+                                Tambah TOR
                             </Button>
                         </DialogTrigger>
                         <DialogContent>
