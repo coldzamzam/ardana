@@ -2,6 +2,34 @@
 
 use Illuminate\Support\Str;
 
+$databaseUrl = env('DATABASE_URL');
+
+$pgsqlConfig = [
+    'driver' => 'pgsql',
+    'url' => $databaseUrl,
+    'host' => env('DB_HOST', '127.0.0.1'),
+    'port' => env('DB_PORT', '5432'),
+    'database' => env('DB_DATABASE', 'laravel'),
+    'username' => env('DB_USERNAME', 'root'),
+    'password' => env('DB_PASSWORD', ''),
+    'charset' => 'utf8',
+    'prefix' => '',
+    'prefix_indexes' => true,
+    'search_path' => 'public',
+    'sslmode' => 'prefer',
+];
+
+if ($databaseUrl) {
+    $url = parse_url($databaseUrl);
+    $pgsqlConfig['host'] = $url['host'];
+    $pgsqlConfig['port'] = $url['port'];
+    $pgsqlConfig['database'] = ltrim($url['path'], '/');
+    $pgsqlConfig['username'] = $url['user'];
+    $pgsqlConfig['password'] = $url['pass'];
+    $pgsqlConfig['sslmode'] = 'require';
+}
+
+
 return [
 
     /*
@@ -16,7 +44,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'sqlite'),
+    'default' => env('DB_CONNECTION', 'pgsql'),
 
     /*
     |--------------------------------------------------------------------------
@@ -82,20 +110,7 @@ return [
             ]) : [],
         ],
 
-        'pgsql' => [
-            'driver' => 'pgsql',
-            'url' => env('DATABASE_URL'),
-            'host' => env('PGHOST', env('DB_HOST', '127.0.0.1')),
-            'port' => env('PGPORT', env('DB_PORT', '5432')),
-            'database' => env('PGDATABASE', env('DB_DATABASE', 'laravel')),
-            'username' => env('PGUSER', env('DB_USERNAME', 'root')),
-            'password' => env('PGPASSWORD', env('DB_PASSWORD', '')),
-            'charset' => env('DB_CHARSET', 'utf8'),
-            'prefix' => '',
-            'prefix_indexes' => true,
-            'search_path' => 'public',
-            'sslmode' => 'prefer',
-        ],
+        'pgsql' => $pgsqlConfig,
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
