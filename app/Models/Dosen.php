@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Dosen extends Model
 {
     use HasFactory, HasUuids;
+
     protected $table = 'dosen';
 
     protected $fillable = [

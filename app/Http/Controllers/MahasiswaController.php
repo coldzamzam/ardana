@@ -7,7 +7,6 @@ use App\Models\Mahasiswa;
 use App\Models\Submisi;
 use App\Models\User as UserModel;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
@@ -30,6 +29,7 @@ class MahasiswaController extends Controller
     public function edit(Mahasiswa $mahasiswa)
     {
         $mahasiswa->load('user');
+
         return Inertia::render('Mahasiswa/Edit', [
             'mahasiswa' => $mahasiswa,
         ]);
@@ -86,7 +86,7 @@ class MahasiswaController extends Controller
             ->with('mahasiswa')
             ->first();
 
-        if (!$mahasiswaUser) {
+        if (! $mahasiswaUser) {
             return response()->json(['message' => 'Data NIM tidak ditemukan'], 404);
         }
 

@@ -1,17 +1,17 @@
 <?php
 
-use App\Http\Controllers\MahasiswaController;
-use App\Http\Controllers\OnboardingController;
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\AnggotaTimController;
-use App\Http\Controllers\TorController;
-use App\Http\Controllers\IndikatorKinerjaController;
-use App\Http\Controllers\SubmisiFileController;
 use App\Http\Controllers\BiayaController;
-use App\Http\Controllers\NotificationController; // <- dipakai
-use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\IndikatorKinerjaController;
+use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\OnboardingController;
+use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\ReviewController; // <- dipakai
+use App\Http\Controllers\SubmisiFileController;
+use App\Http\Controllers\TorController;
 use App\Models\KegiatanType;
 use App\Models\Submisi;
 use Illuminate\Support\Facades\Auth;
@@ -62,39 +62,39 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
                 'kegiatanTypes' => $kegiatanTypes,
             ]);
         })->name('tor');
-Route::get('arsip', function () {
-        $arsip = Submisi::with([
+        Route::get('arsip', function () {
+            $arsip = Submisi::with([
                 'kegiatanType',
                 'createdBy',
                 'detailSubmisi',
             ])
-            ->where('type', 'TOR') // atau ->whereIn('type', ['TOR','LPJ'])
-            ->whereHas('statusSubmisi', function ($q) {
-                $q->whereHas('statusType', function ($q2) {
-                    $q2->where('nama', 'Disetujui');
-                });
-            })
-            ->orderByDesc('created_at')
-            ->get();
+                ->where('type', 'TOR') // atau ->whereIn('type', ['TOR','LPJ'])
+                ->whereHas('statusSubmisi', function ($q) {
+                    $q->whereHas('statusType', function ($q2) {
+                        $q2->where('nama', 'Disetujui');
+                    });
+                })
+                ->orderByDesc('created_at')
+                ->get();
 
-        return Inertia::render('arsip', [
-            'arsip' => $arsip,
-        ]);
-    })->name('arsip.index');
-    
+            return Inertia::render('arsip', [
+                'arsip' => $arsip,
+            ]);
+        })->name('arsip.index');
+
         Route::post('tor', [TorController::class, 'store'])->name('tor.store');
         Route::get('tor/{submisi}', [TorController::class, 'show'])->name('tor.show');
         Route::put('tor/{submisi}', [TorController::class, 'update'])->name('tor.update');
         Route::post('tor/{submisi}/draft', [TorController::class, 'updateDetail'])->name('tor.saveDraft');
         Route::post('tor/{submisi}/submit', [TorController::class, 'submit'])->name('tor.submit');
         Route::get('tor/{submisi}/template', function (\App\Models\Submisi $submisi) {
-        $submisi->load('detailSubmisi');
+            $submisi->load('detailSubmisi');
 
-        return Inertia::render('tor/detail-template', [
-            'submisi' => $submisi,
-        ]);
-    })->name('tor.template');
-    
+            return Inertia::render('tor/detail-template', [
+                'submisi' => $submisi,
+            ]);
+        })->name('tor.template');
+
         Route::get('dosen/search', [TorController::class, 'searchDosen'])->name('dosen.search');
         Route::get('mahasiswa/search', [MahasiswaController::class, 'search'])->name('mahasiswa.search');
 
@@ -132,7 +132,7 @@ Route::get('arsip', function () {
         Route::put('list-pegawai/{user}', [PegawaiController::class, 'update'])->name('pegawai.update');
     });
 
-    require __DIR__ . '/settings.php';
+    require __DIR__.'/settings.php';
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

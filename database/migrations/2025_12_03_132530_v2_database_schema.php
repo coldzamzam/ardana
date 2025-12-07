@@ -45,8 +45,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-
-
         Schema::create('matkul_terkait', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->string('kesesuaian', 255);

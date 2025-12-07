@@ -29,7 +29,6 @@ if ($databaseUrl) {
     $pgsqlConfig['sslmode'] = 'require';
 }
 
-
 return [
 
     /*

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\DatabaseNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class NotificationController extends Controller
@@ -23,6 +22,7 @@ class NotificationController extends Controller
                 if (is_string($notification->data)) {
                     $notification->data = json_decode($notification->data, true);
                 }
+
                 return $notification;
             });
 
@@ -36,6 +36,7 @@ class NotificationController extends Controller
     {
         $request->validate(['ids' => 'required|array']);
         Auth::user()->notifications()->whereIn('id', $request->ids)->update(['read_at' => now()]);
+
         return back();
     }
 
@@ -43,6 +44,7 @@ class NotificationController extends Controller
     {
         $request->validate(['ids' => 'required|array']);
         Auth::user()->notifications()->whereIn('id', $request->ids)->update(['read_at' => null]);
+
         return back();
     }
 
@@ -50,7 +52,7 @@ class NotificationController extends Controller
     {
         $request->validate(['ids' => 'required|array']);
         Auth::user()->notifications()->whereIn('id', $request->ids)->delete();
+
         return back();
     }
 }
-

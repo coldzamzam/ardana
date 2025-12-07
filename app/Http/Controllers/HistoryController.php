@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\DetailSubmisi;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class HistoryController extends Controller

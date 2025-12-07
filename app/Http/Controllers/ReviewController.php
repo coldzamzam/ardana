@@ -18,7 +18,7 @@ class ReviewController extends Controller
     {
         $user = Auth::user();
         $role = trim($user->roles()->first()->role_name);
-        Log::info('Review index for user role: ' . $role);
+        Log::info('Review index for user role: '.$role);
 
         // Tentukan status yang harus direview berdasarkan peran
         $statusToReviewName = match ($role) {
@@ -27,7 +27,7 @@ class ReviewController extends Controller
             'kajur' => 'Diverifikasi',
             default => null,
         };
-        
+
         $pageTitle = match ($role) {
             'admin' => 'Validasi TOR',
             'sekjur' => 'Verifikasi TOR',
@@ -36,25 +36,27 @@ class ReviewController extends Controller
         };
 
         // Jika peran tidak memiliki status untuk direview, kembalikan halaman kosong
-        if (!$statusToReviewName) {
-            Log::warning('Peran "' . $role . '" tidak memiliki status untuk direview.');
+        if (! $statusToReviewName) {
+            Log::warning('Peran "'.$role.'" tidak memiliki status untuk direview.');
+
             return Inertia::render('review/index', [
-                'submissions' => (object)['data' => []],
+                'submissions' => (object) ['data' => []],
                 'pageTitle' => $pageTitle,
             ]);
         }
 
-        Log::info('Mencari submisi dengan status terbaru: ' . $statusToReviewName);
+        Log::info('Mencari submisi dengan status terbaru: '.$statusToReviewName);
         $statusToReview = StatusType::where('nama', $statusToReviewName)->first();
 
-        if (!$statusToReview) {
-            Log::error('StatusType tidak ditemukan untuk nama: ' . $statusToReviewName);
+        if (! $statusToReview) {
+            Log::error('StatusType tidak ditemukan untuk nama: '.$statusToReviewName);
+
             return Inertia::render('review/index', [
-                'submissions' => (object)['data' => []],
+                'submissions' => (object) ['data' => []],
                 'pageTitle' => $pageTitle,
             ]);
         }
-        Log::info('Status ID yang dicari: ' . $statusToReview->id);
+        Log::info('Status ID yang dicari: '.$statusToReview->id);
 
         // Query untuk mendapatkan submisi dimana status terbarunya adalah status yang perlu direview
         $query = Submisi::whereHas('statusSubmisi', function ($query) use ($statusToReview) {
@@ -66,14 +68,13 @@ class ReviewController extends Controller
                     ->limit(1);
             })->where('status_type_id', $statusToReview->id);
         })
-        ->with(['kegiatanType', 'createdBy'])
-        ->orderBy('created_at', 'desc');
+            ->with(['kegiatanType', 'createdBy'])
+            ->orderBy('created_at', 'desc');
 
         Log::info('SQL Query:', ['sql' => $query->toSql(), 'bindings' => $query->getBindings()]);
-        
-        $submissions = $query->paginate(10);
-        Log::info('Menemukan ' . $submissions->total() . ' submisi.');
 
+        $submissions = $query->paginate(10);
+        Log::info('Menemukan '.$submissions->total().' submisi.');
 
         return Inertia::render('review/index', [
             'submissions' => $submissions,

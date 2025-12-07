@@ -5,11 +5,7 @@ namespace App\Listeners;
 use App\Events\SubmissionReviewed;
 use App\Models\DatabaseNotification;
 use App\Models\StatusSubmisi;
-use App\Models\Submisi;
-use App\Models\User;
 use App\Notifications\SubmissionReviewedNotification;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 
 class SendReviewedNotification
@@ -39,6 +35,7 @@ class SendReviewedNotification
 
         if ($alreadyExists) {
             Log::warning("Notifikasi untuk StatusSubmisi ID {$newStatus->id} sudah ada. Melewatkan pembuatan duplikat.");
+
             return;
         }
 

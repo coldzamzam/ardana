@@ -2,16 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Controller;
+use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
     public function index()
     {
         $user = Auth::user();
-        
+
         $roleRaw = $user->roles->first()->role_name ?? 'mahasiswa';
         $role = strtolower(trim($roleRaw));
 
@@ -20,9 +19,9 @@ class DashboardController extends Controller
         if ($role === 'mahasiswa') {
             $data = [
                 'stats' => [
-                    'tor_created' => 5, 
-                    'lpj_created' => 2,     
-                    'approved_items' => 3,  
+                    'tor_created' => 5,
+                    'lpj_created' => 2,
+                    'approved_items' => 3,
                 ],
                 'recent_revisions' => [
                     'tor' => [
@@ -43,12 +42,10 @@ class DashboardController extends Controller
                             'catatan_revisi' => 'Bukti nota sewa gedung tidak terbaca/blur.',
                             'updated_at' => '2024-12-02 09:15:00',
                         ],
-                    ]
-                ]
+                    ],
+                ],
             ];
-        } 
-        
-        elseif (in_array($role, ['admin', 'sekjur', 'kajur'])) {
+        } elseif (in_array($role, ['admin', 'sekjur', 'kajur'])) {
             $data = [
                 'tor_stats' => [
                     'diajukan' => 12,
@@ -65,15 +62,13 @@ class DashboardController extends Controller
                     'disetujui' => 3,
                 ],
                 'financials' => [
-                    'total_alokasi' => 150000000, 
-                    'total_realisasi' => 125000000, 
-                ]
+                    'total_alokasi' => 150000000,
+                    'total_realisasi' => 125000000,
+                ],
             ];
-        }
-
-        elseif ($role === 'superadmin') {
+        } elseif ($role === 'superadmin') {
             $data = [
-                'total_users' => 1250, 
+                'total_users' => 1250,
             ];
         }
 

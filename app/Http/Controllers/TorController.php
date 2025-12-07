@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TorSubmitted;
 use App\Models\DetailSubmisi;
+use App\Models\KegiatanType;
 use App\Models\StatusSubmisi;
+use App\Models\StatusType;
 use App\Models\Submisi;
 use App\Models\User;
-use App\Models\KegiatanType;
-use App\Models\StatusType;
-use App\Events\TorSubmitted;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -52,6 +52,7 @@ class TorController extends Controller
                         'nip' => $user->dosen->nip,
                     ];
                 }
+
                 return null;
             })->filter()->values();
 
@@ -141,7 +142,7 @@ class TorController extends Controller
     public function submit(Request $request, Submisi $submisi)
     {
         // Pastikan detail submisi sudah diisi
-        if (!$submisi->detailSubmisi) {
+        if (! $submisi->detailSubmisi) {
             return Redirect::back()->with('error', 'Detail TOR harus diisi lengkap sebelum diajukan.');
         }
 

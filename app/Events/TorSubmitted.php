@@ -2,9 +2,9 @@
 
 namespace App\Events;
 
+use App\Models\Submisi;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use App\Models\Submisi;
 
 class TorSubmitted
 {

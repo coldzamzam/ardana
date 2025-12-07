@@ -7,8 +7,6 @@ use App\Models\DatabaseNotification;
 use App\Models\Submisi;
 use App\Models\User;
 use App\Notifications\SubmissionSubmitted;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 
 class SendSubmissionNotification
@@ -36,17 +34,19 @@ class SendSubmissionNotification
             ->exists();
 
         if ($alreadyExists) {
-            Log::warning('Notifikasi SubmissionSubmitted untuk submisi ID ' . $submisi->id . ' sudah ada. Melewatkan pembuatan duplikat.');
+            Log::warning('Notifikasi SubmissionSubmitted untuk submisi ID '.$submisi->id.' sudah ada. Melewatkan pembuatan duplikat.');
+
             return;
         }
-        
+
         // Cari semua user yang memiliki peran 'admin'
         $reviewers = User::whereHas('roles', function ($query) {
             $query->where('role_name', 'admin');
         })->get();
-        
+
         if ($reviewers->isEmpty()) {
             Log::warning('Tidak ada user dengan peran "admin" yang ditemukan untuk dikirimi notifikasi.');
+
             return;
         }
 
@@ -62,7 +62,7 @@ class SendSubmissionNotification
                 'notifiable_id' => $submisi->id,
                 'data' => $notificationData,
             ]);
-            Log::info('Notifikasi pengajuan baru DIBUAT di database untuk user ID: ' . $reviewer->id);
+            Log::info('Notifikasi pengajuan baru DIBUAT di database untuk user ID: '.$reviewer->id);
         }
     }
 }

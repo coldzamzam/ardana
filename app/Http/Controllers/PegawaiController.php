@@ -27,6 +27,7 @@ class PegawaiController extends Controller
     public function edit(User $user)
     {
         $user->load('roles', 'dosen');
+
         return Inertia::render('Pegawai/Edit', [
             'user' => $user,
         ]);

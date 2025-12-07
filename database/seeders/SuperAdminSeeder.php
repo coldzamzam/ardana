@@ -28,7 +28,7 @@ class SuperAdminSeeder extends Seeder
         $superadminRole = RoleType::where('role_name', 'superadmin')->first();
 
         // Lampirkan peran ke pengguna jika ada dan belum terpasang
-        if ($superadminRole && !$superAdmin->roles->contains($superadminRole)) {
+        if ($superadminRole && ! $superAdmin->roles->contains($superadminRole)) {
             $superAdmin->roles()->attach($superadminRole->id, ['id' => Str::uuid()]);
         }
     }

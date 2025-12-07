@@ -25,7 +25,6 @@ class AnggotaTimController extends Controller
         return Redirect::back()->with('success', 'Anggota berhasil ditambahkan.');
     }
 
-
     public function destroy(AnggotaTim $anggota_tim)
     {
         $anggota_tim->delete();

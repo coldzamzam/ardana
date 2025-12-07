@@ -5,7 +5,6 @@ namespace App\Notifications;
 use App\Models\StatusSubmisi;
 use App\Models\Submisi;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 
 class SubmissionReviewedNotification extends Notification
