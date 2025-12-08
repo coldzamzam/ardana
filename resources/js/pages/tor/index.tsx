@@ -137,26 +137,29 @@ export default function TorPage({
                                     Tambah TOR
                                 </Button>
                             </DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader>
-                                    <DialogTitle>Buat TOR Baru</DialogTitle>
-                                    <DialogDescription>
-                                        Isi form di bawah untuk membuat TOR
-                                        baru.
+                            <DialogContent className="rounded-3xl border border-[#73AD86]/40 bg-[#F8FFFB] p-6 shadow-xl sm:max-w-[520px] sm:p-8">
+                                <DialogHeader className="space-y-3 text-left">
+                                    <DialogTitle className="text-2xl font-semibold text-[#427452]">
+                                        Buat TOR Baru
+                                    </DialogTitle>
+                                    <DialogDescription className="text-base leading-relaxed text-slate-700">
+                                        Isi informasi dasar TOR terlebih dahulu.
                                     </DialogDescription>
                                 </DialogHeader>
                                 <form
                                     onSubmit={handleSubmit}
-                                    className="space-y-4"
+                                    className="mt-4 space-y-5"
                                 >
-                                    <div>
-                                        <Label htmlFor="judul">Judul</Label>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="judul">Judul TOR</Label>
                                         <Input
                                             id="judul"
                                             value={data.judul}
                                             onChange={(e) =>
                                                 setData('judul', e.target.value)
                                             }
+                                            className="bg-white"
+                                            placeholder="Contoh: Seminar Nasional Teknologi Informasi"
                                         />
                                         {errors.judul && (
                                             <p className="mt-1 text-xs text-red-500">
@@ -164,7 +167,8 @@ export default function TorPage({
                                             </p>
                                         )}
                                     </div>
-                                    <div>
+
+                                    <div className="space-y-2">
                                         <Label htmlFor="kegiatan_type_id">
                                             Jenis Kegiatan
                                         </Label>
@@ -177,7 +181,7 @@ export default function TorPage({
                                             }
                                             value={data.kegiatan_type_id}
                                         >
-                                            <SelectTrigger>
+                                            <SelectTrigger className="bg-white">
                                                 <SelectValue placeholder="Pilih jenis kegiatan" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -197,10 +201,12 @@ export default function TorPage({
                                             </p>
                                         )}
                                     </div>
-                                    <div className="flex justify-end">
+
+                                    <div className="flex justify-end pt-2">
                                         <Button
                                             type="submit"
                                             disabled={processing}
+                                            className="rounded-md bg-[#427452] px-6 hover:bg-[#365d42]"
                                         >
                                             {processing
                                                 ? 'Membuat...'

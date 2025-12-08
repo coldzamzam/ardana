@@ -1,7 +1,17 @@
 import { useForm } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useState } from 'react';
 
 import InputError from '@/components/input-error';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -21,68 +31,105 @@ export default function MahasiswaOnboardingForm() {
         prodi: '',
     });
 
+    const [showConfirm, setShowConfirm] = useState(false);
+
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        if (
-            window.confirm(
-                'Apakah Anda yakin semua informasi sudah benar? NIM tidak bisa diubah setelah disimpan.',
-            )
-        ) {
-            post('/dashboard/onboarding/mahasiswa');
-        }
+        // Tampilkan dialog konfirmasi dulu
+        setShowConfirm(true);
+    };
+
+    const handleConfirm = () => {
+        post('/dashboard/onboarding/mahasiswa', {
+            onFinish: () => setShowConfirm(false),
+        });
     };
 
     return (
-        <form onSubmit={submit} className="flex flex-col gap-6">
-            <div className="grid gap-6">
-                <div className="grid gap-2">
-                    <Label htmlFor="nim">NIM</Label>
-                    <Input
-                        id="nim"
-                        type="text"
-                        required
-                        autoFocus
-                        name="nim"
-                        placeholder="10-digit NIM"
-                        value={data.nim}
-                        onChange={(e) => setData('nim', e.target.value)}
-                    />
-                    <p className="text-xs text-muted-foreground">
-                        NIM tidak bisa diubah setelah disimpan.
-                    </p>
-                    <InputError message={errors.nim} className="mt-2" />
-                </div>
+        <>
+            <form onSubmit={submit} className="flex flex-col gap-6">
+                <div className="grid gap-6">
+                    {/* NIM */}
+                    <div className="grid gap-2">
+                        <Label htmlFor="nim">NIM</Label>
+                        <Input
+                            id="nim"
+                            type="text"
+                            required
+                            autoFocus
+                            name="nim"
+                            placeholder="10-digit NIM"
+                            value={data.nim}
+                            onChange={(e) => setData('nim', e.target.value)}
+                        />
+                        <p className="text-xs text-muted-foreground">
+                            NIM tidak bisa diubah setelah disimpan.
+                        </p>
+                        <InputError message={errors.nim} className="mt-1" />
+                    </div>
 
-                <div className="grid gap-2">
-                    <Label>Prodi</Label>
-                    <Select
-                        name="prodi"
-                        required
-                        onValueChange={(value) => setData('prodi', value)}
+                    {/* PRODI */}
+                    <div className="grid gap-2">
+                        <Label>Prodi</Label>
+                        <Select
+                            name="prodi"
+                            required
+                            onValueChange={(value) => setData('prodi', value)}
+                        >
+                            <SelectTrigger>
+                                <SelectValue placeholder="Pilih program studi" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                {prodiOptions.map((prodi) => (
+                                    <SelectItem key={prodi} value={prodi}>
+                                        {prodi}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                        <InputError message={errors.prodi} className="mt-1" />
+                    </div>
+
+                    {/* BUTTON SUBMIT */}
+                    <Button
+                        type="submit"
+                        className="mt-2 w-full rounded-lg bg-[#427452] hover:bg-[#365d42]"
+                        disabled={processing}
                     >
-                        <SelectTrigger>
-                            <SelectValue placeholder="Select a program" />
-                        </SelectTrigger>
-                        <SelectContent>
-                            {prodiOptions.map((prodi) => (
-                                <SelectItem key={prodi} value={prodi}>
-                                    {prodi}
-                                </SelectItem>
-                            ))}
-                        </SelectContent>
-                    </Select>
-                    <InputError message={errors.prodi} />
+                        {processing && <Spinner />}
+                        Simpan Informasi
+                    </Button>
                 </div>
+            </form>
 
-                <Button
-                    type="submit"
-                    className="mt-2 w-full"
-                    disabled={processing}
-                >
-                    {processing && <Spinner />}
-                    Simpan Informasi
-                </Button>
-            </div>
-        </form>
+            {/* ALERT DIALOG KONFIRMASI */}
+            <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle className="text-lg font-semibold text-slate-900">
+                            Simpan informasi ini?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="text-sm text-slate-600">
+                            Pastikan NIM dan prodi sudah benar.{' '}
+                            <span className="font-medium text-[#427452]">
+                                NIM tidak dapat diubah setelah disimpan.
+                            </span>
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel className="mt-0 rounded-md">
+                            Batal
+                        </AlertDialogCancel>
+                        <AlertDialogAction
+                            onClick={handleConfirm}
+                            className="rounded-md bg-[#427452] hover:bg-[#365d42]"
+                            disabled={processing}
+                        >
+                            {processing ? 'Menyimpan...' : 'Ya, simpan'}
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
+        </>
     );
 }
