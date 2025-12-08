@@ -41,9 +41,9 @@ class SubmissionReviewedNotification extends Notification
 
         return [
             'actor_name' => $reviewerName,
-            'action_text' => "telah mengubah status TOR Anda menjadi '{$statusName}' untuk:",
+            'action_text' => "telah mengubah status {$this->submisi->type} Anda menjadi '{$statusName}' untuk:",
             'object_title' => $this->submisi->judul,
-            'link' => route('tor.show', $this->submisi),
+            'link' => route('submisi.show', $this->submisi),
         ];
     }
 }

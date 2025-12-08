@@ -1,14 +1,5 @@
 import { Button } from '@/components/ui/button';
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
     Select,
     SelectContent,
@@ -17,32 +8,19 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
-import { type BreadcrumbItem, type KegiatanType, type Submisi } from '@/types';
-import { Head, Link, router, useForm } from '@inertiajs/react';
+import { type BreadcrumbItem, type Submisi } from '@/types';
+import { Head, Link } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { useEffect, useMemo, useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'TOR',
-        href: '/dashboard/tor',
+        title: 'LPJ',
+        href: '/dashboard/submisi/lpj',
     },
 ];
 
-export default function TorPage({
-    tors,
-    kegiatanTypes,
-}: {
-    tors: Submisi[];
-    kegiatanTypes: KegiatanType[];
-}) {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-
-    const { data, setData, post, processing, errors, reset } = useForm({
-        judul: '',
-        kegiatan_type_id: '',
-    });
-
+export default function LpjPage({ lpjs }: { lpjs: Submisi[] }) {
     // Search & filter tahun
     const [search, setSearch] = useState('');
     const [selectedYear, setSelectedYear] = useState<'all' | string>('all');
@@ -51,68 +29,52 @@ export default function TorPage({
     const [page, setPage] = useState(1);
     const itemsPerPage = 3;
 
-    // daftar tahun unik dari data TOR
+    // daftar tahun unik dari data LPJ
     const years = useMemo(() => {
         const set = new Set<number>();
-        tors.forEach((tor) => {
-            const year = new Date(tor.created_at).getFullYear();
+        lpjs.forEach((lpj) => {
+            const year = new Date(lpj.created_at).getFullYear();
             if (!isNaN(year)) set.add(year);
         });
         return Array.from(set).sort((a, b) => b - a); // descending
-    }, [tors]);
+    }, [lpjs]);
 
     // filter berdasarkan search + tahun
-    const filteredTors = useMemo(() => {
+    const filteredLpjs = useMemo(() => {
         const term = search.toLowerCase();
 
-        return tors.filter((tor) => {
-            const year = new Date(tor.created_at).getFullYear().toString();
+        return lpjs.filter((lpj) => {
+            const year = new Date(lpj.created_at).getFullYear().toString();
             const matchYear = selectedYear === 'all' || selectedYear === year;
 
             const text =
-                (tor.judul ?? '') + ' ' + (tor.kegiatan_type?.nama ?? '');
+                (lpj.judul ?? '') + ' ' + (lpj.kegiatan_type?.nama ?? '');
             const matchSearch = text.toLowerCase().includes(term);
 
             return matchYear && matchSearch;
         });
-    }, [tors, search, selectedYear]);
+    }, [lpjs, search, selectedYear]);
 
     // total halaman
     const totalPages = Math.max(
         1,
-        Math.ceil(filteredTors.length / itemsPerPage),
+        Math.ceil(filteredLpjs.length / itemsPerPage),
     );
 
     // data per halaman
-    const paginatedTors = useMemo(() => {
+    const paginatedLpjs = useMemo(() => {
         const start = (page - 1) * itemsPerPage;
-        return filteredTors.slice(start, start + itemsPerPage);
-    }, [filteredTors, page]);
+        return filteredLpjs.slice(start, start + itemsPerPage);
+    }, [filteredLpjs, page]);
 
     // kalau filter/search berubah, reset ke halaman 1
     useEffect(() => {
         setPage(1);
-    }, [search, selectedYear, tors.length]);
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
-        post('/dashboard/submisi/tor', {
-            onSuccess: () => {
-                setIsModalOpen(false);
-                reset();
-            },
-        });
-    };
-
-    const handleBuatLpj = (torId: string) => {
-        router.post(`/dashboard/lpj/generate-from/${torId}`, undefined, {
-            preserveScroll: true,
-        });
-    };
+    }, [search, selectedYear, lpjs.length]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="TOR" />
+            <Head title="LPJ" />
 
             {/* OUTER sama seperti notifikasi */}
             <div className="flex h-full flex-1 bg-[#CBEBD5]/70 p-4 md:p-6">
@@ -121,102 +83,18 @@ export default function TorPage({
                     {/* TITLE */}
                     <div className="w-full">
                         <h1 className="text-2xl font-semibold text-[#427452]">
-                            TOR
+                            LPJ
                         </h1>
                     </div>
 
-                    {/* BARIS KONTROL: Tambah + Search + Filter Tahun */}
+                    {/* BARIS KONTROL: Search + Filter Tahun */}
                     <div className="mt-2 flex w-full flex-col gap-3 md:flex-row md:items-center md:gap-4">
-                        {/* KIRI: Dialog Tambah Pengajuan */}
-                        <Dialog
-                            open={isModalOpen}
-                            onOpenChange={setIsModalOpen}
-                        >
-                            <DialogTrigger asChild>
-                                <Button className="rounded-md bg-[#73AD86] px-5 py-2 text-white hover:bg-[#5f9772]">
-                                    Tambah TOR
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                                <DialogHeader>
-                                    <DialogTitle>Buat TOR Baru</DialogTitle>
-                                    <DialogDescription>
-                                        Isi form di bawah untuk membuat TOR
-                                        baru.
-                                    </DialogDescription>
-                                </DialogHeader>
-                                <form
-                                    onSubmit={handleSubmit}
-                                    className="space-y-4"
-                                >
-                                    <div>
-                                        <Label htmlFor="judul">Judul</Label>
-                                        <Input
-                                            id="judul"
-                                            value={data.judul}
-                                            onChange={(e) =>
-                                                setData('judul', e.target.value)
-                                            }
-                                        />
-                                        {errors.judul && (
-                                            <p className="mt-1 text-xs text-red-500">
-                                                {errors.judul}
-                                            </p>
-                                        )}
-                                    </div>
-                                    <div>
-                                        <Label htmlFor="kegiatan_type_id">
-                                            Jenis Kegiatan
-                                        </Label>
-                                        <Select
-                                            onValueChange={(value) =>
-                                                setData(
-                                                    'kegiatan_type_id',
-                                                    value,
-                                                )
-                                            }
-                                            value={data.kegiatan_type_id}
-                                        >
-                                            <SelectTrigger>
-                                                <SelectValue placeholder="Pilih jenis kegiatan" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {kegiatanTypes.map((option) => (
-                                                    <SelectItem
-                                                        key={option.id}
-                                                        value={option.id}
-                                                    >
-                                                        {option.nama}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                        {errors.kegiatan_type_id && (
-                                            <p className="mt-1 text-xs text-red-500">
-                                                {errors.kegiatan_type_id}
-                                            </p>
-                                        )}
-                                    </div>
-                                    <div className="flex justify-end">
-                                        <Button
-                                            type="submit"
-                                            disabled={processing}
-                                        >
-                                            {processing
-                                                ? 'Membuat...'
-                                                : 'Buat TOR'}
-                                        </Button>
-                                    </div>
-                                </form>
-                            </DialogContent>
-                        </Dialog>
-
-                        {/* TENGAH: Search (desain mirip notifikasi, tapi tetap di tengah) */}
+                        {/* TENGAH: Search */}
                         <div className="flex flex-1 justify-center">
                             <div className="relative w-full max-w-md">
                                 <Input
                                     className="w-full rounded-md border border-gray-300 bg-white pr-4 pl-10 shadow-sm"
-                                    placeholder="Cari TOR"
+                                    placeholder="Cari LPJ"
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
                                 />
@@ -239,7 +117,7 @@ export default function TorPage({
                             </div>
                         </div>
 
-                        {/* KANAN: Filter Tahun (dibikin seperti “chip” putih ala notifikasi) */}
+                        {/* KANAN: Filter Tahun */}
                         <div className="flex justify-start md:justify-end">
                             <Select
                                 value={selectedYear}
@@ -283,17 +161,17 @@ export default function TorPage({
                         </div>
                     </div>
 
-                    {/* LIST TOR – sekarang pakai “white card” seperti notifikasi, tanpa background hijau pekat */}
-                    {filteredTors.length > 0 ? (
+                    {/* LIST LPJ */}
+                    {filteredLpjs.length > 0 ? (
                         <div className="mt-2 flex-1 space-y-3 overflow-y-auto rounded-2xl">
-                            {paginatedTors.map((tor) => (
+                            {paginatedLpjs.map((lpj) => (
                                 <div
-                                    key={tor.id}
+                                    key={lpj.id}
                                     className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
                                 >
                                     <div className="mb-2">
                                         <h2 className="text-lg font-semibold text-[#333]">
-                                            {tor.judul}
+                                            {lpj.judul}
                                         </h2>
                                     </div>
 
@@ -303,7 +181,7 @@ export default function TorPage({
                                                 Oleh
                                             </p>
                                             <p className="font-medium">
-                                                {tor.created_by?.name}
+                                                {lpj.created_by?.name}
                                             </p>
                                         </div>
                                         <div className="text-sm">
@@ -312,7 +190,7 @@ export default function TorPage({
                                             </p>
                                             <p className="font-medium">
                                                 {format(
-                                                    new Date(tor.created_at),
+                                                    new Date(lpj.created_at),
                                                     'MMMM yyyy',
                                                 )}
                                             </p>
@@ -322,7 +200,7 @@ export default function TorPage({
                                                 Jenis Kegiatan
                                             </p>
                                             <p className="font-medium">
-                                                {tor.kegiatan_type?.nama}
+                                                {lpj.kegiatan_type?.nama}
                                             </p>
                                         </div>
                                         <div className="text-sm">
@@ -336,7 +214,7 @@ export default function TorPage({
                                                         style: 'currency',
                                                         currency: 'IDR',
                                                     },
-                                                ).format(tor.total_anggaran)}
+                                                ).format(lpj.total_anggaran)}
                                             </p>
                                         </div>
                                         <div className="text-sm">
@@ -344,9 +222,9 @@ export default function TorPage({
                                                 Status
                                             </p>
                                             <p className="font-medium">
-                                                {tor.status_submisi.length > 0
-                                                    ? tor.status_submisi[
-                                                          tor.status_submisi
+                                                {lpj.status_submisi.length > 0
+                                                    ? lpj.status_submisi[
+                                                          lpj.status_submisi
                                                               .length - 1
                                                       ].status_type.nama
                                                     : 'Draft'}
@@ -354,48 +232,26 @@ export default function TorPage({
                                         </div>
 
                                         <div className="flex flex-col gap-2 md:items-end">
-                                            {tor.generated_lpj ? (
+                                            {lpj.parent_tor_id && (
                                                 <Link
-                                                    href={`/dashboard/submisi/${tor.generated_lpj.id}`}
+                                                    href={`/dashboard/submisi/${lpj.parent_tor_id}`}
                                                 >
                                                     <Button
                                                         variant="outline"
                                                         className="rounded-lg"
                                                     >
-                                                        Lihat LPJ
+                                                        Lihat TOR Asal
                                                     </Button>
                                                 </Link>
-                                            ) : (
-                                                <Button
-                                                    variant="outline"
-                                                    disabled={
-                                                        (tor.status_submisi
-                                                            .length > 0
-                                                            ? tor.status_submisi[
-                                                                  tor
-                                                                      .status_submisi
-                                                                      .length -
-                                                                      1
-                                                              ].status_type.nama.trim()
-                                                            : 'Draft') !==
-                                                        'Disetujui'
-                                                    }
-                                                    className="rounded-lg"
-                                                    onClick={() =>
-                                                        handleBuatLpj(tor.id)
-                                                    }
-                                                >
-                                                    Buat LPJ
-                                                </Button>
                                             )}
                                             <Link
-                                                href={`/dashboard/submisi/${tor.id}`}
+                                                href={`/dashboard/submisi/${lpj.id}`}
                                             >
                                                 <Button
                                                     variant="outline"
                                                     className="rounded-lg"
                                                 >
-                                                    Detail TOR
+                                                    Detail LPJ
                                                 </Button>
                                             </Link>
                                         </div>
@@ -403,8 +259,8 @@ export default function TorPage({
                                 </div>
                             ))}
 
-                            {/* PAGINATION ala “footer kecil” */}
-                            {filteredTors.length > itemsPerPage && (
+                            {/* PAGINATION */}
+                            {filteredLpjs.length > itemsPerPage && (
                                 <div className="mt-2 flex items-center justify-center gap-2 text-sm text-slate-600">
                                     <Button
                                         disabled={page === 1}
@@ -457,9 +313,9 @@ export default function TorPage({
                             )}
                         </div>
                     ) : (
-                        // EMPTY STATE mirip notifikasi
+                        // EMPTY STATE
                         <div className="mt-2 flex h-40 items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white text-sm text-slate-600">
-                            Belum ada TOR yang dibuat.
+                            Belum ada LPJ yang dibuat.
                         </div>
                     )}
                 </div>

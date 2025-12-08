@@ -26,6 +26,8 @@ class DetailSubmisi extends Model
         'tanggal_selesai',
         'pic_id',
         'submisi_id',
+        'peserta_kegiatan',
+        'hasil_kegiatan',
     ];
 
     public function pic(): \Illuminate\Database\Eloquent\Relations\BelongsTo

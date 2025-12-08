@@ -6,7 +6,7 @@ use App\Models\Submisi;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class TorSubmitted
+class SubmisiSubmitted
 {
     use Dispatchable;
     use SerializesModels;

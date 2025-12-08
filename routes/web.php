@@ -10,11 +10,9 @@ use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\PegawaiController;
 use App\Http\Controllers\ReviewController; // <- dipakai
+use App\Http\Controllers\SubmisiController;
 use App\Http\Controllers\SubmisiFileController;
-use App\Http\Controllers\TorController;
-use App\Models\KegiatanType;
 use App\Models\Submisi;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -48,20 +46,27 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
     });
 
     Route::middleware(['role:mahasiswa,dosen'])->group(function () {
-        Route::get('tor', function () {
-            $tors = Submisi::with('statusSubmisi.statusType', 'kegiatanType', 'createdBy')
-                ->where('created_by', Auth::id())
-                ->where('type', 'TOR')
-                ->orderBy('created_at', 'desc')
-                ->get();
+        // More specific routes first
+        Route::post('submisi/{submisi}/draft', [SubmisiController::class, 'updateDetail'])->name('submisi.saveDraft');
+        Route::post('submisi/{submisi}/new-version', [SubmisiController::class, 'storeNewVersion'])->name('submisi.newVersion');
+        Route::post('submisi/{submisi}/submit', [SubmisiController::class, 'submit'])->name('submisi.submit');
+        Route::get('submisi/{submisi}/template', function (\App\Models\Submisi $submisi) {
+            $submisi->load('detailSubmisi');
 
-            $kegiatanTypes = KegiatanType::all();
-
-            return Inertia::render('tor/index', [
-                'tors' => $tors,
-                'kegiatanTypes' => $kegiatanTypes,
+            return Inertia::render('tor/detail-template', [
+                'submisi' => $submisi,
             ]);
-        })->name('tor');
+        })->name('submisi.template');
+
+        // General routes
+        Route::get('submisi/{type}', [SubmisiController::class, 'index'])
+            ->whereIn('type', ['tor', 'lpj'])
+            ->name('submisi.index');
+        Route::post('submisi/{type}', [SubmisiController::class, 'store'])->whereIn('type', ['tor', 'lpj'])->name('submisi.store');
+        Route::get('submisi/{submisi}', [SubmisiController::class, 'show'])->name('submisi.show');
+        Route::put('submisi/{submisi}', [SubmisiController::class, 'update'])->name('submisi.update');
+
+        // Other routes
         Route::get('arsip', function () {
             $arsip = Submisi::with([
                 'kegiatanType',
@@ -82,21 +87,9 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
             ]);
         })->name('arsip.index');
 
-        Route::post('tor', [TorController::class, 'store'])->name('tor.store');
-        Route::get('tor/{submisi}', [TorController::class, 'show'])->name('tor.show');
-        Route::put('tor/{submisi}', [TorController::class, 'update'])->name('tor.update');
-        Route::post('tor/{submisi}/draft', [TorController::class, 'updateDetail'])->name('tor.saveDraft');
-        Route::post('tor/{submisi}/new-version', [TorController::class, 'storeNewVersion'])->name('tor.newVersion');
-        Route::post('tor/{submisi}/submit', [TorController::class, 'submit'])->name('tor.submit');
-        Route::get('tor/{submisi}/template', function (\App\Models\Submisi $submisi) {
-            $submisi->load('detailSubmisi');
+        Route::post('lpj/generate-from/{tor}', [SubmisiController::class, 'generateLpj'])->name('lpj.generate');
 
-            return Inertia::render('tor/detail-template', [
-                'submisi' => $submisi,
-            ]);
-        })->name('tor.template');
-
-        Route::get('dosen/search', [TorController::class, 'searchDosen'])->name('dosen.search');
+        Route::get('dosen/search', [SubmisiController::class, 'searchDosen'])->name('dosen.search');
         Route::get('mahasiswa/search', [MahasiswaController::class, 'search'])->name('mahasiswa.search');
 
         Route::post('anggota-tim', [AnggotaTimController::class, 'store'])->name('anggota-tim.store');
@@ -115,9 +108,7 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
         Route::put('biaya/{biaya}', [BiayaController::class, 'update'])->name('biaya.update');
         Route::delete('biaya/{biaya}', [BiayaController::class, 'destroy'])->name('biaya.destroy');
 
-        Route::get('lpj', function () {
-            return Inertia::render('lpj');
-        })->name('lpj');
+        // Route for LPJ index is now handled by submisi.index
     });
 
     Route::post('/onboarding/mahasiswa', [OnboardingController::class, 'storeMahasiswa'])->name('onboarding.mahasiswa.store');

@@ -2,7 +2,7 @@
 
 namespace App\Listeners;
 
-use App\Events\TorSubmitted;
+use App\Events\SubmisiSubmitted;
 use App\Models\DatabaseNotification;
 use App\Models\Submisi;
 use App\Models\User;
@@ -22,7 +22,7 @@ class SendSubmissionNotification
     /**
      * Handle the event.
      */
-    public function handle(TorSubmitted $event): void
+    public function handle(SubmisiSubmitted $event): void
     {
         $submisi = $event->submisi;
 

@@ -9,6 +9,7 @@ use App\Models\Submisi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
@@ -29,9 +30,9 @@ class ReviewController extends Controller
         };
 
         $pageTitle = match ($role) {
-            'admin' => 'Validasi TOR',
-            'sekjur' => 'Verifikasi TOR',
-            'kajur' => 'Persetujuan TOR',
+            'admin' => 'Validasi Submisi',
+            'sekjur' => 'Verifikasi Submisi',
+            'kajur' => 'Persetujuan Submisi',
             default => 'Review Submisi',
         };
 
@@ -124,9 +125,14 @@ class ReviewController extends Controller
             ]);
         }
 
+        // Dapatkan ID dari detail submisi yang paling baru.
+        // Relasi 'detailSubmisi' pada model Submisi sudah diurutkan untuk mengambil yang terbaru.
+        $latestDetail = $submisi->detailSubmisi;
+        $latestDetailId = $latestDetail ? $latestDetail->id : null;
+
         $newStatus = StatusSubmisi::create([
             'submisi_id' => $submisi->id,
-            'detail_submisi_id' => $submisi->detailSubmisi->id,
+            'detail_submisi_id' => $latestDetailId, // Gunakan ID yang sudah pasti terbaru
             'status_type_id' => $request->status_type_id,
             'created_by' => $user->id,
             'keterangan' => $request->keterangan,

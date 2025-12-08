@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\SubmisiSubmitted;
 use App\Events\SubmissionReviewed;
-use App\Events\TorSubmitted;
 use App\Listeners\SendReviewedNotification;
 use App\Listeners\SendSubmissionNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -26,7 +26,7 @@ class EventServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Event::listen(
-            TorSubmitted::class,
+            SubmisiSubmitted::class,
             SendSubmissionNotification::class
         );
 

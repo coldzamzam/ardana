@@ -70,6 +70,16 @@ class Submisi extends Model
 
     public function detailSubmisi(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
-        return $this->hasOne(DetailSubmisi::class);
+        return $this->hasOne(DetailSubmisi::class)->orderBy('created_at', 'desc');
+    }
+
+    public function generatedLpj(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(self::class, 'parent_tor_id', 'id');
+    }
+
+    public function parentTor(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(self::class, 'parent_tor_id');
     }
 }

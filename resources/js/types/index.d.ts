@@ -126,7 +126,7 @@ export interface StatusSubmisi {
 }
 
 export interface Submisi {
-    id: number;
+    id: string;
     judul: string;
     kegiatan_type_id: string;
     kegiatan_type?: KegiatanType;
@@ -139,10 +139,13 @@ export interface Submisi {
     submisi_file?: SubmisiFile[];
     biaya?: Biaya[];
     detail_submisi?: DetailSubmisi;
+    generated_lpj?: Submisi;
+    parent_tor_id?: string;
     [key: string]: unknown;
 }
 
 export interface DetailSubmisi {
+    id: string;
     gambaran_umum?: string;
     tujuan?: string;
     manfaat?: string;
@@ -152,4 +155,7 @@ export interface DetailSubmisi {
     tanggal_mulai?: string;
     tanggal_selesai?: string;
     pic_id?: string;
+    pic?: User;
+    peserta_kegiatan?: string;
+    hasil_kegiatan?: string;
 }

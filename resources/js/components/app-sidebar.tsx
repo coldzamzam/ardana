@@ -86,12 +86,12 @@ export function AppSidebar() {
         mainNavItems.push(
             {
                 title: 'TOR',
-                href: '/dashboard/tor',
+                href: '/dashboard/submisi/tor',
                 icon: BookOpen,
             },
             {
                 title: 'LPJ',
-                href: '/dashboard/lpj',
+                href: '/dashboard/submisi/lpj',
                 icon: Folder,
             },
         );

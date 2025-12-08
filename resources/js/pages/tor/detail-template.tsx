@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem, Submisi } from '@/types';
-import { Head, router } from '@inertiajs/react';
+import { Head } from '@inertiajs/react';
 
 interface DetailTemplateProps {
     submisi: Submisi;
@@ -23,10 +23,10 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
 
     const handleDownloadTor = () => {
         // OPTION 1: pakai URL langsung
-        router.get(`/dashboard/tor/${submisi.id}/template/download`);
-
+        // TODO: Re-evaluate download route for generic submissions.
+        // router.get(`/dashboard/submisi/${submisi.id}/template/download`);
         // OPTION 2 (kalau pakai Ziggy & route bernama):
-        // router.get(route('tor.template.download', submisi.id));
+        // router.get(route('submisi.template', submisi.id));
     };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -54,6 +54,7 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
                 </div>
                 <div
                     className="mx-auto my-4 min-h-[1123px] w-[794px] border border-black bg-white p-12 shadow-md"
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     style={{ pageBreakAfter: 'always' as any }}
                 >
                     <div className="flex h-full flex-col items-center justify-between">
@@ -111,6 +112,7 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
                 {/* =================== HALAMAN 2 – ISI LAPORAN =================== */}
                 <div
                     className="mx-auto my-4 min-h-[1123px] w-[794px] border border-black bg-white px-12 py-10 shadow-md"
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     style={{ pageBreakAfter: 'always' as any }}
                 >
                     {/* Header */}

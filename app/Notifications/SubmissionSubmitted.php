@@ -39,7 +39,7 @@ class SubmissionSubmitted extends Notification
 
         return [
             'actor_name' => $actorName,
-            'action_text' => 'telah mengajukan TOR baru:',
+            'action_text' => 'telah mengajukan '.$this->submisi->type.' baru:',
             'object_title' => $this->submisi->judul,
             'link' => route('review.index'), // Link for the reviewer
         ];

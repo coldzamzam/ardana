@@ -1,4 +1,4 @@
-import StatusHistoryCard from '@/components/status-history-card'; // Import StatusHistoryCard
+import StatusHistoryCard from '@/components/status-history-card';
 import TiptapEditor from '@/components/tiptap-editor';
 import {
     AlertDialog,
@@ -23,45 +23,30 @@ import {
     SelectValue,
 } from '@/components/ui/select';
 import AppLayout from '@/layouts/app-layout';
+import DetailAnggota from '@/pages/tor/detail-anggota';
+import DetailBiaya from '@/pages/tor/detail-biaya';
+import DetailFile from '@/pages/tor/detail-file';
+import DetailIndikator from '@/pages/tor/detail-indikator';
 import {
     type BreadcrumbItem,
-    type KegiatanType,
-    type StatusSubmisi,
+    type StatusSubmisi as StatusSubmisiType,
     type Submisi,
 } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
-import React, { useCallback, useEffect, useRef } from 'react';
-import DetailAnggota from './detail-anggota';
-import DetailBiaya from './detail-biaya';
-import DetailFile from './detail-file';
-import DetailIndikator from './detail-indikator';
 
-interface DosenForSelect {
-    id: string;
-    name: string;
-    nip?: string;
-}
-
-interface TorDetailProps {
+interface LpjDetailProps {
     submisi: Submisi;
-    dosens: DosenForSelect[];
-    kegiatanTypes: KegiatanType[];
-    latestStatus: StatusSubmisi | null;
+    latestStatus: StatusSubmisiType | null;
 }
 
-export default function TorDetail({
-    submisi,
-    dosens,
-    kegiatanTypes,
-    latestStatus,
-}: TorDetailProps) {
+export default function LpjDetail({ submisi, latestStatus }: LpjDetailProps) {
     const breadcrumbs: BreadcrumbItem[] = [
         {
-            title: 'TOR',
-            href: '/dashboard/tor',
+            title: 'LPJ',
+            href: '/dashboard/submisi/lpj',
         },
         {
-            title: 'TOR Detail',
+            title: 'LPJ Detail',
             href: `/dashboard/submisi/${submisi.id}`,
         },
         {
@@ -70,11 +55,8 @@ export default function TorDetail({
         },
     ];
 
-    const { data, setData, put, post, errors } = useForm({
-        id: submisi.id,
-        judul: submisi.judul,
-        kegiatan_type_id: submisi.kegiatan_type_id,
-        created_at: submisi.created_at,
+    const { data, setData, post, errors } = useForm({
+        // Pre-fill all fields from the TOR's detail, making them editable for the LPJ
         indikator_kinerja: submisi.detail_submisi?.iku || '',
         tanggal_mulai: submisi.detail_submisi?.tanggal_mulai || '',
         tanggal_selesai: submisi.detail_submisi?.tanggal_selesai || '',
@@ -83,90 +65,28 @@ export default function TorDetail({
         manfaat: submisi.detail_submisi?.manfaat || '',
         metode_pelaksanaan: submisi.detail_submisi?.metode_pelaksanaan || '',
         waktu_pelaksanaan: submisi.detail_submisi?.waktu_pelaksanaan || '',
-        pic_id: submisi.detail_submisi?.pic_id || '',
-        pic_name: '',
-        pic_nip: '',
+
+        // LPJ specific fields are also editable
+        peserta_kegiatan: submisi.detail_submisi?.peserta_kegiatan || '',
+        hasil_kegiatan: submisi.detail_submisi?.hasil_kegiatan || '',
     });
 
     const isEditable =
         !latestStatus || latestStatus.status_type.nama.trim() === 'Revisi';
 
-    const isRevision = latestStatus?.status_type.nama.trim() === 'Revisi';
-
-    const hasNewDetailForRevision =
-        isRevision &&
-        latestStatus?.detail_submisi_id !== submisi.detail_submisi?.id;
-    const hasDetailForDraft = !isRevision && !!submisi.detail_submisi;
-
-    const isSubmittable = hasNewDetailForRevision || hasDetailForDraft;
-
-    const isInitialMount = useRef(true);
-
-    React.useEffect(() => {
-        const selectedDosen = dosens.find(
-            (dosen) => String(dosen.id) === data.pic_id,
-        );
-        if (selectedDosen) {
-            setData((prevData) => ({
-                ...prevData,
-                pic_name: selectedDosen.name,
-                pic_nip: selectedDosen.nip ?? '',
-            }));
-        } else {
-            setData((prevData) => ({
-                ...prevData,
-                pic_name: '',
-                pic_nip: '',
-            }));
-        }
-    }, [data.pic_id, dosens, setData]);
-
-    const IKU = [
-        'IKU 1',
-        'IKU 2',
-        'IKU 3',
-        'IKU 4',
-        'IKU 5',
-        'IKU 6',
-        'IKU 7',
-        'IKU 8',
-    ];
-
-    const handleUpdate = useCallback(() => {
-        if (!isEditable) return;
-        put(`/dashboard/submisi/${submisi.id}`, {
-            preserveScroll: true,
-        });
-    }, [isEditable, put, submisi.id]);
-
-    useEffect(() => {
-        if (isInitialMount.current) {
-            isInitialMount.current = false;
-        } else {
-            handleUpdate();
-        }
-    }, [data.judul, data.kegiatan_type_id, handleUpdate]);
-
     const handleUpdateDetail = () => {
         if (!isEditable) return;
 
         const isRevision = latestStatus?.status_type.nama.trim() === 'Revisi';
-
-        // Cek jika ini save pertama pada mode revisi
-
         const isFirstSaveInRevision =
             isRevision &&
             latestStatus?.detail_submisi_id === submisi.detail_submisi?.id;
 
         if (isFirstSaveInRevision) {
-            // Buat versi baru
-
             post(`/dashboard/submisi/${submisi.id}/new-version`, {
                 preserveScroll: true,
             });
         } else {
-            // Update draft yang ada (baik draft awal atau draft revisi)
-
             post(`/dashboard/submisi/${submisi.id}/draft`, {
                 preserveScroll: true,
             });
@@ -176,59 +96,44 @@ export default function TorDetail({
     const handleSubmitSubmission = () => {
         router.post(`/dashboard/submisi/${submisi.id}/submit`);
     };
-    const handleGenerateTemplateTor = () => {
-        router.get(`/dashboard/submisi/${submisi.id}/template`);
-    };
+
+    // An LPJ is submittable if its own specific required fields have been filled and saved.
+    const isSubmittable =
+        submisi.detail_submisi?.peserta_kegiatan
+            ?.replace(/<[^>]+>/g, '')
+            ?.trim() &&
+        submisi.detail_submisi?.hasil_kegiatan?.replace(/<[^>]+>/g, '')?.trim();
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={`Detail TOR - ${submisi.judul}`} />
+            <Head title={`Detail LPJ - ${submisi.judul}`} />
 
             <div className="flex h-full flex-1 flex-col gap-3 overflow-x-auto rounded-xl p-4">
-                <StatusHistoryCard submisi={submisi} />{' '}
-                {/* Render StatusHistoryCard */}
+                <StatusHistoryCard submisi={submisi} />
+
                 <Card className="overflow-hidden rounded-2xl border border-[#73AD86]/40 shadow-sm">
-                    <CardContent className="space-y-4">
+                    <CardContent className="space-y-4 pt-6">
                         <div className="space-y-1">
                             <Label htmlFor="judul">Judul</Label>
                             <Input
                                 id="judul"
-                                value={data.judul}
-                                onChange={(e) =>
-                                    setData('judul', e.target.value)
-                                }
-                                disabled={!isEditable}
-                                className="bg-white"
+                                value={submisi.judul}
+                                disabled
+                                className="bg-neutral-100"
                             />
                         </div>
-
                         <div className="grid gap-4 md:grid-cols-2">
                             <div className="space-y-1">
                                 <Label htmlFor="kegiatan_type_id">
                                     Jenis Kegiatan
                                 </Label>
-                                <Select
-                                    onValueChange={(value) => {
-                                        setData('kegiatan_type_id', value);
-                                    }}
-                                    value={data.kegiatan_type_id}
-                                    disabled={!isEditable}
-                                >
-                                    <SelectTrigger className="bg-white">
-                                        <SelectValue placeholder="Pilih jenis kegiatan" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {kegiatanTypes.map((option) => (
-                                            <SelectItem
-                                                key={option.id}
-                                                value={option.id}
-                                            >
-                                                {option.nama}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                <Input
+                                    id="kegiatan_type_id"
+                                    value={submisi.kegiatan_type.nama}
+                                    disabled
+                                    className="bg-neutral-100"
+                                />
                             </div>
-
                             <div className="space-y-1">
                                 <Label htmlFor="created_at">Dibuat</Label>
                                 <Input
@@ -241,7 +146,6 @@ export default function TorDetail({
                                 />
                             </div>
                         </div>
-
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <Label htmlFor="created_by">Oleh</Label>
@@ -267,13 +171,13 @@ export default function TorDetail({
                         </div>
                     </CardContent>
                 </Card>
+
                 <Card className="overflow-hidden rounded-2xl border border-[#73AD86]/40 shadow-sm">
-                    <CardHeader className="">
+                    <CardHeader>
                         <CardTitle className="text-xl font-semibold text-[#427452]">
-                            Detail TOR
+                            Detail Laporan
                         </CardTitle>
                     </CardHeader>
-
                     <CardContent className="space-y-4 pt-4">
                         <div className="space-y-1 md:w-1/2">
                             <Label htmlFor="indikator_kinerja">
@@ -290,7 +194,16 @@ export default function TorDetail({
                                     <SelectValue placeholder="Pilih Indikator Kinerja" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {IKU.map((item) => (
+                                    {[
+                                        'IKU 1',
+                                        'IKU 2',
+                                        'IKU 3',
+                                        'IKU 4',
+                                        'IKU 5',
+                                        'IKU 6',
+                                        'IKU 7',
+                                        'IKU 8',
+                                    ].map((item) => (
                                         <SelectItem key={item} value={item}>
                                             {item}
                                         </SelectItem>
@@ -319,7 +232,6 @@ export default function TorDetail({
                                 <Label htmlFor="tanggal_selesai">
                                     Tanggal Selesai
                                 </Label>
-
                                 <Input
                                     id="tanggal_selesai"
                                     type="date"
@@ -341,40 +253,33 @@ export default function TorDetail({
                             <div className="rounded-lg border bg-white p-2">
                                 <TiptapEditor
                                     content={data.gambaran_umum || ''}
-                                    onChange={(content) =>
-                                        setData('gambaran_umum', content)
+                                    onChange={(c) =>
+                                        setData('gambaran_umum', c)
                                     }
                                     editable={isEditable}
                                 />
                             </div>
                         </div>
-
                         <div className="space-y-2">
                             <Label htmlFor="tujuan">Tujuan</Label>
                             <div className="rounded-lg border bg-white p-2">
                                 <TiptapEditor
                                     content={data.tujuan || ''}
-                                    onChange={(content) =>
-                                        setData('tujuan', content)
-                                    }
+                                    onChange={(c) => setData('tujuan', c)}
                                     editable={isEditable}
                                 />
                             </div>
                         </div>
-
                         <div className="space-y-2">
                             <Label htmlFor="manfaat">Manfaat</Label>
                             <div className="rounded-lg border bg-white p-2">
                                 <TiptapEditor
                                     content={data.manfaat || ''}
-                                    onChange={(content) =>
-                                        setData('manfaat', content)
-                                    }
+                                    onChange={(c) => setData('manfaat', c)}
                                     editable={isEditable}
                                 />
                             </div>
                         </div>
-
                         <div className="space-y-2">
                             <Label htmlFor="metode_pelaksanaan">
                                 Metode Pelaksanaan
@@ -382,14 +287,13 @@ export default function TorDetail({
                             <div className="rounded-lg border bg-white p-2">
                                 <TiptapEditor
                                     content={data.metode_pelaksanaan || ''}
-                                    onChange={(content) =>
-                                        setData('metode_pelaksanaan', content)
+                                    onChange={(c) =>
+                                        setData('metode_pelaksanaan', c)
                                     }
                                     editable={isEditable}
                                 />
                             </div>
                         </div>
-
                         <div className="space-y-2">
                             <Label htmlFor="waktu_pelaksanaan">
                                 Waktu Pelaksanaan
@@ -397,8 +301,8 @@ export default function TorDetail({
                             <div className="rounded-lg border bg-white p-2">
                                 <TiptapEditor
                                     content={data.waktu_pelaksanaan || ''}
-                                    onChange={(content) =>
-                                        setData('waktu_pelaksanaan', content)
+                                    onChange={(c) =>
+                                        setData('waktu_pelaksanaan', c)
                                     }
                                     editable={isEditable}
                                 />
@@ -407,48 +311,59 @@ export default function TorDetail({
 
                         <div className="space-y-1 md:w-1/2">
                             <Label htmlFor="pic">PIC</Label>
-                            <select
+                            <Input
                                 id="pic"
-                                value={data.pic_id}
-                                onChange={(e) => {
-                                    const selectedDosen = dosens.find(
-                                        (d) => String(d.id) === e.target.value,
-                                    );
-                                    if (selectedDosen) {
-                                        setData({
-                                            ...data,
-                                            pic_id: String(selectedDosen.id),
-                                            pic_name: selectedDosen.name,
-                                            pic_nip: selectedDosen.nip ?? '',
-                                        });
-                                    }
-                                }}
-                                disabled={!isEditable}
-                                className="w-full rounded-md border border-gray-300 bg-white p-2"
+                                value={submisi.detail_submisi?.pic?.name || ''}
+                                disabled
+                                className="bg-neutral-100"
+                            />
+                        </div>
+
+                        <div className="space-y-2 border-t pt-4">
+                            <Label
+                                htmlFor="peserta_kegiatan"
+                                className="text-base font-semibold"
                             >
-                                <option value="">Pilih PIC</option>
-                                {dosens.map((dosen) => (
-                                    <option
-                                        key={dosen.id}
-                                        value={String(dosen.id)}
-                                    >
-                                        {dosen.name} - {dosen.nip}
-                                    </option>
-                                ))}
-                            </select>
-                            {data.pic_name && (
-                                <div className="mt-2 text-sm text-gray-600">
-                                    <p>Nama: {data.pic_name}</p>
-                                    <p>NIP: {data.pic_nip}</p>
-                                </div>
+                                Peserta Kegiatan
+                            </Label>
+                            <div className="rounded-lg border bg-white p-2">
+                                <TiptapEditor
+                                    content={data.peserta_kegiatan || ''}
+                                    onChange={(c) =>
+                                        setData('peserta_kegiatan', c)
+                                    }
+                                    editable={isEditable}
+                                />
+                            </div>
+                            {errors.peserta_kegiatan && (
+                                <p className="text-sm text-red-500">
+                                    {errors.peserta_kegiatan}
+                                </p>
                             )}
                         </div>
 
-                        {Object.keys(errors).length > 0 && (
-                            <div className="mt-4 text-center text-red-500">
-                                Semua field wajib diisi.
+                        <div className="space-y-2">
+                            <Label
+                                htmlFor="hasil_kegiatan"
+                                className="text-base font-semibold"
+                            >
+                                Hasil Kegiatan
+                            </Label>
+                            <div className="rounded-lg border bg-white p-2">
+                                <TiptapEditor
+                                    content={data.hasil_kegiatan || ''}
+                                    onChange={(c) =>
+                                        setData('hasil_kegiatan', c)
+                                    }
+                                    editable={isEditable}
+                                />
                             </div>
-                        )}
+                            {errors.hasil_kegiatan && (
+                                <p className="text-sm text-red-500">
+                                    {errors.hasil_kegiatan}
+                                </p>
+                            )}
+                        </div>
 
                         {isEditable && (
                             <div className="flex justify-end pt-2">
@@ -462,75 +377,62 @@ export default function TorDetail({
                         )}
                     </CardContent>
                 </Card>
-                <DetailAnggota submisi={submisi} isEditable={isEditable} />
-                <DetailIndikator submisi={submisi} isEditable={isEditable} />
+
+                <DetailAnggota submisi={submisi} isEditable={false} />
+                <DetailIndikator submisi={submisi} isEditable={false} />
                 <DetailFile submisi={submisi} isEditable={isEditable} />
                 <DetailBiaya submisi={submisi} isEditable={isEditable} />
-                <div className="flex flex-col items-end pt-4 pb-10">
-                    {isEditable && !isSubmittable && (
-                        <p className="pb-2 text-xs text-slate-600">
-                            Silakan simpan detail submisi terbaru untuk mengirim
-                            pengajuan
-                        </p>
-                    )}
-                    <div className="flex gap-3">
-                        {isEditable ? (
-                            <>
-                                <Button
-                                    type="button"
-                                    className="bg-[#5D41D9] text-white hover:bg-[#392885]"
-                                    onClick={handleGenerateTemplateTor}
-                                >
-                                    Buat Template TOR
-                                </Button>
-                                <AlertDialog>
-                                    <AlertDialogTrigger asChild>
-                                        <Button
-                                            disabled={!isSubmittable}
-                                            className="rounded-md bg-[#427452] text-white hover:bg-[#365d42]"
+
+                <div className="flex justify-end gap-3 pt-4 pb-10">
+                    {isEditable ? (
+                        <div className="flex flex-col items-end">
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button
+                                        disabled={!isSubmittable}
+                                        className="rounded-md bg-[#427452] text-white hover:bg-[#365d42]"
+                                    >
+                                        Kirim Pengajuan LPJ
+                                    </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle>
+                                            Apakah Anda yakin ingin mengajukan
+                                            LPJ ini?
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription>
+                                            Pastikan semua data sudah benar
+                                            sebelum diajukan.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+                                    <AlertDialogFooter>
+                                        <AlertDialogCancel>
+                                            Batal
+                                        </AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={handleSubmitSubmission}
                                         >
-                                            Kirim Pengajuan
-                                        </Button>
-                                    </AlertDialogTrigger>
-
-                                    <AlertDialogContent className="rounded-3xl border border-[#73AD86]/40 bg-white/95 shadow-2xl data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:slide-out-to-bottom-10 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-bottom-10 data-[state=open]:zoom-in-95 sm:max-w-lg">
-                                        <AlertDialogHeader>
-                                            <AlertDialogTitle className="text-lg font-semibold text-[#111827]">
-                                                Apakah Anda yakin ingin
-                                                mengajukan TOR ini?
-                                            </AlertDialogTitle>
-                                            <AlertDialogDescription className="text-sm text-slate-600">
-                                                Setelah diajukan, TOR tidak
-                                                dapat diedit kembali kecuali
-                                                jika diminta untuk revisi oleh
-                                                reviewer. Pastikan semua data
-                                                sudah benar.
-                                            </AlertDialogDescription>
-                                        </AlertDialogHeader>
-
-                                        <AlertDialogFooter className="mt-2">
-                                            <AlertDialogCancel className="rounded-md border-slate-300 px-5">
-                                                Batal
-                                            </AlertDialogCancel>
-                                            <AlertDialogAction
-                                                onClick={handleSubmitSubmission}
-                                                className="rounded-md bg-[#427452] px-6 hover:bg-[#365d42]"
-                                            >
-                                                Lanjutkan
-                                            </AlertDialogAction>
-                                        </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                </AlertDialog>
-                            </>
-                        ) : (
-                            <Button
-                                disabled
-                                className="rounded-md bg-gray-500 px-6 text-white"
-                            >
-                                Telah Diajukan
-                            </Button>
-                        )}
-                    </div>
+                                            Lanjutkan
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
+                            {!isSubmittable && (
+                                <p className="mt-2 text-xs text-slate-600">
+                                    Silakan simpan & isi field LPJ untuk
+                                    mengirim pengajuan
+                                </p>
+                            )}
+                        </div>
+                    ) : (
+                        <Button
+                            disabled
+                            className="rounded-md bg-gray-500 px-6 text-white"
+                        >
+                            Telah Diajukan
+                        </Button>
+                    )}
                 </div>
             </div>
         </AppLayout>
