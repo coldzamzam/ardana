@@ -1,12 +1,12 @@
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
-import { edit as editAppearance } from '@/routes/appearance';
+// import { edit as editAppearance } from '@/routes/appearance';
 import { edit as editPassword } from '@/routes/password';
 import { edit } from '@/routes/profile';
 import { show } from '@/routes/two-factor';
 import { type NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { Lock, Palette, ShieldCheck, User } from 'lucide-react';
+import { Lock, ShieldCheck, User } from 'lucide-react';
 import { type PropsWithChildren } from 'react';
 
 const sidebarNavItems: NavItem[] = [
@@ -25,11 +25,11 @@ const sidebarNavItems: NavItem[] = [
         href: show(),
         icon: ShieldCheck,
     },
-    {
-        title: 'Appearance',
-        href: editAppearance(),
-        icon: Palette,
-    },
+    // {
+    //     title: 'Appearance',
+    //     href: editAppearance(),
+    //     icon: Palette,
+    // },
 ];
 
 export default function SettingsLayout({ children }: PropsWithChildren) {
