@@ -58,9 +58,6 @@ export default function PegawaiEdit({ user }: PegawaiEditProps) {
                             <h1 className="text-2xl font-semibold text-[#427452]">
                                 Edit Pegawai
                             </h1>
-                            <p className="text-sm text-[#427452]/80">
-                                Perbarui data pegawai di sistem Ardana.
-                            </p>
                         </div>
                         <p className="text-xs text-[#427452]/70 md:text-sm">
                             {user.email}

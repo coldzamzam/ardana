@@ -64,10 +64,6 @@ export default function MahasiswaEdit({ mahasiswa }: MahasiswaEditProps) {
                             <h1 className="text-2xl font-semibold text-[#427452]">
                                 Edit Mahasiswa
                             </h1>
-                            <p className="text-sm text-[#427452]/80">
-                                Perbarui data mahasiswa yang terdaftar di
-                                Ardana.
-                            </p>
                         </div>
                         <p className="text-xs text-[#427452]/70 md:text-sm">
                             {mahasiswa.user.email}
