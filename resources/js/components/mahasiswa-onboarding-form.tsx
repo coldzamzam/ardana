@@ -13,6 +13,16 @@ import {
     AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -31,11 +41,25 @@ export default function MahasiswaOnboardingForm() {
         prodi: '',
     });
 
+    // dari kode pertama: dialog konfirmasi
     const [showConfirm, setShowConfirm] = useState(false);
+
+    // dari kode kedua: checkbox + modal S&K
+    const [isTermsChecked, setIsTermsChecked] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const handleModalClose = () => {
+        setIsModalOpen(false);
+        setIsTermsChecked(true); // otomatis centang setelah baca S&K
+    };
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-        // Tampilkan dialog konfirmasi dulu
+
+        // safeguard ekstra walaupun tombol sudah disabled kalau !isTermsChecked
+        if (!isTermsChecked) return;
+
+        // tampilkan dialog konfirmasi modern (bukan window.confirm)
         setShowConfirm(true);
     };
 
@@ -90,17 +114,80 @@ export default function MahasiswaOnboardingForm() {
                         <InputError message={errors.prodi} className="mt-1" />
                     </div>
 
+                    {/* Checkbox S&K */}
+                    <div className="mt-2 flex items-center space-x-2">
+                        <Checkbox
+                            id="terms"
+                            checked={isTermsChecked}
+                            onCheckedChange={(checkedState) => {
+                                const isChecked = checkedState === true;
+                                setIsTermsChecked(isChecked);
+                            }}
+                        />
+                        <Label
+                            htmlFor="terms"
+                            className="text-sm leading-none font-medium"
+                        >
+                            Saya menyetujui semua persyaratan yang berlaku{' '}
+                            <Button
+                                type="button"
+                                variant="link"
+                                className="h-auto p-0 align-baseline"
+                                onClick={() => setIsModalOpen(true)}
+                            >
+                                S&K
+                            </Button>
+                            .
+                        </Label>
+                    </div>
+
                     {/* BUTTON SUBMIT */}
                     <Button
                         type="submit"
                         className="mt-2 w-full rounded-lg bg-[#427452] hover:bg-[#365d42]"
-                        disabled={processing}
+                        disabled={processing || !isTermsChecked}
                     >
                         {processing && <Spinner />}
                         Simpan Informasi
                     </Button>
                 </div>
             </form>
+
+            {/* Dialog S&K */}
+            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                        <DialogTitle>Syarat & Ketentuan</DialogTitle>
+                        <DialogDescription>
+                            Harap baca dan pahami semua persyaratan sebelum
+                            melanjutkan.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="max-h-[60vh] overflow-y-auto py-4 text-sm">
+                        <p className="mb-4">
+                            Lorem ipsum dolor sit amet, consectetur adipiscing
+                            elit. Sed do eiusmod tempor incididunt ut labore et
+                            dolore magna aliqua. Ut enim ad minim veniam, quis
+                            nostrud exercitation ullamco laboris nisi ut aliquip
+                            ex ea commodo consequat.
+                        </p>
+                        <p>
+                            Duis aute irure dolor in reprehenderit in voluptate
+                            velit esse cillum dolore eu fugiat nulla pariatur.
+                            Excepteur sint occaecat cupidatat non proident, sunt
+                            in culpa qui officia deserunt mollit anim id est
+                            laborum.
+                        </p>
+                    </div>
+                    <DialogFooter>
+                        <DialogClose asChild>
+                            <Button type="button" onClick={handleModalClose}>
+                                Saya Mengerti
+                            </Button>
+                        </DialogClose>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
             {/* ALERT DIALOG KONFIRMASI */}
             <AlertDialog open={showConfirm} onOpenChange={setShowConfirm}>
