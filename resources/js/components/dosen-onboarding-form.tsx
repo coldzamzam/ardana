@@ -126,7 +126,7 @@ export default function DosenOnboardingForm() {
 
             {/* Dialog S&K */}
             <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                <DialogContent className="sm:max-w-[425px]">
+                <DialogContent className="max-w-[425px] md:w-full">
                     <DialogHeader>
                         <DialogTitle>Syarat & Ketentuan</DialogTitle>
                         <DialogDescription>
@@ -135,20 +135,102 @@ export default function DosenOnboardingForm() {
                         </DialogDescription>
                     </DialogHeader>
                     <div className="max-h-[60vh] overflow-y-auto py-4 text-sm">
-                        <p className="mb-4">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit. Sed do eiusmod tempor incididunt ut labore et
-                            dolore magna aliqua. Ut enim ad minim veniam, quis
-                            nostrud exercitation ullamco laboris nisi ut aliquip
-                            ex ea commodo consequat.
-                        </p>
-                        <p>
-                            Duis aute irure dolor in reprehenderit in voluptate
-                            velit esse cillum dolore eu fugiat nulla pariatur.
-                            Excepteur sint occaecat cupidatat non proident, sunt
-                            in culpa qui officia deserunt mollit anim id est
-                            laborum.
-                        </p>
+                        <div className="space-y-4 px-2 text-justify">
+                            <p>
+                                Dengan membuat akun dan menggunakan platform
+                                ARDANA (Sistem Manajemen Pengelolaan Dana
+                                Kegiatan Jurusan), Anda sebagai Dosen/Pegawai
+                                (selanjutnya disebut "Pengguna") menyatakan
+                                telah membaca, memahami, dan menyetujui setiap
+                                poin dalam Syarat dan Ketentuan ini.
+                            </p>
+                            <ol className="list-decimal space-y-3 pl-5">
+                                <li>
+                                    <strong className="font-semibold">
+                                        Akurasi Data Pengguna:
+                                    </strong>
+                                    <ul className="mt-1 list-[circle] space-y-1 pl-5">
+                                        <li>
+                                            Pengguna wajib memberikan data yang
+                                            akurat, valid, dan terkini saat
+                                            melakukan pendaftaran, terutama
+                                            Nomor Induk Pegawai (NIP).
+                                        </li>
+                                        <li>
+                                            Informasi yang telah disimpan,
+                                            khususnya NIP, bersifat final dan
+                                            tidak dapat diubah.
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <strong className="font-semibold">
+                                        Peran dan Tanggung Jawab:
+                                    </strong>
+                                    <ul className="mt-1 list-[circle] space-y-1 pl-5">
+                                        <li>
+                                            Pengguna bertanggung jawab
+                                            mengevaluasi setiap submisi secara
+                                            objektif, adil, dan sesuai pedoman.
+                                        </li>
+                                        <li>
+                                            Kerahasiaan data dan informasi dalam
+                                            submisi harus dijaga dengan baik.
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <strong className="font-semibold">
+                                        Penggunaan Sistem:
+                                    </strong>
+                                    <ul className="mt-1 list-[circle] space-y-1 pl-5">
+                                        <li>
+                                            Sistem ARDANA digunakan hanya untuk
+                                            tujuan meninjau dan mengelola proses
+                                            pengajuan pendanaan kegiatan
+                                            kemahasiswaan.
+                                        </li>
+                                        <li>
+                                            Dilarang menyalahgunakan wewenang
+                                            atau sistem untuk aktivitas yang
+                                            melanggar hukum atau etika akademik
+                                            yang berlaku di institusi.
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <strong className="font-semibold">
+                                        Integritas Keputusan:
+                                    </strong>
+                                    <ul className="mt-1 list-[circle] space-y-1 pl-5">
+                                        <li>
+                                            Keputusan harus didasarkan pada
+                                            kriteria yang jelas, tanpa konflik
+                                            kepentingan.
+                                        </li>
+                                        <li>
+                                            Setiap masukan atau penolakan harus
+                                            disertai alasan yang konstruktif.
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <strong className="font-semibold">
+                                        Keamanan Akun:
+                                    </strong>
+                                    <ul className="mt-1 list-[circle] space-y-1 pl-5">
+                                        <li>
+                                            Pengguna bertanggung jawab menjaga
+                                            kerahasiaan informasi login akunnya.
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ol>
+                            <p className="pt-2">
+                                Dengan menyetujui dokumen ini, Anda terikat pada
+                                semua ketentuan yang telah disebutkan di atas.
+                            </p>
+                        </div>
                     </div>
                     <DialogFooter>
                         <DialogClose asChild>

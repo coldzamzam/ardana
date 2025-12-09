@@ -128,13 +128,14 @@ export default function MahasiswaOnboardingForm() {
                             htmlFor="terms"
                             className="text-sm leading-none font-medium"
                         >
-                            Saya menyetujui semua persyaratan yang berlaku{' '}
+                            {' '}
                             <Button
                                 type="button"
                                 variant="link"
                                 className="h-auto p-0 align-baseline"
                                 onClick={() => setIsModalOpen(true)}
                             >
+                                Saya menyetujui semua persyaratan yang berlaku
                                 S&K
                             </Button>
                             .
@@ -155,7 +156,7 @@ export default function MahasiswaOnboardingForm() {
 
             {/* Dialog S&K */}
             <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                <DialogContent className="sm:max-w-[425px]">
+                <DialogContent className="max-w-[425px] md:w-full">
                     <DialogHeader>
                         <DialogTitle>Syarat & Ketentuan</DialogTitle>
                         <DialogDescription>
@@ -164,20 +165,95 @@ export default function MahasiswaOnboardingForm() {
                         </DialogDescription>
                     </DialogHeader>
                     <div className="max-h-[60vh] overflow-y-auto py-4 text-sm">
-                        <p className="mb-4">
-                            Lorem ipsum dolor sit amet, consectetur adipiscing
-                            elit. Sed do eiusmod tempor incididunt ut labore et
-                            dolore magna aliqua. Ut enim ad minim veniam, quis
-                            nostrud exercitation ullamco laboris nisi ut aliquip
-                            ex ea commodo consequat.
-                        </p>
-                        <p>
-                            Duis aute irure dolor in reprehenderit in voluptate
-                            velit esse cillum dolore eu fugiat nulla pariatur.
-                            Excepteur sint occaecat cupidatat non proident, sunt
-                            in culpa qui officia deserunt mollit anim id est
-                            laborum.
-                        </p>
+                        <div className="space-y-4 px-2 text-justify">
+                            <p>
+                                Dengan membuat akun dan menggunakan platform
+                                ARDANA (Sistem Manajemen Pengelolaan Dana
+                                Kegiatan Jurusan), Anda (selanjutnya disebut
+                                "Pengguna") menyatakan telah membaca, memahami,
+                                dan menyetujui setiap poin dalam Syarat dan
+                                Ketentuan ini.
+                            </p>
+                            <ol className="list-decimal space-y-3 pl-5">
+                                <li>
+                                    <strong className="font-semibold">
+                                        Akurasi Data Pengguna:
+                                    </strong>
+                                    <ul className="mt-1 list-[circle] space-y-1 pl-5">
+                                        <li>
+                                            Pengguna wajib memberikan data yang
+                                            akurat, valid, dan terkini saat
+                                            melakukan pendaftaran, termasuk NIM,
+                                            Nama Lengkap, dan Program Studi.
+                                        </li>
+                                        <li>
+                                            Informasi yang telah disimpan,
+                                            khususnya NIM, bersifat final dan
+                                            tidak dapat diubah. Kesalahan data
+                                            menjadi tanggung jawab penuh
+                                            Pengguna.
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <strong className="font-semibold">
+                                        Tanggung Jawab Submisi:
+                                    </strong>
+                                    <ul className="mt-1 list-[circle] space-y-1 pl-5">
+                                        <li>
+                                            Pengguna bertanggung jawab penuh
+                                            atas semua konten yang diunggah,
+                                            termasuk proposal, LPJ, dan dokumen
+                                            pendukung.
+                                        </li>
+                                        <li>
+                                            Pengguna menjamin semua dokumen
+                                            adalah karya asli, bebas
+                                            plagiarisme, dan tidak melanggar hak
+                                            kekayaan intelektual.
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <strong className="font-semibold">
+                                        Penggunaan Sistem:
+                                    </strong>
+                                    <ul className="mt-1 list-[circle] space-y-1 pl-5">
+                                        <li>
+                                            Sistem ARDANA digunakan untuk
+                                            pengajuan dan pengelolaan pendanaan
+                                            kegiatan sesuai prosedur jurusan.
+                                        </li>
+                                        <li>
+                                            Dilarang menyalahgunakan sistem
+                                            untuk aktivitas yang melanggar hukum
+                                            atau etika akademik yang berlaku di
+                                            institusi.
+                                        </li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <strong className="font-semibold">
+                                        Peninjauan dan Keputusan:
+                                    </strong>
+                                    <ul className="mt-1 list-[circle] space-y-1 pl-5">
+                                        <li>
+                                            Semua submisi akan ditinjau oleh tim
+                                            yang ditunjuk jurusan.
+                                        </li>
+                                        <li>
+                                            Keputusan tim peninjau (disetujui,
+                                            direvisi, atau ditolak) bersifat
+                                            mutlak.
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ol>
+                            <p className="pt-2">
+                                Dengan menyetujui dokumen ini, Anda terikat pada
+                                semua ketentuan yang telah disebutkan di atas.
+                            </p>
+                        </div>
                     </div>
                     <DialogFooter>
                         <DialogClose asChild>
