@@ -152,21 +152,15 @@ export default function TorDetail({
 
         const isRevision = latestStatus?.status_type.nama.trim() === 'Revisi';
 
-        // Cek jika ini save pertama pada mode revisi
-
         const isFirstSaveInRevision =
             isRevision &&
             latestStatus?.detail_submisi_id === submisi.detail_submisi?.id;
 
         if (isFirstSaveInRevision) {
-            // Buat versi baru
-
             post(`/dashboard/submisi/${submisi.id}/new-version`, {
                 preserveScroll: true,
             });
         } else {
-            // Update draft yang ada (baik draft awal atau draft revisi)
-
             post(`/dashboard/submisi/${submisi.id}/draft`, {
                 preserveScroll: true,
             });
@@ -176,16 +170,17 @@ export default function TorDetail({
     const handleSubmitSubmission = () => {
         router.post(`/dashboard/submisi/${submisi.id}/submit`);
     };
+
     const handleGenerateTemplateTor = () => {
         router.get(`/dashboard/submisi/${submisi.id}/template`);
     };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Detail TOR - ${submisi.judul}`} />
 
             <div className="flex h-full flex-1 flex-col gap-3 overflow-x-auto rounded-xl p-4">
-                <StatusHistoryCard submisi={submisi} />{' '}
-                {/* Render StatusHistoryCard */}
+                <StatusHistoryCard submisi={submisi} />
                 <Card className="overflow-hidden rounded-2xl border border-[#73AD86]/40 shadow-sm">
                     <CardContent className="space-y-4">
                         <div className="space-y-1">
@@ -267,8 +262,9 @@ export default function TorDetail({
                         </div>
                     </CardContent>
                 </Card>
+
                 <Card className="overflow-hidden rounded-2xl border border-[#73AD86]/40 shadow-sm">
-                    <CardHeader className="">
+                    <CardHeader>
                         <CardTitle className="text-xl font-semibold text-[#427452]">
                             Detail TOR
                         </CardTitle>
@@ -319,7 +315,6 @@ export default function TorDetail({
                                 <Label htmlFor="tanggal_selesai">
                                     Tanggal Selesai
                                 </Label>
-
                                 <Input
                                     id="tanggal_selesai"
                                     type="date"
@@ -462,18 +457,22 @@ export default function TorDetail({
                         )}
                     </CardContent>
                 </Card>
+
                 <DetailAnggota submisi={submisi} isEditable={isEditable} />
                 <DetailIndikator submisi={submisi} isEditable={isEditable} />
                 <DetailFile submisi={submisi} isEditable={isEditable} />
                 <DetailBiaya submisi={submisi} isEditable={isEditable} />
-                <div className="flex flex-col items-end pt-4 pb-10">
+
+                {/* BAGIAN BUTTON PALING BAWAH */}
+                <div className="flex flex-col items-start pt-4 pb-10">
                     {isEditable && !isSubmittable && (
                         <p className="pb-2 text-xs text-slate-600">
                             Silakan simpan detail submisi terbaru untuk mengirim
                             pengajuan
                         </p>
                     )}
-                    <div className="flex gap-3">
+
+                    <div className="flex items-center justify-start gap-3">
                         {isEditable ? (
                             <>
                                 <Button
@@ -483,6 +482,7 @@ export default function TorDetail({
                                 >
                                     Buat Template TOR
                                 </Button>
+
                                 <AlertDialog>
                                     <AlertDialogTrigger asChild>
                                         <Button
