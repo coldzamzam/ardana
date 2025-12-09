@@ -32,10 +32,10 @@ export default function DeleteUser() {
                         </span>
                         <div className="space-y-0.5">
                             <p className="text-xs font-semibold tracking-wide text-red-600 uppercase">
-                                Delete Account
+                                Hapus Akun
                             </p>
                             <p className="text-sm font-medium text-slate-800">
-                                This action is irreversible
+                                Tindakan ini tidak dapat dibatalkan
                             </p>
                         </div>
                     </div>
@@ -43,10 +43,9 @@ export default function DeleteUser() {
 
                 {/* Description */}
                 <p className="mb-4 max-w-xl text-xs leading-relaxed text-slate-600">
-                    Deleting your account will permanently erase all data
-                    associated with it, including your profile, settings, and
-                    any other stored information. Please make sure you have
-                    exported or saved everything you need before continuing.
+                    Menghapus akun Anda akan secara permanen menghapus semua
+                    data yang terkait dengan akun tersebut, termasuk profil,
+                    pengaturan, serta informasi lain yang tersimpan.
                 </p>
 
                 {/* Delete button + dialog */}
@@ -57,7 +56,7 @@ export default function DeleteUser() {
                             className="mt-1 inline-flex rounded-md px-4 py-2 text-sm font-semibold shadow-sm hover:shadow-md"
                             data-test="delete-user-button"
                         >
-                            Delete account
+                            Hapus akun
                         </Button>
                     </DialogTrigger>
 
@@ -69,16 +68,16 @@ export default function DeleteUser() {
                                     <AlertTriangle className="h-4 w-4" />
                                 </span>
                                 <DialogTitle className="text-base font-semibold text-red-700">
-                                    Are you sure you want to delete your
-                                    account?
+                                    Apakah Anda yakin ingin menghapus akun Anda?
                                 </DialogTitle>
                             </div>
 
                             <DialogDescription className="mt-1 text-sm leading-relaxed text-slate-600">
-                                This action cannot be undone. All resources and
-                                data associated with your account will be
-                                permanently removed. Please confirm this action
-                                by entering your password below.
+                                Tindakan ini tidak dapat dibatalkan. Semua
+                                sumber daya dan data yang terkait dengan akun
+                                Anda akan dihapus secara permanen. Harap
+                                konfirmasi tindakan ini dengan memasukkan kata
+                                sandi Anda di bawah.
                             </DialogDescription>
                         </DialogHeader>
 
@@ -97,7 +96,7 @@ export default function DeleteUser() {
                                             htmlFor="password"
                                             className="text-sm font-medium text-slate-800"
                                         >
-                                            Password
+                                            Kata sandi
                                         </Label>
 
                                         <Input
@@ -105,7 +104,7 @@ export default function DeleteUser() {
                                             type="password"
                                             name="password"
                                             ref={passwordInput}
-                                            placeholder="Enter your password to confirm"
+                                            placeholder="Masukkan kata sandi Anda untuk konfirmasi"
                                             autoComplete="current-password"
                                             className="bg-white text-sm"
                                         />
@@ -127,7 +126,7 @@ export default function DeleteUser() {
                                                     resetAndClearErrors()
                                                 }
                                             >
-                                                Cancel
+                                                Batal
                                             </Button>
                                         </DialogClose>
 
@@ -142,8 +141,8 @@ export default function DeleteUser() {
                                                 data-test="confirm-delete-user-button"
                                             >
                                                 {processing
-                                                    ? 'Deleting...'
-                                                    : 'Yes, delete my account'}
+                                                    ? 'Menghapus...'
+                                                    : 'Ya, hapus akun saya'}
                                             </button>
                                         </Button>
                                     </DialogFooter>
