@@ -2,7 +2,6 @@ import { Transition } from '@headlessui/react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
-import DeleteUser from '@/components/delete-user';
 import InputError from '@/components/input-error';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -362,9 +361,6 @@ export default function Profile({
                             </form>
                         </div>
                     </div>
-
-                    {/* Delete account di bawah card */}
-                    <DeleteUser />
                 </div>
             </SettingsLayout>
         </AppLayout>

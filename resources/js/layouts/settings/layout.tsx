@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 // import { edit as editAppearance } from '@/routes/appearance';
 import { edit as editPassword } from '@/routes/password';
 import { edit } from '@/routes/profile';
-import { type NavItem } from '@/types';
+import { type NavItem, type PageProps, type Role } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
 import { Lock, User } from 'lucide-react';
 import { type PropsWithChildren } from 'react';
@@ -27,8 +27,21 @@ const sidebarNavItems: NavItem[] = [
 ];
 
 export default function SettingsLayout({ children }: PropsWithChildren) {
-    const { url } = usePage();
+    const { url, props } = usePage<PageProps>();
+    const { auth } = props;
     const currentPath = url.split('?')[0];
+
+    const userRoles = auth.user?.roles
+        ? auth.user.roles.map((role: Role) => role.role_name)
+        : [];
+    const isMahasiswa = userRoles.includes('mahasiswa');
+
+    const filteredSidebarNavItems = sidebarNavItems.filter((item) => {
+        if (item.title === 'Password' && isMahasiswa) {
+            return false;
+        }
+        return true;
+    });
 
     return (
         <div className="flex h-full flex-1 bg-[#CBEBD5]/70 p-4 md:p-6">
@@ -48,7 +61,7 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
                                 Menu
                             </p>
                             <nav className="flex flex-col gap-1">
-                                {sidebarNavItems.map((item, index) => {
+                                {filteredSidebarNavItems.map((item, index) => {
                                     const href =
                                         typeof item.href === 'string'
                                             ? item.href
