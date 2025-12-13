@@ -2,76 +2,144 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Biaya;
+use App\Models\Submisi;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
+    /**
+     * Fetch data for reviewer roles (admin, sekjur, kajur).
+     */
+    private function getReviewerData(): array
+    {
+        // 1. Submission Statistics
+        $statusCounts = Submisi::with('latestStatus.statusType')
+            ->whereHas('latestStatus.statusType')
+            ->whereIn('type', ['TOR', 'LPJ'])
+            ->get()
+            ->groupBy('type')
+            ->map(function ($submissions) {
+                return $submissions->groupBy(function ($sub) {
+                    return trim($sub->latestStatus->statusType->nama);
+                })->map->count();
+            });
+
+        $torStats = $statusCounts->get('TOR', collect());
+        $lpjStats = $statusCounts->get('LPJ', collect());
+
+        // 2. Financials
+        $calculateTotal = function (string $type) {
+            return Biaya::where('type', $type)
+                ->whereHas('submisi.latestStatus.statusType', function ($query) {
+                    $query->where('nama', 'Disetujui');
+                })
+                ->sum(DB::raw('biaya_satuan * jumlah_kali * jumlah_org'));
+        };
+
+        $totalAlokasi = $calculateTotal('TOR');
+        $totalRealisasi = $calculateTotal('LPJ');
+
+        // 3. Submission Activity Chart (Last 6 months)
+        $activity = Submisi::selectRaw("type, TO_CHAR(created_at, 'YYYY-MM') as month, COUNT(*) as count")
+            ->whereHas('latestStatus.statusType', function ($query) {
+                $query->where('nama', 'Disetujui');
+            })
+            ->where('created_at', '>=', now()->subMonths(6))
+            ->groupBy('type', 'month')
+            ->orderBy('month', 'asc')
+            ->get()
+            ->groupBy('type');
+
+        $activityData = [
+            'tor' => $activity->get('TOR', collect()),
+            'lpj' => $activity->get('LPJ', collect()),
+        ];
+
+        return [
+            'tor_stats' => $torStats,
+            'lpj_stats' => $lpjStats,
+            'financials' => [
+                'total_alokasi' => $totalAlokasi,
+                'total_realisasi' => $totalRealisasi,
+            ],
+            'activity' => $activityData,
+        ];
+    }
+
+    /**
+     * Fetch data for superadmin role.
+     */
+    private function getSuperadminData(): array
+    {
+        return [
+            'total_users' => User::count(),
+        ];
+    }
+
+    /**
+     * Fetch data for user roles (mahasiswa, dosen).
+     */
+    private function getUserData(User $user): array
+    {
+        $submissions = Submisi::where('created_by', $user->id)
+            ->with('latestStatus.statusType')
+            ->get();
+
+        $stats = $submissions->groupBy('type')->map(function ($items, $type) {
+            $approved = $items->filter(function ($sub) {
+                return $sub->latestStatus && $sub->latestStatus->statusType && trim($sub->latestStatus->statusType->nama) === 'Disetujui';
+            })->count();
+
+            // "Dibuat" is everything that isn't approved from the user's perspective.
+            $created = $items->count() - $approved;
+
+            return [
+                'dibuat' => $created,
+                'disetujui' => $approved,
+            ];
+        });
+
+        $revisions = $submissions->filter(function ($sub) {
+            return $sub->latestStatus && trim($sub->latestStatus->statusType->nama) === 'Revisi';
+        })->map(function ($sub) {
+            return [
+                'id' => $sub->id,
+                'judul' => $sub->judul,
+                'type' => $sub->type,
+                'keterangan' => $sub->latestStatus->keterangan,
+                'updated_at' => $sub->latestStatus->created_at,
+            ];
+        })->values();
+
+        return [
+            'stats' => [
+                'tor_dibuat' => $stats->get('TOR')['dibuat'] ?? 0,
+                'lpj_dibuat' => $stats->get('LPJ')['dibuat'] ?? 0,
+                'tor_disetujui' => $stats->get('TOR')['disetujui'] ?? 0,
+                'lpj_disetujui' => $stats->get('LPJ')['disetujui'] ?? 0,
+            ],
+            'recent_revisions' => $revisions,
+        ];
+    }
+
     public function index()
     {
         $user = Auth::user();
-
-        $roleRaw = $user->roles->first()->role_name ?? 'mahasiswa';
-        $role = strtolower(trim($roleRaw));
+        $role = strtolower(trim($user->roles->first()->role_name ?? ''));
 
         $data = [];
-        // DUMMY DATA
-        if ($role === 'mahasiswa') {
-            $data = [
-                'stats' => [
-                    'tor_created' => 5,
-                    'lpj_created' => 2,
-                    'approved_items' => 3,
-                ],
-                'recent_revisions' => [
-                    'tor' => [
-                        [
-                            'judul_tor' => 'Workshop UI/UX Design 2024',
-                            'catatan_revisi' => 'RAB konsumsi terlalu besar, mohon sesuaikan dengan standar SBM.',
-                            'updated_at' => '2024-12-01 10:00:00',
-                        ],
-                        [
-                            'judul_tor' => 'Seminar Cyber Security',
-                            'catatan_revisi' => 'Lampiran jadwal acara belum ada tanda tangan Kaprodi.',
-                            'updated_at' => '2024-11-28 14:30:00',
-                        ],
-                    ],
-                    'lpj' => [
-                        [
-                            'judul_lpj' => 'Lomba Coding Nasional',
-                            'catatan_revisi' => 'Bukti nota sewa gedung tidak terbaca/blur.',
-                            'updated_at' => '2024-12-02 09:15:00',
-                        ],
-                    ],
-                ],
-            ];
-        } elseif (in_array($role, ['admin', 'sekjur', 'kajur'])) {
-            $data = [
-                'tor_stats' => [
-                    'diajukan' => 12,
-                    'revisi' => 4,
-                    'tervalidasi' => 8,
-                    'terverifikasi' => 6,
-                    'disetujui' => 5,
-                ],
-                'lpj_stats' => [
-                    'diajukan' => 8,
-                    'revisi' => 2,
-                    'tervalidasi' => 5,
-                    'terverifikasi' => 3,
-                    'disetujui' => 3,
-                ],
-                'financials' => [
-                    'total_alokasi' => 150000000,
-                    'total_realisasi' => 125000000,
-                ],
-            ];
+        if (in_array($role, ['admin', 'sekjur', 'kajur'])) {
+            $data = $this->getReviewerData();
         } elseif ($role === 'superadmin') {
-            $data = [
-                'total_users' => 1250,
-            ];
+            $data = $this->getSuperadminData();
+        } elseif (in_array($role, ['mahasiswa', 'dosen'])) {
+            $data = $this->getUserData($user);
         }
 
-        return Inertia::render('dashboard', $data);
+        return Inertia::render('dashboard', ['dashboard_data' => $data]);
     }
 }

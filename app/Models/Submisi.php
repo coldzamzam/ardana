@@ -82,4 +82,9 @@ class Submisi extends Model
     {
         return $this->belongsTo(self::class, 'parent_tor_id');
     }
+
+    public function latestStatus(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(StatusSubmisi::class)->orderBy('created_at', 'desc');
+    }
 }
