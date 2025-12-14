@@ -1,7 +1,12 @@
 import AppLayout from '@/layouts/app-layout';
-import { PageProps, type BreadcrumbItem } from '@/types';
+import {
+    type BreadcrumbItem,
+    type Faq,
+    type KegiatanType,
+    type PageProps,
+} from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { ChevronRight, Settings } from 'lucide-react';
+import { ChevronRight, Layers, Settings } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -10,13 +15,10 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-type Faq = {
-    id: string;
-    question: string;
-    answer: string;
-};
-
-function Index({ faqs = [] }: PageProps<{ faqs?: Faq[] }>) {
+function Index({
+    faqs = [],
+    kegiatanTypes = [],
+}: PageProps<{ faqs?: Faq[]; kegiatanTypes?: KegiatanType[] }>) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Admin" />
@@ -74,6 +76,37 @@ function Index({ faqs = [] }: PageProps<{ faqs?: Faq[] }>) {
                                             Total:{' '}
                                             <span className="font-semibold text-[#427452]">
                                                 {faqs.length} FAQ
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </Link>
+
+                            <Link
+                                href="/dashboard/admin/kegiatan-type"
+                                className="group relative overflow-hidden rounded-xl border border-blue-100 bg-gradient-to-br from-blue-50 to-white shadow-sm transition-all duration-300 hover:border-blue-300 hover:shadow-md"
+                            >
+                                <div className="absolute inset-0 bg-gradient-to-r from-blue-400/0 to-blue-400/0 transition-all duration-300 group-hover:from-blue-400/5 group-hover:to-blue-400/10" />
+                                <div className="relative p-6">
+                                    <div className="mb-3 flex items-start justify-between">
+                                        <div className="rounded-lg bg-blue-100/50 p-2 transition-colors group-hover:bg-blue-100">
+                                            <Layers className="h-6 w-6 text-[#427452]" />
+                                        </div>
+                                        <ChevronRight className="h-5 w-5 text-[#427452] transition-transform group-hover:translate-x-1" />
+                                    </div>
+                                    <h3 className="text-lg font-semibold text-[#427452] transition-colors group-hover:text-blue-700">
+                                        Kelola Jenis Kegiatan
+                                    </h3>
+                                    <p className="mt-2 text-sm text-gray-600 transition-colors group-hover:text-gray-700">
+                                        Kelola berbagai jenis kegiatan yang
+                                        tersedia dalam sistem.
+                                    </p>
+                                    <div className="mt-4 border-t border-blue-100 pt-4">
+                                        <p className="text-xs text-gray-500">
+                                            Total:{' '}
+                                            <span className="font-semibold text-[#427452]">
+                                                {kegiatanTypes.length} Jenis
+                                                Kegiatan
                                             </span>
                                         </p>
                                     </div>

@@ -5,10 +5,9 @@ import {
     AccordionTrigger,
 } from '@/components/ui/accordion';
 import AppLayout from '@/layouts/app-layout';
-import { PageProps, type BreadcrumbItem } from '@/types';
+import { PageProps, type BreadcrumbItem, type Faq } from '@/types';
 import { Head } from '@inertiajs/react';
 import { HelpCircle } from 'lucide-react';
-import { Faq } from '../Admin/Faq/type';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {

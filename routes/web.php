@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\IndikatorKinerjaController;
+use App\Http\Controllers\KegiatanTypeController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OnboardingController;
@@ -116,6 +117,7 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/', [AdminController::class, 'index'])->name('index');
         Route::resource('faq', FaqController::class);
+        Route::resource('kegiatan-type', KegiatanTypeController::class);
     });
 
     Route::post('/onboarding/mahasiswa', [OnboardingController::class, 'storeMahasiswa'])->name('onboarding.mahasiswa.store');

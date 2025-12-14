@@ -104,6 +104,14 @@ export interface Biaya {
     deskripsi: string;
 }
 
+export interface Faq {
+    id: string;
+    question: string;
+    answer: string;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface KegiatanType {
     id: string;
     nama: string;
