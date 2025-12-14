@@ -119,6 +119,15 @@ export interface KegiatanType {
     updated_at: string;
 }
 
+export interface MataKuliah {
+    id: string;
+    nama: string;
+    semester: number;
+    sks: number;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface StatusType {
     id: string;
     nama: string;

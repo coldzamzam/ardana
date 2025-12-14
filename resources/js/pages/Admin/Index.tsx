@@ -3,10 +3,11 @@ import {
     type BreadcrumbItem,
     type Faq,
     type KegiatanType,
+    type MataKuliah,
     type PageProps,
 } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { ChevronRight, Layers, Settings } from 'lucide-react';
+import { Book, ChevronRight, Layers, Settings } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -18,7 +19,12 @@ const breadcrumbs: BreadcrumbItem[] = [
 function Index({
     faqs = [],
     kegiatanTypes = [],
-}: PageProps<{ faqs?: Faq[]; kegiatanTypes?: KegiatanType[] }>) {
+    mataKuliahs = [],
+}: PageProps<{
+    faqs?: Faq[];
+    kegiatanTypes?: KegiatanType[];
+    mataKuliahs?: MataKuliah[];
+}>) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Admin" />
@@ -107,6 +113,36 @@ function Index({
                                             <span className="font-semibold text-[#427452]">
                                                 {kegiatanTypes.length} Jenis
                                                 Kegiatan
+                                            </span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </Link>
+
+                            <Link
+                                href="/dashboard/admin/mata-kuliah"
+                                className="group relative overflow-hidden rounded-xl border border-purple-100 bg-gradient-to-br from-purple-50 to-white shadow-sm transition-all duration-300 hover:border-purple-300 hover:shadow-md"
+                            >
+                                <div className="absolute inset-0 bg-gradient-to-r from-purple-400/0 to-purple-400/0 transition-all duration-300 group-hover:from-purple-400/5 group-hover:to-purple-400/10" />
+                                <div className="relative p-6">
+                                    <div className="mb-3 flex items-start justify-between">
+                                        <div className="rounded-lg bg-purple-100/50 p-2 transition-colors group-hover:bg-purple-100">
+                                            <Book className="h-6 w-6 text-[#427452]" />
+                                        </div>
+                                        <ChevronRight className="h-5 w-5 text-[#427452] transition-transform group-hover:translate-x-1" />
+                                    </div>
+                                    <h3 className="text-lg font-semibold text-[#427452] transition-colors group-hover:text-purple-700">
+                                        Kelola Mata Kuliah
+                                    </h3>
+                                    <p className="mt-2 text-sm text-gray-600 transition-colors group-hover:text-gray-700">
+                                        Kelola daftar mata kuliah yang tersedia
+                                        dalam program studi.
+                                    </p>
+                                    <div className="mt-4 border-t border-purple-100 pt-4">
+                                        <p className="text-xs text-gray-500">
+                                            Total:{' '}
+                                            <span className="font-semibold text-[#427452]">
+                                                {mataKuliahs.length} Mata Kuliah
                                             </span>
                                         </p>
                                     </div>

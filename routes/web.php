@@ -9,6 +9,7 @@ use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\IndikatorKinerjaController;
 use App\Http\Controllers\KegiatanTypeController;
 use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\MataKuliahController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OnboardingController;
 use App\Http\Controllers\PegawaiController;
@@ -118,6 +119,7 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
         Route::get('/', [AdminController::class, 'index'])->name('index');
         Route::resource('faq', FaqController::class);
         Route::resource('kegiatan-type', KegiatanTypeController::class);
+        Route::resource('mata-kuliah', MataKuliahController::class);
     });
 
     Route::post('/onboarding/mahasiswa', [OnboardingController::class, 'storeMahasiswa'])->name('onboarding.mahasiswa.store');
