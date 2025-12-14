@@ -17,7 +17,9 @@ import {
     BookOpen,
     ClipboardCheck,
     Folder,
+    HelpCircle,
     LayoutGrid,
+    ShieldCheck,
     UserPlus,
     Users,
 } from 'lucide-react';
@@ -47,11 +49,6 @@ export function AppSidebar() {
             href: '/dashboard',
             icon: LayoutGrid,
         },
-        {
-            title: 'Notifikasi',
-            href: '/dashboard/notifikasi',
-            icon: Bell,
-        },
     ];
 
     if (hasRole('superadmin')) {
@@ -74,6 +71,14 @@ export function AppSidebar() {
         );
     }
 
+    if (hasRole('admin')) {
+        mainNavItems.push({
+            title: 'Admin',
+            href: '/dashboard/admin',
+            icon: ShieldCheck,
+        });
+    }
+
     if (hasRole('admin') || hasRole('sekjur') || hasRole('kajur')) {
         mainNavItems.push({
             title: 'Review Submisi',
@@ -94,6 +99,11 @@ export function AppSidebar() {
                 href: '/dashboard/submisi/lpj',
                 icon: Folder,
             },
+            {
+                title: 'FAQ',
+                href: '/dashboard/faq',
+                icon: HelpCircle,
+            },
         );
     }
 
@@ -103,7 +113,7 @@ export function AppSidebar() {
             variant="inset"
             className="border-r border-slate-200/70 bg-[#F6FBF8]"
         >
-            <SidebarHeader className="flex h-[64px] items-center border-b border-slate-200/70 px-4">
+            <SidebarHeader className="flex h-[64px] items-center border-b border-slate-200/70">
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
@@ -122,7 +132,23 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarHeader>
 
-            <SidebarContent className="px-2 py-3">
+            <SidebarContent className="py-3">
+                {/* Notification Icon */}
+                <SidebarMenu className="px-2">
+                    <SidebarMenuItem>
+                        <SidebarMenuButton
+                            asChild
+                            tooltip={{ children: 'Notifikasi' }}
+                        >
+                            <Link href="/dashboard/notifikasi" prefetch>
+                                <Bell />
+                                <span>Notifikasi</span>
+                            </Link>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
+
+                {/* Main Navigation */}
                 <NavMain items={mainNavItems} />
             </SidebarContent>
 

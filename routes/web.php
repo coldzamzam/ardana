@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AnggotaTimController;
 use App\Http\Controllers\BiayaController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\FaqController;
 use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\IndikatorKinerjaController;
 use App\Http\Controllers\MahasiswaController;
@@ -108,7 +110,12 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
         Route::put('biaya/{biaya}', [BiayaController::class, 'update'])->name('biaya.update');
         Route::delete('biaya/{biaya}', [BiayaController::class, 'destroy'])->name('biaya.destroy');
 
-        // Route for LPJ index is now handled by submisi.index
+        Route::get('faq', [FaqController::class, 'index'])->name('faq.index');
+    });
+
+    Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
+        Route::get('/', [AdminController::class, 'index'])->name('index');
+        Route::resource('faq', FaqController::class);
     });
 
     Route::post('/onboarding/mahasiswa', [OnboardingController::class, 'storeMahasiswa'])->name('onboarding.mahasiswa.store');
