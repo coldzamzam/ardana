@@ -32,7 +32,9 @@ export default function SettingsLayout({ children }: PropsWithChildren) {
     const currentPath = url.split('?')[0];
 
     const userRoles = auth.user?.roles
-        ? auth.user.roles.map((role: Role) => role.role_name)
+        ? auth.user.roles.map((role: Role) =>
+              role.role_name.trim().toLowerCase(),
+          )
         : [];
     const isMahasiswa = userRoles.includes('mahasiswa');
 
