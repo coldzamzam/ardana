@@ -62,6 +62,8 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
             ]);
         })->name('submisi.template');
 
+        Route::get('lpj/template-preview', fn () => Inertia::render('lpj/detail-template'))->name('lpj.template-preview');
+
         // General routes
         Route::get('submisi/{type}', [SubmisiController::class, 'index'])
             ->whereIn('type', ['tor', 'lpj'])

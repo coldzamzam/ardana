@@ -383,7 +383,16 @@ export default function LpjDetail({ submisi, latestStatus }: LpjDetailProps) {
                 <DetailFile submisi={submisi} isEditable={isEditable} />
                 <DetailBiaya submisi={submisi} isEditable={isEditable} />
 
-                <div className="flex justify-end gap-3 pt-4 pb-10">
+                <div className="flex items-start justify-end gap-3 pt-4 pb-10">
+                    <a
+                        href="/dashboard/lpj/template-preview"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        <Button className="bg-[#2B6CB0] hover:bg-[#245a94]">
+                            Print Template
+                        </Button>
+                    </a>
                     {isEditable ? (
                         <div className="flex flex-col items-end">
                             <AlertDialog>
