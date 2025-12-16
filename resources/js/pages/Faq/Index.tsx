@@ -25,7 +25,6 @@ function Index({ faqs }: PageProps<{ faqs: Faq[] }>) {
                     {/* HEADER SECTION */}
                     <div className="w-full">
                         <div className="mb-2 flex items-center gap-3">
-                            <HelpCircle className="h-8 w-8 text-[#427452]" />
                             <h1 className="text-3xl font-bold text-[#427452]">
                                 Frequently Asked Questions
                             </h1>

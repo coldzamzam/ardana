@@ -123,122 +123,253 @@ export default function DosenOnboardingForm() {
                     </Button>
                 </div>
             </form>
-
             {/* Dialog S&K */}
             <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                <DialogContent className="max-w-[425px] md:w-full">
-                    <DialogHeader>
-                        <DialogTitle>Syarat & Ketentuan</DialogTitle>
-                        <DialogDescription>
-                            Harap baca dan pahami semua persyaratan sebelum
-                            melanjutkan.
-                        </DialogDescription>
-                    </DialogHeader>
-                    <div className="max-h-[60vh] overflow-y-auto py-4 text-sm">
-                        <div className="space-y-4 px-2 text-justify">
-                            <p>
-                                Dengan membuat akun dan menggunakan platform
-                                ARDANA (Sistem Manajemen Pengelolaan Dana
-                                Kegiatan Jurusan), Anda sebagai Dosen/Pegawai
-                                (selanjutnya disebut "Pengguna") menyatakan
-                                telah membaca, memahami, dan menyetujui setiap
-                                poin dalam Syarat dan Ketentuan ini.
-                            </p>
-                            <ol className="list-decimal space-y-3 pl-5">
-                                <li>
-                                    <strong className="font-semibold">
-                                        Akurasi Data Pengguna:
-                                    </strong>
-                                    <ul className="mt-1 list-[circle] space-y-1 pl-5">
-                                        <li>
-                                            Pengguna wajib memberikan data yang
-                                            akurat, valid, dan terkini saat
-                                            melakukan pendaftaran, terutama
-                                            Nomor Induk Pegawai (NIP).
-                                        </li>
-                                        <li>
-                                            Informasi yang telah disimpan,
-                                            khususnya NIP, bersifat final dan
-                                            tidak dapat diubah.
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <strong className="font-semibold">
-                                        Peran dan Tanggung Jawab:
-                                    </strong>
-                                    <ul className="mt-1 list-[circle] space-y-1 pl-5">
-                                        <li>
-                                            Pengguna bertanggung jawab
-                                            mengevaluasi setiap submisi secara
-                                            objektif, adil, dan sesuai pedoman.
-                                        </li>
-                                        <li>
-                                            Kerahasiaan data dan informasi dalam
-                                            submisi harus dijaga dengan baik.
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <strong className="font-semibold">
-                                        Penggunaan Sistem:
-                                    </strong>
-                                    <ul className="mt-1 list-[circle] space-y-1 pl-5">
-                                        <li>
-                                            Sistem ARDANA digunakan hanya untuk
-                                            tujuan meninjau dan mengelola proses
-                                            pengajuan pendanaan kegiatan
-                                            kemahasiswaan.
-                                        </li>
-                                        <li>
-                                            Dilarang menyalahgunakan wewenang
-                                            atau sistem untuk aktivitas yang
-                                            melanggar hukum atau etika akademik
-                                            yang berlaku di institusi.
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <strong className="font-semibold">
-                                        Integritas Keputusan:
-                                    </strong>
-                                    <ul className="mt-1 list-[circle] space-y-1 pl-5">
-                                        <li>
-                                            Keputusan harus didasarkan pada
-                                            kriteria yang jelas, tanpa konflik
-                                            kepentingan.
-                                        </li>
-                                        <li>
-                                            Setiap masukan atau penolakan harus
-                                            disertai alasan yang konstruktif.
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li>
-                                    <strong className="font-semibold">
-                                        Keamanan Akun:
-                                    </strong>
-                                    <ul className="mt-1 list-[circle] space-y-1 pl-5">
-                                        <li>
-                                            Pengguna bertanggung jawab menjaga
-                                            kerahasiaan informasi login akunnya.
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ol>
-                            <p className="pt-2">
-                                Dengan menyetujui dokumen ini, Anda terikat pada
-                                semua ketentuan yang telah disebutkan di atas.
-                            </p>
+                <DialogContent className="max-h-[85vh] w-[min(720px,calc(100vw-1.5rem))] overflow-hidden rounded-3xl border border-white/20 bg-white/80 p-0 shadow-2xl backdrop-blur-xl dark:bg-zinc-950/70">
+                    {/* Animasi halus */}
+                    <style>{`
+                    @keyframes modalPop {
+                        0% { opacity: 0; transform: translateY(10px) scale(.98); }
+                        100% { opacity: 1; transform: translateY(0) scale(1); }
+                    }
+                    .tnc-pop { animation: modalPop .22s ease-out both; }
+
+                    .tnc-scroll::-webkit-scrollbar { width: 10px; }
+                    .tnc-scroll::-webkit-scrollbar-thumb {
+                        background: rgba(115,173,134,.35);
+                        border-radius: 999px;
+                        border: 3px solid rgba(255,255,255,.55);
+                    }
+                    .tnc-scroll::-webkit-scrollbar-track { background: transparent; }
+
+                    @media (prefers-reduced-motion: reduce) {
+                        .tnc-pop { animation: none !important; }
+                    }
+                    `}</style>
+
+                    <div className="tnc-pop flex max-h-[85vh] flex-col">
+                        {/* HEADER (fixed) */}
+                        <div className="relative shrink-0 overflow-hidden bg-gradient-to-r from-[#193422] via-[#2f5b3e] to-[#73AD86] px-6 py-5 text-white">
+                            <div className="pointer-events-none absolute -top-16 -right-16 h-56 w-56 rounded-full bg-white/10 blur-3xl" />
+
+                            <DialogHeader className="space-y-2">
+                                <div className="flex items-start gap-3">
+                                    <div className="mt-0.5 grid h-10 w-10 place-items-center rounded-2xl bg-white/15 ring-1 ring-white/20">
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            className="h-5 w-5"
+                                            stroke="currentColor"
+                                            strokeWidth="2"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="M10 3H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V9m-10 0l4 4m-4-4v8"
+                                            />
+                                        </svg>
+                                    </div>
+
+                                    <div className="min-w-0">
+                                        <DialogTitle className="text-xl font-bold tracking-tight">
+                                            Syarat & Ketentuan
+                                        </DialogTitle>
+                                        <DialogDescription className="text-white/85">
+                                            Harap baca dan pahami seluruh
+                                            ketentuan sebelum melanjutkan.
+                                        </DialogDescription>
+                                    </div>
+                                </div>
+                            </DialogHeader>
+                        </div>
+
+                        {/* BODY (scroll area – hanya ini yang scroll) */}
+                        <div className="tnc-scroll flex-1 overflow-y-auto px-6 py-5">
+                            {/* Callout ringkas */}
+                            <div className="mb-4 rounded-2xl border border-[#73AD86]/25 bg-[#73AD86]/10 p-4 text-sm text-[#193422]">
+                                <p className="font-semibold">
+                                    Ringkasan penting:
+                                </p>
+                                <ul className="mt-2 list-disc space-y-1 pl-5">
+                                    <li>
+                                        Data identitas (terutama NIP) harus
+                                        benar dan tidak bisa diubah.
+                                    </li>
+                                    <li>
+                                        Evaluasi submisi wajib objektif dan
+                                        sesuai pedoman.
+                                    </li>
+                                    <li>
+                                        Informasi submisi bersifat rahasia dan
+                                        tidak untuk disebarkan.
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div className="space-y-4 text-sm leading-relaxed text-zinc-700 dark:text-zinc-200">
+                                <p className="text-justify">
+                                    Dengan membuat akun dan menggunakan platform
+                                    ARDANA (Sistem Manajemen Pengelolaan Dana
+                                    Kegiatan Jurusan), Anda sebagai
+                                    Dosen/Pegawai (selanjutnya disebut{' '}
+                                    <span className="font-semibold">
+                                        "Pengguna"
+                                    </span>
+                                    ) menyatakan telah membaca, memahami, dan
+                                    menyetujui setiap poin dalam Syarat dan
+                                    Ketentuan ini.
+                                </p>
+
+                                <ol className="space-y-4">
+                                    {/* 1 */}
+                                    <li className="flex items-start gap-3">
+                                        <div className="mt-1 grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#73AD86]/25 text-sm font-bold text-[#193422] ring-1 ring-[#73AD86]/30">
+                                            1
+                                        </div>
+
+                                        <div className="flex-1 rounded-2xl border border-zinc-200 bg-white/70 p-4 dark:border-white/10 dark:bg-white/5">
+                                            <p className="font-semibold text-zinc-900 dark:text-white">
+                                                Akurasi Data Pengguna
+                                            </p>
+                                            <ul className="mt-2 list-[circle] space-y-1 pl-5">
+                                                <li>
+                                                    Pengguna wajib memberikan
+                                                    data akurat dan valid,
+                                                    terutama <b>NIP</b>.
+                                                </li>
+                                                <li>
+                                                    NIP bersifat <b>final</b>{' '}
+                                                    dan tidak dapat diubah.
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+
+                                    {/* 2 */}
+                                    <li className="flex items-start gap-3">
+                                        <div className="mt-1 grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#73AD86]/25 text-sm font-bold text-[#193422] ring-1 ring-[#73AD86]/30">
+                                            2
+                                        </div>
+
+                                        <div className="flex-1 rounded-2xl border border-zinc-200 bg-white/70 p-4 dark:border-white/10 dark:bg-white/5">
+                                            <p className="font-semibold text-zinc-900 dark:text-white">
+                                                Peran dan Tanggung Jawab
+                                            </p>
+                                            <ul className="mt-2 list-[circle] space-y-1 pl-5">
+                                                <li>
+                                                    Evaluasi submisi harus
+                                                    objektif dan sesuai pedoman.
+                                                </li>
+                                                <li>
+                                                    Jaga kerahasiaan data
+                                                    submisi.
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+
+                                    {/* 3 */}
+                                    <li className="flex items-start gap-3">
+                                        <div className="mt-1 grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#73AD86]/25 text-sm font-bold text-[#193422] ring-1 ring-[#73AD86]/30">
+                                            3
+                                        </div>
+
+                                        <div className="flex-1 rounded-2xl border border-zinc-200 bg-white/70 p-4 dark:border-white/10 dark:bg-white/5">
+                                            <p className="font-semibold text-zinc-900 dark:text-white">
+                                                Penggunaan Sistem
+                                            </p>
+                                            <ul className="mt-2 list-[circle] space-y-1 pl-5">
+                                                <li>
+                                                    Hanya untuk pengajuan &
+                                                    pengelolaan pendanaan
+                                                    kegiatan.
+                                                </li>
+                                                <li>
+                                                    Dilarang menyalahgunakan
+                                                    sistem untuk hal melanggar
+                                                    hukum/etika.
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+
+                                    {/* 4 */}
+                                    <li className="flex items-start gap-3">
+                                        <div className="mt-1 grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#73AD86]/25 text-sm font-bold text-[#193422] ring-1 ring-[#73AD86]/30">
+                                            4
+                                        </div>
+
+                                        <div className="flex-1 rounded-2xl border border-zinc-200 bg-white/70 p-4 dark:border-white/10 dark:bg-white/5">
+                                            <p className="font-semibold text-zinc-900 dark:text-white">
+                                                Integritas Keputusan
+                                            </p>
+                                            <ul className="mt-2 list-[circle] space-y-1 pl-5">
+                                                <li>
+                                                    Keputusan berdasarkan
+                                                    kriteria jelas, tanpa
+                                                    konflik kepentingan.
+                                                </li>
+                                                <li>
+                                                    Masukan/penolakan disertai
+                                                    alasan konstruktif.
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+
+                                    {/* 5 */}
+                                    <li className="flex items-start gap-3">
+                                        <div className="mt-1 grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#73AD86]/25 text-sm font-bold text-[#193422] ring-1 ring-[#73AD86]/30">
+                                            5
+                                        </div>
+
+                                        <div className="flex-1 rounded-2xl border border-zinc-200 bg-white/70 p-4 dark:border-white/10 dark:bg-white/5">
+                                            <p className="font-semibold text-zinc-900 dark:text-white">
+                                                Keamanan Akun
+                                            </p>
+                                            <ul className="mt-2 list-[circle] space-y-1 pl-5">
+                                                <li>
+                                                    Pengguna bertanggung jawab
+                                                    menjaga kerahasiaan login.
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                </ol>
+                                <div className="rounded-2xl border border-[#193422]/15 bg-[#193422]/5 p-4">
+                                    <p className="font-semibold text-[#193422] dark:text-white">
+                                        Pernyataan Persetujuan
+                                    </p>
+                                    <p className="mt-1">
+                                        Dengan menyetujui dokumen ini, Anda
+                                        terikat pada semua ketentuan di atas.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* FOOTER (fixed) */}
+                        <div className="shrink-0 border-t border-zinc-200 bg-white/75 px-6 py-4 backdrop-blur dark:border-white/10 dark:bg-zinc-950/60">
+                            <div className="flex items-center justify-between gap-3">
+                                <p className="text-xs text-zinc-600 dark:text-zinc-300">
+                                    Dengan menekan tombol, Anda menyatakan sudah
+                                    membaca dan memahami S&K.
+                                </p>
+
+                                <DialogFooter className="m-0">
+                                    <DialogClose asChild>
+                                        <Button
+                                            type="button"
+                                            onClick={handleModalClose}
+                                            className="rounded-full bg-[#427452] px-6 font-semibold text-white hover:bg-[#355C45]"
+                                        >
+                                            Saya Mengerti
+                                        </Button>
+                                    </DialogClose>
+                                </DialogFooter>
+                            </div>
                         </div>
                     </div>
-                    <DialogFooter>
-                        <DialogClose asChild>
-                            <Button type="button" onClick={handleModalClose}>
-                                Saya Mengerti
-                            </Button>
-                        </DialogClose>
-                    </DialogFooter>
                 </DialogContent>
             </Dialog>
 
