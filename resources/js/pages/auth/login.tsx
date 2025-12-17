@@ -37,9 +37,66 @@ export default function Login({ status, canResetPassword }: LoginProps) {
         <AuthLayout title="Log in to your account">
             <Head title="Log in" />
 
-            <div className="flex flex-col gap-4">
+            {/* Animations (pure CSS) */}
+            <style>{`
+                @keyframes fadeUp {
+                    0% { opacity: 0; transform: translate3d(0, 14px, 0); }
+                    100% { opacity: 1; transform: translate3d(0, 0, 0); }
+                }
+                @keyframes fadeIn {
+                    0% { opacity: 0; }
+                    100% { opacity: 1; }
+                }
+                @keyframes shine {
+                    0% { transform: translateX(-120%) skewX(-18deg); opacity: 0; }
+                    15% { opacity: .45; }
+                    45% { opacity: 0; }
+                    100% { transform: translateX(240%) skewX(-18deg); opacity: 0; }
+                }
+                @keyframes softPulse {
+                    0%, 100% { opacity: .8; transform: scale(1); }
+                    50% { opacity: 1; transform: scale(1.02); }
+                }
+
+                .enter-1 { animation: fadeUp .65s ease-out both; }
+                .enter-2 { animation: fadeUp .65s ease-out .10s both; }
+                .enter-3 { animation: fadeUp .65s ease-out .20s both; }
+                .enter-4 { animation: fadeUp .65s ease-out .30s both; }
+                .enter-5 { animation: fadeUp .65s ease-out .40s both; }
+                .enter-6 { animation: fadeUp .65s ease-out .50s both; }
+
+                .divider-pulse { animation: softPulse 2.6s ease-in-out infinite; }
+
+                .btn-shine { position: relative; overflow: hidden; }
+                .btn-shine::after{
+                    content:"";
+                    position:absolute;
+                    inset:-2px;
+                    background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent);
+                    width: 45%;
+                    transform: translateX(-120%) skewX(-18deg);
+                    opacity: 0;
+                    pointer-events:none;
+                }
+                .btn-shine:hover::after{
+                    animation: shine 1.25s ease-out;
+                }
+
+                /* Optional: micro interaction for inputs */
+                .input-pop { transition: transform .18s ease, box-shadow .18s ease; }
+                .input-pop:focus { transform: translateY(-1px); }
+
+                @media (prefers-reduced-motion: reduce) {
+                    .enter-1,.enter-2,.enter-3,.enter-4,.enter-5,.enter-6,
+                    .divider-pulse,
+                    .btn-shine::after { animation: none !important; }
+                    .input-pop { transition: none !important; }
+                }
+            `}</style>
+
+            <div className="enter-1 flex flex-col gap-4">
                 <Button
-                    className="w-full bg-[#427452] font-semibold text-white hover:bg-[#355C45]"
+                    className="btn-shine w-full bg-[#427452] font-semibold text-white hover:bg-[#355C45]"
                     asChild
                 >
                     <a
@@ -52,12 +109,12 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                 </Button>
             </div>
 
-            <div className="relative my-4">
+            <div className="enter-2 relative my-4">
                 <div className="absolute inset-0 flex items-center">
                     <span className="w-full border-t border-white/80" />
                 </div>
                 <div className="relative flex justify-center text-xs uppercase">
-                    <span className="bg-[#73AD86] px-2 text-white/80">
+                    <span className="divider-pulse rounded-full bg-[#73AD86] px-3 py-1 text-white/85">
                         Or continue with
                     </span>
                 </div>
@@ -65,7 +122,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
             <form onSubmit={submit} className="flex flex-col gap-6">
                 <div className="grid gap-6">
-                    <div className="grid gap-2">
+                    <div className="enter-3 grid gap-2">
                         <Label htmlFor="email">Email address</Label>
                         <Input
                             id="email"
@@ -78,12 +135,12 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             tabIndex={1}
                             autoComplete="email"
                             placeholder="email@example.com"
-                            className="border-none bg-white text-gray-900 placeholder:text-gray-500 focus-visible:ring-2 focus-visible:ring-white/50"
+                            className="input-pop border-none bg-white text-gray-900 placeholder:text-gray-500 focus-visible:ring-2 focus-visible:ring-white/50"
                         />
                         <InputError message={errors.email} />
                     </div>
 
-                    <div className="grid gap-2">
+                    <div className="enter-4 grid gap-2">
                         <Input
                             id="password"
                             type="password"
@@ -96,12 +153,12 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             tabIndex={2}
                             autoComplete="current-password"
                             placeholder="Password"
-                            className="border-none bg-white text-gray-900 placeholder:text-gray-500 focus-visible:ring-2 focus-visible:ring-white/50"
+                            className="input-pop border-none bg-white text-gray-900 placeholder:text-gray-500 focus-visible:ring-2 focus-visible:ring-white/50"
                         />
                         <InputError message={errors.password} />
                     </div>
 
-                    <div className="flex items-center justify-between">
+                    <div className="enter-5 flex items-center justify-between">
                         <div className="flex items-center space-x-2">
                             <Checkbox
                                 id="remember"
@@ -134,7 +191,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
 
                     <Button
                         type="submit"
-                        className="mt-4 w-full bg-[#427452] font-semibold text-white hover:bg-[#355C45]"
+                        className="btn-shine enter-6 mt-4 w-full bg-[#427452] font-semibold text-white hover:bg-[#355C45]"
                         tabIndex={4}
                         disabled={processing}
                         data-test="login-button"
@@ -146,7 +203,10 @@ export default function Login({ status, canResetPassword }: LoginProps) {
             </form>
 
             {status && (
-                <div className="mt-4 rounded-xl border border-white/30 bg-white/20 px-4 py-2 text-center text-xs font-medium text-white">
+                <div
+                    className="mt-4 rounded-xl border border-white/30 bg-white/20 px-4 py-2 text-center text-xs font-medium text-white"
+                    style={{ animation: 'fadeIn .5s ease-out both' }}
+                >
                     {status}
                 </div>
             )}
