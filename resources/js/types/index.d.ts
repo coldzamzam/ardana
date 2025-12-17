@@ -145,6 +145,7 @@ export interface StatusSubmisi {
 export interface Submisi {
     id: string;
     judul: string;
+    type?: 'TOR' | 'LPJ';
     kegiatan_type_id: string;
     kegiatan_type?: KegiatanType;
     created_by?: User;
@@ -157,7 +158,7 @@ export interface Submisi {
     biaya?: Biaya[];
     detail_submisi?: DetailSubmisi;
     generated_lpj?: Submisi;
-    parent_tor_id?: string;
+    parent_tor_id?: string | null;
     [key: string]: unknown;
 }
 

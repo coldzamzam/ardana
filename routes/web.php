@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AnggotaTimController;
+use App\Http\Controllers\ArsipController;
 use App\Http\Controllers\BiayaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\FaqController;
@@ -113,6 +114,10 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
         Route::delete('biaya/{biaya}', [BiayaController::class, 'destroy'])->name('biaya.destroy');
 
         Route::get('faq', [FaqController::class, 'index'])->name('faq.index');
+    });
+
+    Route::middleware('role:admin,kajur,sekjur')->group(function () {
+        Route::get('rekap-tor-lpj', [ArsipController::class, 'index'])->name('arsip.recap.index');
     });
 
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {

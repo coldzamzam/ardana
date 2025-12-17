@@ -16,6 +16,7 @@ import {
     Bell,
     BookOpen,
     ClipboardCheck,
+    FileText,
     Folder,
     HelpCircle,
     LayoutGrid,
@@ -80,11 +81,18 @@ export function AppSidebar() {
     }
 
     if (hasRole('admin') || hasRole('sekjur') || hasRole('kajur')) {
-        mainNavItems.push({
-            title: 'Review Submisi',
-            href: '/dashboard/review',
-            icon: ClipboardCheck,
-        });
+        mainNavItems.push(
+            {
+                title: 'Review Submisi',
+                href: '/dashboard/review',
+                icon: ClipboardCheck,
+            },
+            {
+                title: 'Arsip TOR & LPJ',
+                href: '/dashboard/rekap-tor-lpj',
+                icon: FileText,
+            },
+        );
     }
 
     if (hasRole('mahasiswa') || hasRole('dosen')) {
