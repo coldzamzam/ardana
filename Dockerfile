@@ -1,62 +1,69 @@
-# Base (PHP + extensions)
-FROM php:8.2-cli AS base
+# =========================
+# 1) BUILD STAGE
+# =========================
+FROM php:8.2-cli AS build
 
 WORKDIR /app
 
+# System deps + PHP extensions
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git unzip libpq-dev ca-certificates curl \
   && docker-php-ext-install pdo_pgsql \
   && rm -rf /var/lib/apt/lists/*
 
-# Composer binary
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
-
-# Build (install deps + build assets)
-FROM base AS build
-
-# Node.js
+# Install Node.js 20
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
   && apt-get update && apt-get install -y --no-install-recommends nodejs \
   && rm -rf /var/lib/apt/lists/*
 
-# PHP deps first
-COPY composer.json composer.lock ./
-# IMPORTANT: artisan belum ada di tahap ini, jadi jangan jalankan scripts dulu
-RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-scripts
+# Composer binary
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# JS deps
+# Copy dependency manifests first (better caching)
+COPY composer.json composer.lock ./
+RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+
 COPY package.json package-lock.json ./
 RUN npm ci
 
-# Copy full app source
+# Copy app source
 COPY . .
 
-# Laravel dirs + permissions
-RUN mkdir -p storage/framework/{cache,sessions,views} \
- && mkdir -p bootstrap/cache \
- && chmod -R 775 storage bootstrap/cache
+# Build frontend (Vite)
+RUN npm run build
 
-# Build
-RUN composer dump-autoload --optimize \
- && php artisan package:discover --ansi \
- && npm run build \
- && php artisan config:cache || true \
- && php artisan route:cache || true \
- && php artisan view:cache || true
+# IMPORTANT:
+# Jangan jalankan php artisan config:cache di sini (build stage),
+# karena bisa "mengunci" path/env yang salah.
 
 
-# Runtime
-FROM base AS runtime
+# =========================
+# 2) RUNTIME STAGE
+# =========================
+FROM php:8.2-cli AS runtime
 
 WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libpq-dev ca-certificates \
+  && docker-php-ext-install pdo_pgsql \
+  && rm -rf /var/lib/apt/lists/*
+
+# Copy built app from build stage
 COPY --from=build /app /app
 
-# Safety: ensure writable on runtime too
-RUN mkdir -p storage/framework/{cache,sessions,views} \
- && mkdir -p bootstrap/cache \
- && chmod -R 775 storage bootstrap/cache
+# Create start script
+COPY ./docker/start.sh /start.sh
+RUN chmod +x /start.sh
 
-ENV PORT=8080
+# (Opsional tapi bagus) pakai user non-root
+RUN chown -R www-data:www-data /app
+USER www-data
 
-# Start: migrate safely (NO fresh), then serve
-CMD sh -lc "php artisan migrate --force && php artisan serve --host 0.0.0.0 --port ${PORT}"
+ENV APP_ENV=production
+ENV APP_DEBUG=false
+# KUNCI FIX untuk error kamu:
+ENV VIEW_COMPILED_PATH=/app/storage/framework/views
+
+EXPOSE 8080
+CMD ["/start.sh"]
