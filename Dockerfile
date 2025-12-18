@@ -18,7 +18,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
 
 # PHP deps
 COPY composer.json composer.lock ./
-RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader
+RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-scripts
 
 # JS deps
 COPY package.json package-lock.json ./
@@ -26,6 +26,7 @@ RUN npm ci
 
 # App source + build assets
 COPY . .
+RUN php artisan package:discover --ansi
 RUN npm run build
 
 
