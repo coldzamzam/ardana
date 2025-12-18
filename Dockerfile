@@ -1,5 +1,6 @@
-# --- base ---
+# Base (PHP + extensions)
 FROM php:8.2-cli AS base
+
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -7,40 +8,55 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   && docker-php-ext-install pdo_pgsql \
   && rm -rf /var/lib/apt/lists/*
 
+# Composer binary
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
-# install node
+# Build (install deps + build assets)
+FROM base AS build
+
+# Node.js
 RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
   && apt-get update && apt-get install -y --no-install-recommends nodejs \
   && rm -rf /var/lib/apt/lists/*
 
-
-# --- build ---
-FROM base AS build
-
-# 1) composer deps (tanpa scripts, karena artisan belum ada)
+# PHP deps first
 COPY composer.json composer.lock ./
+# IMPORTANT: artisan belum ada di tahap ini, jadi jangan jalankan scripts dulu
 RUN composer install --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-scripts
 
-# 2) node deps
+# JS deps
 COPY package.json package-lock.json ./
 RUN npm ci
 
-# 3) baru copy seluruh project (termasuk artisan)
+# Copy full app source
 COPY . .
 
-# 4) sekarang aman jalankan composer scripts / discovery + build assets
+# Laravel dirs + permissions
+RUN mkdir -p storage/framework/{cache,sessions,views} \
+ && mkdir -p bootstrap/cache \
+ && chmod -R 775 storage bootstrap/cache
+
+# Build
 RUN composer dump-autoload --optimize \
-  && php artisan package:discover --ansi \
-  && npm run build \
-  && php artisan config:cache || true \
-  && php artisan route:cache || true \
-  && php artisan view:cache || true
+ && php artisan package:discover --ansi \
+ && npm run build \
+ && php artisan config:cache || true \
+ && php artisan route:cache || true \
+ && php artisan view:cache || true
 
 
-# --- runtime ---
+# Runtime
 FROM base AS runtime
+
+WORKDIR /app
 COPY --from=build /app /app
 
-EXPOSE 8080
-CMD sh -lc "php artisan migrate --force || true && php artisan serve --host 0.0.0.0 --port ${PORT:-8080}"
+# Safety: ensure writable on runtime too
+RUN mkdir -p storage/framework/{cache,sessions,views} \
+ && mkdir -p bootstrap/cache \
+ && chmod -R 775 storage bootstrap/cache
+
+ENV PORT=8080
+
+# Start: migrate safely (NO fresh), then serve
+CMD sh -lc "php artisan migrate --force && php artisan serve --host 0.0.0.0 --port ${PORT}"
