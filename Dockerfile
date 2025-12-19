@@ -1,6 +1,4 @@
-# =========================
 # BUILD STAGE
-# =========================
 FROM php:8.2-cli AS build
 WORKDIR /app
 
@@ -29,10 +27,7 @@ COPY . .
 RUN php artisan package:discover --ansi
 RUN npm run build
 
-
-# =========================
 # RUNTIME STAGE
-# =========================
 FROM php:8.2-cli AS runtime
 WORKDIR /app
 
