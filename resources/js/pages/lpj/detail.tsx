@@ -1,5 +1,5 @@
+import QuillEditor from '@/components/quill-editor';
 import StatusHistoryCard from '@/components/status-history-card';
-import TiptapEditor from '@/components/tiptap-editor';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -129,7 +129,7 @@ export default function LpjDetail({ submisi, latestStatus }: LpjDetailProps) {
                                 </Label>
                                 <Input
                                     id="kegiatan_type_id"
-                                    value={submisi.kegiatan_type.nama}
+                                    value={submisi.kegiatan_type?.nama}
                                     disabled
                                     className="bg-neutral-100"
                                 />
@@ -250,63 +250,51 @@ export default function LpjDetail({ submisi, latestStatus }: LpjDetailProps) {
 
                         <div className="space-y-2">
                             <Label htmlFor="gambaran_umum">Gambaran Umum</Label>
-                            <div className="rounded-lg border bg-white p-2">
-                                <TiptapEditor
-                                    content={data.gambaran_umum || ''}
-                                    onChange={(c) =>
-                                        setData('gambaran_umum', c)
-                                    }
-                                    editable={isEditable}
-                                />
-                            </div>
+                            <QuillEditor
+                                content={data.gambaran_umum || ''}
+                                onChange={(c) => setData('gambaran_umum', c)}
+                                editable={isEditable}
+                            />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="tujuan">Tujuan</Label>
-                            <div className="rounded-lg border bg-white p-2">
-                                <TiptapEditor
-                                    content={data.tujuan || ''}
-                                    onChange={(c) => setData('tujuan', c)}
-                                    editable={isEditable}
-                                />
-                            </div>
+                            <QuillEditor
+                                content={data.tujuan || ''}
+                                onChange={(c) => setData('tujuan', c)}
+                                editable={isEditable}
+                            />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="manfaat">Manfaat</Label>
-                            <div className="rounded-lg border bg-white p-2">
-                                <TiptapEditor
-                                    content={data.manfaat || ''}
-                                    onChange={(c) => setData('manfaat', c)}
-                                    editable={isEditable}
-                                />
-                            </div>
+                            <QuillEditor
+                                content={data.manfaat || ''}
+                                onChange={(c) => setData('manfaat', c)}
+                                editable={isEditable}
+                            />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="metode_pelaksanaan">
                                 Metode Pelaksanaan
                             </Label>
-                            <div className="rounded-lg border bg-white p-2">
-                                <TiptapEditor
-                                    content={data.metode_pelaksanaan || ''}
-                                    onChange={(c) =>
-                                        setData('metode_pelaksanaan', c)
-                                    }
-                                    editable={isEditable}
-                                />
-                            </div>
+                            <QuillEditor
+                                content={data.metode_pelaksanaan || ''}
+                                onChange={(c) =>
+                                    setData('metode_pelaksanaan', c)
+                                }
+                                editable={isEditable}
+                            />
                         </div>
                         <div className="space-y-2">
                             <Label htmlFor="waktu_pelaksanaan">
                                 Waktu Pelaksanaan
                             </Label>
-                            <div className="rounded-lg border bg-white p-2">
-                                <TiptapEditor
-                                    content={data.waktu_pelaksanaan || ''}
-                                    onChange={(c) =>
-                                        setData('waktu_pelaksanaan', c)
-                                    }
-                                    editable={isEditable}
-                                />
-                            </div>
+                            <QuillEditor
+                                content={data.waktu_pelaksanaan || ''}
+                                onChange={(c) =>
+                                    setData('waktu_pelaksanaan', c)
+                                }
+                                editable={isEditable}
+                            />
                         </div>
 
                         <div className="space-y-1 md:w-1/2">
@@ -326,15 +314,11 @@ export default function LpjDetail({ submisi, latestStatus }: LpjDetailProps) {
                             >
                                 Peserta Kegiatan
                             </Label>
-                            <div className="rounded-lg border bg-white p-2">
-                                <TiptapEditor
-                                    content={data.peserta_kegiatan || ''}
-                                    onChange={(c) =>
-                                        setData('peserta_kegiatan', c)
-                                    }
-                                    editable={isEditable}
-                                />
-                            </div>
+                            <QuillEditor
+                                content={data.peserta_kegiatan || ''}
+                                onChange={(c) => setData('peserta_kegiatan', c)}
+                                editable={isEditable}
+                            />
                             {errors.peserta_kegiatan && (
                                 <p className="text-sm text-red-500">
                                     {errors.peserta_kegiatan}
@@ -349,15 +333,11 @@ export default function LpjDetail({ submisi, latestStatus }: LpjDetailProps) {
                             >
                                 Hasil Kegiatan
                             </Label>
-                            <div className="rounded-lg border bg-white p-2">
-                                <TiptapEditor
-                                    content={data.hasil_kegiatan || ''}
-                                    onChange={(c) =>
-                                        setData('hasil_kegiatan', c)
-                                    }
-                                    editable={isEditable}
-                                />
-                            </div>
+                            <QuillEditor
+                                content={data.hasil_kegiatan || ''}
+                                onChange={(c) => setData('hasil_kegiatan', c)}
+                                editable={isEditable}
+                            />
                             {errors.hasil_kegiatan && (
                                 <p className="text-sm text-red-500">
                                     {errors.hasil_kegiatan}

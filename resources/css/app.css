@@ -149,3 +149,27 @@ a:not([role='button']):not(.button),
 input[type='submit'] {
     cursor: pointer;
 }
+
+/* Quill Editor Customizations */
+.quill-editor-wrapper .ql-toolbar.ql-snow {
+    border: none;
+    border-bottom: 1px solid theme('colors.gray.200');
+    background-color: theme('colors.gray.50');
+}
+
+.quill-editor-wrapper .ql-container.ql-snow {
+    border: none;
+}
+
+.quill-editor-wrapper .ql-editor {
+    min-height: 150px;
+    font-family: inherit;
+    font-size: 0.875rem; /* text-sm */
+    line-height: 1.5;
+}
+
+/* Rounded corners for the wrapper are handled by the wrapper class,
+   but we need to make sure the toolbar respects it */
+.quill-editor-wrapper {
+    @apply rounded-lg border border-gray-300 overflow-hidden bg-white focus-within:ring-2 focus-within:ring-[#427452] focus-within:border-transparent transition-all duration-200;
+}

@@ -1,5 +1,5 @@
+import QuillEditor from '@/components/quill-editor';
 import StatusHistoryCard from '@/components/status-history-card'; // Import StatusHistoryCard
-import TiptapEditor from '@/components/tiptap-editor';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -334,71 +334,61 @@ export default function TorDetail({
 
                         <div className="space-y-2">
                             <Label htmlFor="gambaran_umum">Gambaran Umum</Label>
-                            <div className="rounded-lg border bg-white p-2">
-                                <TiptapEditor
-                                    content={data.gambaran_umum || ''}
-                                    onChange={(content) =>
-                                        setData('gambaran_umum', content)
-                                    }
-                                    editable={isEditable}
-                                />
-                            </div>
+                            <QuillEditor
+                                content={data.gambaran_umum || ''}
+                                onChange={(content) =>
+                                    setData('gambaran_umum', content)
+                                }
+                                editable={isEditable}
+                            />
                         </div>
 
                         <div className="space-y-2">
                             <Label htmlFor="tujuan">Tujuan</Label>
-                            <div className="rounded-lg border bg-white p-2">
-                                <TiptapEditor
-                                    content={data.tujuan || ''}
-                                    onChange={(content) =>
-                                        setData('tujuan', content)
-                                    }
-                                    editable={isEditable}
-                                />
-                            </div>
+                            <QuillEditor
+                                content={data.tujuan || ''}
+                                onChange={(content) =>
+                                    setData('tujuan', content)
+                                }
+                                editable={isEditable}
+                            />
                         </div>
 
                         <div className="space-y-2">
                             <Label htmlFor="manfaat">Manfaat</Label>
-                            <div className="rounded-lg border bg-white p-2">
-                                <TiptapEditor
-                                    content={data.manfaat || ''}
-                                    onChange={(content) =>
-                                        setData('manfaat', content)
-                                    }
-                                    editable={isEditable}
-                                />
-                            </div>
+                            <QuillEditor
+                                content={data.manfaat || ''}
+                                onChange={(content) =>
+                                    setData('manfaat', content)
+                                }
+                                editable={isEditable}
+                            />
                         </div>
 
                         <div className="space-y-2">
                             <Label htmlFor="metode_pelaksanaan">
                                 Metode Pelaksanaan
                             </Label>
-                            <div className="rounded-lg border bg-white p-2">
-                                <TiptapEditor
-                                    content={data.metode_pelaksanaan || ''}
-                                    onChange={(content) =>
-                                        setData('metode_pelaksanaan', content)
-                                    }
-                                    editable={isEditable}
-                                />
-                            </div>
+                            <QuillEditor
+                                content={data.metode_pelaksanaan || ''}
+                                onChange={(content) =>
+                                    setData('metode_pelaksanaan', content)
+                                }
+                                editable={isEditable}
+                            />
                         </div>
 
                         <div className="space-y-2">
                             <Label htmlFor="waktu_pelaksanaan">
                                 Waktu Pelaksanaan
                             </Label>
-                            <div className="rounded-lg border bg-white p-2">
-                                <TiptapEditor
-                                    content={data.waktu_pelaksanaan || ''}
-                                    onChange={(content) =>
-                                        setData('waktu_pelaksanaan', content)
-                                    }
-                                    editable={isEditable}
-                                />
-                            </div>
+                            <QuillEditor
+                                content={data.waktu_pelaksanaan || ''}
+                                onChange={(content) =>
+                                    setData('waktu_pelaksanaan', content)
+                                }
+                                editable={isEditable}
+                            />
                         </div>
 
                         <div className="space-y-1 md:w-1/2">
