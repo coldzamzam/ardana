@@ -415,4 +415,22 @@ class SubmisiController extends Controller
         // 5. Redirect
         return Redirect::back()->with('success', 'LPJ berhasil dibuat dari TOR.');
     }
+
+    public function template(Submisi $submisi)
+    {
+        $submisi->load([
+            'detailSubmisi',
+            'kegiatanType',
+            'indikatorKinerja',
+            'biaya',
+            'anggotaTim.user.mahasiswa',
+            'submisiFile',
+            // kalau PIC itu user/dosen:
+            'detailSubmisi.pic', // sesuaikan relasi
+        ]);
+
+        return Inertia::render('Tor/detail-template', [
+            'submisi' => $submisi,
+        ]);
+    }
 }

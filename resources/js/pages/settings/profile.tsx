@@ -40,17 +40,19 @@ export default function Profile({
         profile_photo_url?: string | null; // tambahin field ini untuk TS
     };
 }) {
-    const { data, setData, patch, errors, processing, recentlySuccessful } =
+    const { data, setData, post, errors, processing, recentlySuccessful } =
         useForm<{
+            _method: 'patch';
             name: string;
             email: string;
             prodi: string;
             photo: File | null;
         }>({
+            _method: 'patch',
             name: user.name,
             email: user.email,
             prodi: user.mahasiswa?.prodi || '',
-            photo: null, // file foto profil
+            photo: null,
         });
 
     const hasRole = (roleName: string) => {
@@ -59,10 +61,8 @@ export default function Profile({
 
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
-
-        patch(update().url, {
+        post(update().url, {
             preserveScroll: true,
-            // penting supaya Inertia kirim File sebagai FormData
             forceFormData: true,
         });
     };
