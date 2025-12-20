@@ -78,4 +78,15 @@ class User extends Authenticatable
     {
         return $this->hasMany(AnggotaTim::class, 'anggota_id');
     }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new \App\Notifications\ResetPasswordNotification($token));
+    }
 }

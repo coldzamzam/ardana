@@ -1,4 +1,7 @@
-import React from 'react';
+import { SharedData } from '@/types';
+import { usePage } from '@inertiajs/react';
+import React, { useEffect } from 'react';
+import { Toaster, toast } from 'sonner';
 
 interface AuthLayoutProps {
     title?: string;
@@ -11,8 +14,24 @@ export default function AuthLayout({
     description,
     children,
 }: AuthLayoutProps) {
+    const { flash } = usePage<SharedData>().props;
+
+    useEffect(() => {
+        if (flash.success) {
+            toast.success('Success', {
+                description: flash.success,
+            });
+        }
+        if (flash.error) {
+            toast.error('Error', {
+                description: flash.error,
+            });
+        }
+    }, [flash]);
+
     return (
         <div className="flex min-h-screen items-center justify-center bg-gradient-to-tr from-[#193422] via-[#4F8B61] to-[#cfe190] p-4">
+            <Toaster richColors />
             {/* Animations */}
             <style>{`
                 @keyframes cardEnter {

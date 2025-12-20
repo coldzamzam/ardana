@@ -32,10 +32,20 @@ class PasswordResetLinkController extends Controller
             'email' => 'required|email',
         ]);
 
+        $user = \App\Models\User::where('email', $request->email)->first();
+
+        // Prevent Mahasiswa (OAuth users) from resetting password
+        if ($user && $user->hasRole('mahasiswa')) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'email' => [__('Mahasiswa harus login melalui Google.')],
+            ]);
+        }
+
         Password::sendResetLink(
             $request->only('email')
         );
 
-        return back()->with('status', __('A reset link will be sent if the account exists.'));
+        return back()->with('status', __('Link reset password berhasil dikirim ke email Anda.'))
+            ->with('success', __('Link reset password berhasil dikirim ke email Anda.'));
     }
 }
