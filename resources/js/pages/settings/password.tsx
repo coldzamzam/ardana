@@ -1,4 +1,3 @@
-import { Transition } from '@headlessui/react';
 import { Head, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
 
@@ -21,10 +20,10 @@ export default function PasswordSettings() {
     const {
         data,
         setData,
-        patch,
+        put,
         errors,
         processing,
-        recentlySuccessful,
+
         reset,
     } = useForm({
         current_password: '',
@@ -35,7 +34,7 @@ export default function PasswordSettings() {
     const submit: FormEventHandler = (e) => {
         e.preventDefault();
 
-        patch('/dashboard/settings/password', {
+        put('/dashboard/settings/password', {
             preserveScroll: true,
             onSuccess: () => {
                 reset('current_password', 'password', 'password_confirmation');
@@ -187,18 +186,6 @@ export default function PasswordSettings() {
                                     >
                                         Save password
                                     </Button>
-
-                                    <Transition
-                                        show={recentlySuccessful}
-                                        enter="transition ease-in-out"
-                                        enterFrom="opacity-0"
-                                        leave="transition ease-in-out"
-                                        leaveTo="opacity-0"
-                                    >
-                                        <p className="text-sm text-neutral-600">
-                                            Password updated.
-                                        </p>
-                                    </Transition>
                                 </div>
                             </form>
                         </div>
