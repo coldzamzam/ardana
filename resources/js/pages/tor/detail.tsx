@@ -30,7 +30,7 @@ import {
     type Submisi,
 } from '@/types';
 import { Head, router, useForm } from '@inertiajs/react';
-import React, { useCallback, useEffect, useRef } from 'react';
+import React, { useCallback } from 'react';
 import DetailAnggota from './detail-anggota';
 import DetailBiaya from './detail-biaya';
 import DetailFile from './detail-file';
@@ -70,7 +70,7 @@ export default function TorDetail({
         },
     ];
 
-    const { data, setData, put, post, errors } = useForm({
+    const { data, setData, put, post, errors, isDirty, processing } = useForm({
         id: submisi.id,
         judul: submisi.judul,
         kegiatan_type_id: submisi.kegiatan_type_id,
@@ -99,8 +99,6 @@ export default function TorDetail({
     const hasDetailForDraft = !isRevision && !!submisi.detail_submisi;
 
     const isSubmittable = hasNewDetailForRevision || hasDetailForDraft;
-
-    const isInitialMount = useRef(true);
 
     React.useEffect(() => {
         const selectedDosen = dosens.find(
@@ -138,14 +136,6 @@ export default function TorDetail({
             preserveScroll: true,
         });
     }, [isEditable, put, submisi.id]);
-
-    useEffect(() => {
-        if (isInitialMount.current) {
-            isInitialMount.current = false;
-        } else {
-            handleUpdate();
-        }
-    }, [data.judul, data.kegiatan_type_id, handleUpdate]);
 
     const handleUpdateDetail = () => {
         if (!isEditable) return;
@@ -260,6 +250,17 @@ export default function TorDetail({
                                 />
                             </div>
                         </div>
+                        {isEditable && (
+                            <div className="flex justify-end pt-2">
+                                <Button
+                                    onClick={handleUpdate}
+                                    disabled={!isDirty || processing}
+                                    className="rounded-md bg-[#427452] px-6 hover:bg-[#365d42]"
+                                >
+                                    {processing ? 'Menyimpan...' : 'Simpan'}
+                                </Button>
+                            </div>
+                        )}
                     </CardContent>
                 </Card>
 
