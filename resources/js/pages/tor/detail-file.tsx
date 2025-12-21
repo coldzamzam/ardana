@@ -62,7 +62,7 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
         file: File | null;
         nama: string;
         deskripsi: string;
-        submisi_id: number;
+        submisi_id: string;
         _method?: string;
     }>({
         id: '',
@@ -178,6 +178,16 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
+
+        if (file && file.size > 2 * 1024 * 1024) {
+            setValidationError('Ukuran file maksimal 2MB.');
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
+            return;
+        }
+
+        setValidationError(null);
         setData((prevData) => ({
             ...prevData,
             file: file,
@@ -210,7 +220,7 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                                         className="rounded-md border border-gray-300 bg-white px-3 py-2 text-gray-700 shadow-md"
                                     >
                                         Hanya file JPG, JPEG, PNG, dan PDF yang
-                                        diperbolehkan.
+                                        diperbolehkan. Maksimal ukuran file 2MB.
                                     </TooltipContent>
                                 </Tooltip>
                             </TooltipProvider>
