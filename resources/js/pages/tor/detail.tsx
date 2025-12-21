@@ -464,55 +464,54 @@ export default function TorDetail({
                     )}
 
                     <div className="flex w-full items-center justify-end gap-3">
+                        {/* ✅ SELALU TAMPIL */}
+                        <Button
+                            type="button"
+                            className="bg-[#5D41D9] text-white hover:bg-[#392885]"
+                            onClick={handleGenerateTemplateTor}
+                        >
+                            Buat Template TOR
+                        </Button>
+
+                        {/* Tombol submit tergantung editable */}
                         {isEditable ? (
-                            <>
-                                <Button
-                                    type="button"
-                                    className="bg-[#5D41D9] text-white hover:bg-[#392885]"
-                                    onClick={handleGenerateTemplateTor}
-                                >
-                                    Buat Template TOR
-                                </Button>
+                            <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                    <Button
+                                        disabled={!isSubmittable}
+                                        className="rounded-md bg-[#427452] text-white hover:bg-[#365d42]"
+                                    >
+                                        Kirim Pengajuan
+                                    </Button>
+                                </AlertDialogTrigger>
 
-                                <AlertDialog>
-                                    <AlertDialogTrigger asChild>
-                                        <Button
-                                            disabled={!isSubmittable}
-                                            className="rounded-md bg-[#427452] text-white hover:bg-[#365d42]"
+                                <AlertDialogContent className="rounded-3xl border border-[#73AD86]/40 bg-white/95 shadow-2xl data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:slide-out-to-bottom-10 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-bottom-10 data-[state=open]:zoom-in-95 sm:max-w-lg">
+                                    <AlertDialogHeader>
+                                        <AlertDialogTitle className="text-lg font-semibold text-[#111827]">
+                                            Apakah Anda yakin ingin mengajukan
+                                            TOR ini?
+                                        </AlertDialogTitle>
+                                        <AlertDialogDescription className="text-sm text-slate-600">
+                                            Setelah diajukan, TOR tidak dapat
+                                            diedit kembali kecuali jika diminta
+                                            untuk revisi oleh reviewer. Pastikan
+                                            semua data sudah benar.
+                                        </AlertDialogDescription>
+                                    </AlertDialogHeader>
+
+                                    <AlertDialogFooter className="mt-2">
+                                        <AlertDialogCancel className="rounded-md border-slate-300 px-5">
+                                            Batal
+                                        </AlertDialogCancel>
+                                        <AlertDialogAction
+                                            onClick={handleSubmitSubmission}
+                                            className="rounded-md bg-[#427452] px-6 hover:bg-[#365d42]"
                                         >
-                                            Kirim Pengajuan
-                                        </Button>
-                                    </AlertDialogTrigger>
-
-                                    <AlertDialogContent className="rounded-3xl border border-[#73AD86]/40 bg-white/95 shadow-2xl data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:slide-out-to-bottom-10 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:slide-in-from-bottom-10 data-[state=open]:zoom-in-95 sm:max-w-lg">
-                                        <AlertDialogHeader>
-                                            <AlertDialogTitle className="text-lg font-semibold text-[#111827]">
-                                                Apakah Anda yakin ingin
-                                                mengajukan TOR ini?
-                                            </AlertDialogTitle>
-                                            <AlertDialogDescription className="text-sm text-slate-600">
-                                                Setelah diajukan, TOR tidak
-                                                dapat diedit kembali kecuali
-                                                jika diminta untuk revisi oleh
-                                                reviewer. Pastikan semua data
-                                                sudah benar.
-                                            </AlertDialogDescription>
-                                        </AlertDialogHeader>
-
-                                        <AlertDialogFooter className="mt-2">
-                                            <AlertDialogCancel className="rounded-md border-slate-300 px-5">
-                                                Batal
-                                            </AlertDialogCancel>
-                                            <AlertDialogAction
-                                                onClick={handleSubmitSubmission}
-                                                className="rounded-md bg-[#427452] px-6 hover:bg-[#365d42]"
-                                            >
-                                                Lanjutkan
-                                            </AlertDialogAction>
-                                        </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                </AlertDialog>
-                            </>
+                                            Lanjutkan
+                                        </AlertDialogAction>
+                                    </AlertDialogFooter>
+                                </AlertDialogContent>
+                            </AlertDialog>
                         ) : (
                             <Button
                                 disabled

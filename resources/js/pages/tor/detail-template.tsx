@@ -1,4 +1,3 @@
-import { Head } from '@inertiajs/react';
 import React from 'react';
 
 import { Button } from '@/components/ui/button';
@@ -182,14 +181,16 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
         children: React.ReactNode;
         breakAfter?: boolean;
     }> = ({ children, breakAfter = true }) => (
-        <div
-            className="mx-auto my-4 min-h-[1123px] w-[794px] bg-white shadow-md print:shadow-none"
-            style={{
-                pageBreakAfter: breakAfter ? 'always' : 'auto',
-                fontFamily: '"Times New Roman", serif',
-            }}
-        >
-            {children}
+        <div className="mx-auto my-6 w-full max-w-[860px] print:my-0 print:max-w-none">
+            <div
+                className="mx-auto min-h-[1123px] w-[794px] overflow-hidden bg-white shadow-[0_10px_30px_rgba(2,6,23,0.10)] ring-1 ring-slate-200 print:shadow-none print:ring-0"
+                style={{
+                    pageBreakAfter: breakAfter ? 'always' : 'auto',
+                    fontFamily: '"Times New Roman", serif',
+                }}
+            >
+                {children}
+            </div>
         </div>
     );
 
@@ -230,18 +231,55 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={`Template TOR - ${submisi.judul}`} />
-
-            <div className="flex h-full flex-1 flex-col gap-6 overflow-y-auto bg-slate-100 p-4 text-black print:bg-white print:p-0">
+            <div className="relative flex h-full flex-1 flex-col gap-6 overflow-y-auto bg-slate-50 p-4 text-black print:bg-white print:p-0">
                 {/* BUTTON DOWNLOAD */}
-                <div className="fixed right-6 bottom-6 z-50 print:hidden">
-                    <Button
-                        type="button"
-                        className="bg-[#2B6CB0] px-6 py-3 text-white shadow-lg hover:bg-[#245a94]"
-                        onClick={handleDownloadTor}
-                    >
-                        Download TOR (PDF)
-                    </Button>
+                <div className="sticky top-0 z-50 -mx-4 -mt-4 mb-2 border-b border-slate-200/80 bg-gradient-to-r from-white to-slate-50/50 px-4 py-3 backdrop-blur-md print:hidden">
+                    <div className="flex w-full items-center justify-between">
+                        {/* KIRI */}
+                        <div className="flex min-w-0 items-center gap-3">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                className="group h-11 shrink-0 rounded-xl border-2 border-slate-300 bg-white px-5 font-medium text-slate-700 shadow-sm transition-all hover:border-slate-400 hover:bg-slate-50"
+                                onClick={() => window.history.back()}
+                            >
+                                <span className="flex items-center gap-2">
+                                    <svg
+                                        className="h-4 w-4 transition-transform group-hover:-translate-x-1"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        viewBox="0 0 24 24"
+                                    >
+                                        <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            strokeWidth={2}
+                                            d="M15 19l-7-7 7-7"
+                                        />
+                                    </svg>
+                                    Kembali
+                                </span>
+                            </Button>
+
+                            <div className="min-w-0">
+                                <p className="truncate text-sm font-medium text-slate-700">
+                                    Preview Dokumen TOR
+                                </p>
+                                <p className="truncate text-xs text-slate-500">
+                                    Siap untuk diunduh atau dicetak
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* KANAN */}
+                        <Button
+                            type="button"
+                            className="h-11 rounded-xl bg-[#2B6CB0] px-6 text-white shadow-sm hover:bg-[#245a94]"
+                            onClick={handleDownloadTor}
+                        >
+                            Download TOR (PDF)
+                        </Button>
+                    </div>
                 </div>
 
                 {/* ================= HALAMAN 1 – COVER ================= */}
