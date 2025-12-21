@@ -16,8 +16,26 @@ export default function OnboardingModal({ role }: OnboardingModalProps) {
     return (
         <Dialog open={true}>
             <DialogContent
-                className="rounded-3xl border border-[#73AD86]/40 bg-[#F8FFFB] p-6 shadow-xl sm:max-w-[520px] sm:p-8"
                 onInteractOutside={(e) => e.preventDefault()}
+                className={[
+                    // ukuran & style
+                    'rounded-3xl border border-[#73AD86]/40 bg-[#F8FFFB] shadow-xl',
+
+                    // MOBILE: full width minus margin, nempel atas, bukan center
+                    'w-[calc(100vw-1.5rem)] max-w-[520px]',
+                    'top-3 left-1/2 translate-x-[-50%] translate-y-0',
+
+                    // tinggi aman + bisa scroll
+                    'p-6 sm:p-8',
+                    'overflow-y-auto',
+
+                    // fallback: 100vh, dan kalau browser support 100dvh pakai itu
+                    'max-h-[calc(100vh-1.5rem)]',
+                    'supports-[height:100dvh]:max-h-[calc(100dvh-1.5rem)]',
+
+                    // DESKTOP: baru center
+                    'sm:top-1/2 sm:-translate-y-1/2',
+                ].join(' ')}
             >
                 <DialogHeader className="space-y-3 text-left">
                     <DialogTitle className="text-2xl font-semibold text-[#427452]">
