@@ -170,72 +170,10 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
         ? Math.max(...indikatorRows.map((r) => Number(r.target ?? 0)))
         : null;
 
-    // --- PDF DOWNLOAD (AUTO DOWNLOAD, BUKAN PRINT) ---
-    // NOTE: pastikan dependency ini ada:
-    // npm i html2pdf.js
-    const pdfRef = React.useRef<HTMLDivElement>(null);
-    const [downloading, setDownloading] = React.useState(false);
-
-    const safeFileName = (name: string) =>
-        name
-            .trim()
-            .replace(/[\\/:*?"<>|]/g, '')
-            .replace(/\s+/g, ' ')
-            .slice(0, 120);
-
-    const handleDownloadTor = async () => {
-        if (downloading) return;
-        setDownloading(true);
-
-        try {
-            // Import dynaically
-            const { toPng } = await import('html-to-image');
-            const { jsPDF } = await import('jspdf');
-
-            const title = safeFileName(submisi.judul || 'TOR');
-            const filename = `${title} - ${year}.pdf`;
-
-            // Init PDF: A4, portrait, mm
-            const pdf = new jsPDF('p', 'mm', 'a4');
-            const pageWidth = 210;
-            const pageHeight = 297;
-
-            // Find all pages
-            // We use the class 'tor-page' added to the Page component
-            const pages = document.querySelectorAll('.tor-page');
-
-            if (!pages || pages.length === 0) {
-                throw new Error('No pages found to download');
-            }
-
-            for (let i = 0; i < pages.length; i++) {
-                const pageEl = pages[i] as HTMLElement;
-
-                // Add page if not first
-                if (i > 0) {
-                    pdf.addPage();
-                }
-
-                // Convert to PNG
-                // We use white background to avoid transparent images if any
-                const dataUrl = await toPng(pageEl, {
-                    quality: 0.95,
-                    backgroundColor: '#ffffff',
-                    // Filter out non-printable elements if needed, but we select the inner printable div so it should be fine
-                });
-
-                // Add to PDF
-                // 0, 0 coordinates, width 210mm, height 297mm (A4)
-                pdf.addImage(dataUrl, 'PNG', 0, 0, pageWidth, pageHeight);
-            }
-
-            pdf.save(filename);
-        } catch (e) {
-            console.error('Download error:', e);
-            alert('Gagal mengunduh PDF. Silakan coba lagi.');
-        } finally {
-            setDownloading(false);
-        }
+    // --- PDF DOWNLOAD (SERVER SIDE) ---
+    const handleDownloadTor = () => {
+        const url = `/dashboard/submisi/${submisi.id}/export-pdf`;
+        window.open(url, '_blank');
     };
 
     // --- HELPER COMPONENTS ---
@@ -342,19 +280,16 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
                         {/* KANAN */}
                         <Button
                             type="button"
-                            className="h-11 rounded-xl bg-[#2B6CB0] px-6 text-white shadow-sm hover:bg-[#245a94] disabled:opacity-70"
+                            className="h-11 rounded-xl bg-[#2B6CB0] px-6 text-white shadow-sm hover:bg-[#245a94]"
                             onClick={handleDownloadTor}
-                            disabled={downloading}
                         >
-                            {downloading
-                                ? 'Menyiapkan PDF...'
-                                : 'Download TOR (PDF)'}
+                            Download TOR (PDF)
                         </Button>
                     </div>
                 </div>
 
                 {/* ✅ INI YANG AKAN DIJADIKAN PDF */}
-                <div ref={pdfRef}>
+                <div>
                     {/* ================= HALAMAN 1 – COVER ================= */}
 
                     {/* ================= HALAMAN 1 – COVER ================= */}

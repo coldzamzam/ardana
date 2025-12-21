@@ -55,6 +55,7 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
         Route::post('submisi/{submisi}/draft', [SubmisiController::class, 'updateDetail'])->name('submisi.saveDraft');
         Route::post('submisi/{submisi}/new-version', [SubmisiController::class, 'storeNewVersion'])->name('submisi.newVersion');
         Route::post('submisi/{submisi}/submit', [SubmisiController::class, 'submit'])->name('submisi.submit');
+        // Detail Template (Preview)
         Route::get('submisi/{submisi}/template', function (\App\Models\Submisi $submisi) {
             $submisi->load('detailSubmisi');
 
@@ -62,6 +63,8 @@ Route::middleware(['auth', 'verified'])->prefix('dashboard')->group(function () 
                 'submisi' => $submisi,
             ]);
         })->name('submisi.template');
+
+        Route::get('submisi/{submisi}/export-pdf', [\App\Http\Controllers\TorPdfController::class, 'exportPdf'])->name('tor.export-pdf');
 
         Route::get('lpj/template-preview', fn () => Inertia::render('lpj/detail-template'))->name('lpj.template-preview');
 

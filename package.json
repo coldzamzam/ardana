@@ -66,6 +66,7 @@
     "jspdf": "^3.0.4",
     "laravel-vite-plugin": "^2.0",
     "lucide-react": "^0.475.0",
+    "puppeteer": "^24.34.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
