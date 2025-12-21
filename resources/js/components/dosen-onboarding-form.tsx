@@ -63,11 +63,13 @@ export default function DosenOnboardingForm() {
 
     return (
         <>
-            <form onSubmit={submit} className="flex flex-col gap-6">
-                <div className="grid gap-6">
+            <form onSubmit={submit} className="flex flex-col gap-4 sm:gap-6">
+                <div className="grid gap-4 sm:gap-5">
                     {/* NIP */}
                     <div className="grid gap-2">
-                        <Label htmlFor="nip">NIP</Label>
+                        <Label htmlFor="nip" className="text-sm font-medium">
+                            NIP
+                        </Label>
                         <Input
                             id="nip"
                             type="text"
@@ -77,7 +79,10 @@ export default function DosenOnboardingForm() {
                             placeholder="18-digit NIP"
                             value={data.nip}
                             onChange={(e) => setData('nip', e.target.value)}
+                            /* REVISI: Mobile h-11 & text-base (mencegah zoom auto iOS), Desktop h-10 & text-sm */
+                            className="h-11 text-base sm:h-10 sm:text-sm"
                         />
+                        {/* REVISI: text-xs (12px) agar lebih terbaca di HP daripada text-[11px] */}
                         <p className="text-xs text-muted-foreground">
                             NIP tidak bisa diubah setelah disimpan.
                         </p>
@@ -85,9 +90,11 @@ export default function DosenOnboardingForm() {
                     </div>
 
                     {/* Checkbox S&K */}
-                    <div className="mt-2 flex items-center space-x-2">
+                    <div className="mt-1 flex items-start space-x-3 sm:space-x-2">
                         <Checkbox
                             id="terms"
+                            /* REVISI: mt-0.5 agar sejajar baris pertama teks, shrink-0 agar kotak tidak gepeng */
+                            className="mt-0.5 h-4 w-4 shrink-0 sm:mt-1"
                             checked={isTermsChecked}
                             onCheckedChange={(checkedState) => {
                                 const isChecked = checkedState === true;
@@ -96,16 +103,18 @@ export default function DosenOnboardingForm() {
                         />
                         <Label
                             htmlFor="terms"
-                            className="text-sm leading-none font-medium"
+                            /* REVISI: leading-tight agar spasi antar baris rapat saat teks turun ke bawah di layar kecil */
+                            className="text-xs leading-tight text-muted-foreground sm:text-sm sm:leading-normal"
                         >
-                            {' '}
+                            <span className="mr-1">
+                                Saya menyetujui semua persyaratan yang berlaku
+                            </span>
                             <Button
                                 type="button"
                                 variant="link"
-                                className="h-auto p-0 align-baseline"
+                                className="h-auto p-0 text-xs font-bold text-primary underline decoration-primary/50 underline-offset-2 sm:text-sm"
                                 onClick={() => setIsModalOpen(true)}
                             >
-                                Saya menyetujui semua persyaratan yang berlaku
                                 S&K
                             </Button>
                             .
@@ -115,10 +124,11 @@ export default function DosenOnboardingForm() {
                     {/* BUTTON */}
                     <Button
                         type="submit"
-                        className="mt-2 w-full rounded-lg bg-[#427452] hover:bg-[#365d42]"
+                        /* REVISI: Fixed height h-12 (48px) standar jempol di mobile, h-10 di desktop */
+                        className="mt-2 h-12 w-full rounded-lg bg-[#427452] text-sm font-semibold hover:bg-[#365d42] sm:h-10"
                         disabled={processing || !isTermsChecked}
                     >
-                        {processing && <Spinner />}
+                        {processing && <Spinner className="mr-2 h-4 w-4" />}
                         Simpan Informasi
                     </Button>
                 </div>
@@ -346,18 +356,18 @@ export default function DosenOnboardingForm() {
 
                         {/* FOOTER (fixed) */}
                         <div className="shrink-0 border-t border-zinc-200 bg-white/75 px-6 py-4 backdrop-blur dark:border-white/10 dark:bg-zinc-950/60">
-                            <div className="flex items-center justify-between gap-3">
-                                <p className="text-xs text-zinc-600 dark:text-zinc-300">
+                            <div className="flex flex-col-reverse gap-4 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+                                <p className="text-center text-xs text-zinc-600 sm:text-left dark:text-zinc-300">
                                     Dengan menekan tombol, Anda menyatakan sudah
                                     membaca dan memahami S&K.
                                 </p>
 
-                                <DialogFooter className="m-0">
+                                <DialogFooter className="m-0 w-full sm:w-auto">
                                     <DialogClose asChild>
                                         <Button
                                             type="button"
                                             onClick={handleModalClose}
-                                            className="rounded-full bg-[#427452] px-6 font-semibold text-white hover:bg-[#355C45]"
+                                            className="w-full rounded-full bg-[#427452] px-6 font-semibold text-white hover:bg-[#355C45] sm:w-auto"
                                         >
                                             Saya Mengerti
                                         </Button>
@@ -385,14 +395,14 @@ export default function DosenOnboardingForm() {
                         </AlertDialogDescription>
                     </AlertDialogHeader>
 
-                    <AlertDialogFooter>
-                        <AlertDialogCancel className="mt-0 rounded-md">
+                    <AlertDialogFooter className="flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-2">
+                        <AlertDialogCancel className="mt-0 w-full rounded-md sm:w-auto">
                             Batal
                         </AlertDialogCancel>
 
                         <AlertDialogAction
                             onClick={handleConfirm}
-                            className="rounded-md bg-[#427452] hover:bg-[#365d42]"
+                            className="w-full rounded-md bg-[#427452] hover:bg-[#365d42] sm:w-auto"
                             disabled={processing}
                         >
                             {processing ? 'Menyimpan...' : 'Ya, simpan'}
