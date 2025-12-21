@@ -184,75 +184,55 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
             .slice(0, 120);
 
     const handleDownloadTor = async () => {
-        if (!pdfRef.current) return;
+        if (downloading) return;
+        setDownloading(true);
 
         try {
-            setDownloading(true);
-
-            // kasih kesempatan React nge-render state "downloading"
-            await new Promise((r) => setTimeout(r, 50));
-
-            const mod = await import('html2pdf.js');
-            const html2pdf = (mod as { default?: unknown }).default ?? mod;
+            // Import dynaically
+            const { toPng } = await import('html-to-image');
+            const { jsPDF } = await import('jspdf');
 
             const title = safeFileName(submisi.judul || 'TOR');
             const filename = `${title} - ${year}.pdf`;
 
-            // CLONE biar kita bisa “buang” iframe tanpa ganggu tampilan asli
-            const sourceEl = pdfRef.current;
-            const clone = sourceEl.cloneNode(true) as HTMLElement;
+            // Init PDF: A4, portrait, mm
+            const pdf = new jsPDF('p', 'mm', 'a4');
+            const pageWidth = 210;
+            const pageHeight = 297;
 
-            // penting: clone harus “hidup” di DOM supaya layout akurat
-            clone.style.position = 'fixed';
-            clone.style.left = '-100000px';
-            clone.style.top = '0';
-            clone.style.background = '#ffffff';
-            clone.style.width = `${sourceEl.offsetWidth}px`;
+            // Find all pages
+            // We use the class 'tor-page' added to the Page component
+            const pages = document.querySelectorAll('.tor-page');
 
-            document.body.appendChild(clone);
+            if (!pages || pages.length === 0) {
+                throw new Error('No pages found to download');
+            }
 
-            // HAPUS / GANTI iframe (ini biang freeze)
-            clone.querySelectorAll('iframe').forEach((ifr) => {
-                const box = document.createElement('div');
-                box.style.border = '1px solid #cbd5e1';
-                box.style.padding = '12px';
-                box.style.fontSize = '12px';
-                box.style.color = '#334155';
-                box.style.background = '#f8fafc';
-                box.innerText =
-                    'Lampiran PDF tidak dimasukkan ke file hasil download (preview iframe). ' +
-                    'Silakan unduh lampiran PDF secara terpisah.';
-                ifr.replaceWith(box);
-            });
+            for (let i = 0; i < pages.length; i++) {
+                const pageEl = pages[i] as HTMLElement;
 
-            // OPTIONAL: kalau ada gambar yang ukurannya kegedean, scale dibuat lebih kecil biar nggak berat
-            await html2pdf()
-                .set({
-                    margin: [8, 8, 8, 8],
-                    filename,
-                    image: { type: 'jpeg', quality: 0.95 },
-                    html2canvas: {
-                        scale: 1.5, // 2 itu berat; coba 1.25–1.5
-                        useCORS: true,
-                        logging: false,
-                        backgroundColor: '#ffffff',
-                    },
-                    jsPDF: {
-                        unit: 'mm',
-                        format: 'a4',
-                        orientation: 'portrait',
-                    },
-                    pagebreak: { mode: ['css'] },
-                })
-                .from(clone)
-                .save();
+                // Add page if not first
+                if (i > 0) {
+                    pdf.addPage();
+                }
 
-            document.body.removeChild(clone);
+                // Convert to PNG
+                // We use white background to avoid transparent images if any
+                const dataUrl = await toPng(pageEl, {
+                    quality: 0.95,
+                    backgroundColor: '#ffffff',
+                    // Filter out non-printable elements if needed, but we select the inner printable div so it should be fine
+                });
+
+                // Add to PDF
+                // 0, 0 coordinates, width 210mm, height 297mm (A4)
+                pdf.addImage(dataUrl, 'PNG', 0, 0, pageWidth, pageHeight);
+            }
+
+            pdf.save(filename);
         } catch (e) {
-            console.error(e);
-            alert(
-                'Gagal membuat PDF. Coba kecilkan lampiran / matikan preview PDF iframe.',
-            );
+            console.error('Download error:', e);
+            alert('Gagal mengunduh PDF. Silakan coba lagi.');
         } finally {
             setDownloading(false);
         }
@@ -265,7 +245,7 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
     }> = ({ children, breakAfter = true }) => (
         <div className="mx-auto my-6 w-full max-w-[860px] print:my-0 print:max-w-none">
             <div
-                className="mx-auto min-h-[1123px] w-[794px] overflow-hidden bg-white shadow-[0_10px_30px_rgba(2,6,23,0.10)] ring-1 ring-slate-200 print:shadow-none print:ring-0"
+                className="tor-page mx-auto min-h-[1123px] w-[794px] overflow-hidden bg-white shadow-[0_10px_30px_rgba(2,6,23,0.10)] ring-1 ring-slate-200 print:shadow-none print:ring-0"
                 style={{
                     pageBreakAfter: breakAfter ? 'always' : 'auto',
                     fontFamily: '"Times New Roman", serif',
@@ -832,7 +812,7 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
 
                                         <div className="mt-8 mb-2 flex justify-end">
                                             <img
-                                                src="/images/ttd_placeholder.png"
+                                                src="/images/ttd_kajur.jpg"
                                                 alt="Tanda Tangan"
                                                 className="h-20 w-auto"
                                             />

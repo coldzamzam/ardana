@@ -58,7 +58,7 @@ export default function TorDetail({
     const breadcrumbs: BreadcrumbItem[] = [
         {
             title: 'TOR',
-            href: '/dashboard/tor',
+            href: '/dashboard/submisi/tor',
         },
         {
             title: 'TOR Detail',
