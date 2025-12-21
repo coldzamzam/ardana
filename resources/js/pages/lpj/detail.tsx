@@ -195,14 +195,14 @@ export default function LpjDetail({ submisi, latestStatus }: LpjDetailProps) {
                                 </SelectTrigger>
                                 <SelectContent>
                                     {[
-                                        'IKU 1',
-                                        'IKU 2',
-                                        'IKU 3',
-                                        'IKU 4',
-                                        'IKU 5',
-                                        'IKU 6',
-                                        'IKU 7',
-                                        'IKU 8',
+                                        'Lulusan Mendapat Pekerjaan yang Layak',
+                                        'Mahasiswa Mendapat Pengalaman di Luar Kampus',
+                                        'Dosen Berkegiatan di Luar Kampus',
+                                        'Praktisi Mengajar di Dalam Kampus',
+                                        'Hasil Kerja Dosen Digunakan oleh Masyarakat',
+                                        'Program Studi Bekerjasama dengan Mitra Kelas Dunia',
+                                        'Kelas yang Kolaboratif dan Partisipatif',
+                                        'Program Studi Berstandar Internasional',
                                     ].map((item) => (
                                         <SelectItem key={item} value={item}>
                                             {item}
