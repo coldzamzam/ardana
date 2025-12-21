@@ -233,7 +233,7 @@ function Index({
                     <div className="mt-4 flex-1 overflow-y-auto rounded-2xl bg-white p-6 shadow-sm">
                         {kegiatanTypes.length > 0 ? (
                             <div className="overflow-x-auto">
-                                <Table>
+                                <Table className="[&_td]:text-center [&_th]:text-center">
                                     <TableHeader>
                                         <TableRow className="border-b-2 border-gray-200 hover:bg-gray-50/30">
                                             <TableHead className="font-semibold text-[#427452]">

@@ -7,7 +7,7 @@ import {
     type PageProps,
 } from '@/types';
 import { Head, Link } from '@inertiajs/react';
-import { Book, ChevronRight, Layers, Settings } from 'lucide-react';
+import { Book, ChevronRight, Layers } from 'lucide-react';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -33,7 +33,6 @@ function Index({
                     {/* HEADER SECTION */}
                     <div className="w-full">
                         <div className="mb-2 flex items-center gap-3">
-                            <Settings className="h-8 w-8 text-[#427452]" />
                             <h1 className="text-3xl font-bold text-[#427452]">
                                 Admin Panel
                             </h1>

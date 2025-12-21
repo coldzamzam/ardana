@@ -50,7 +50,7 @@ export default function ReviewIndexPage({
 
                     {/* CARD PUTIH yang berisi tabel */}
                     <div className="mt-2 rounded-2xl border border-[#73AD86]/40 bg-white p-4 shadow-sm">
-                        <Table>
+                        <Table className="[&_td]:text-center [&_th]:text-center">
                             <TableHeader>
                                 <TableRow>
                                     <TableHead className="text-center">

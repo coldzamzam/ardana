@@ -271,7 +271,7 @@ function Index({ faqs }: PageProps<{ faqs: Faq[] }>) {
                                             <TableHead className="font-semibold text-[#427452]">
                                                 Jawaban
                                             </TableHead>
-                                            <TableHead className="text-right font-semibold text-[#427452]">
+                                            <TableHead className="text-center font-semibold text-[#427452]">
                                                 Aksi
                                             </TableHead>
                                         </TableRow>
@@ -288,7 +288,7 @@ function Index({ faqs }: PageProps<{ faqs: Faq[] }>) {
                                                 <TableCell className="max-w-md truncate text-gray-700">
                                                     {faq.answer}
                                                 </TableCell>
-                                                <TableCell className="space-x-2 text-right">
+                                                <TableCell className="flex items-center justify-center gap-2">
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
