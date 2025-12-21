@@ -119,38 +119,58 @@ export function AppSidebar() {
         <Sidebar
             collapsible="icon"
             variant="inset"
-            className="border-r border-slate-200/70 bg-[#F6FBF8]"
+            className="border-r border-[#73AD86]/20 bg-[#F6FBF8] shadow-[1px_0_20px_0_rgba(0,0,0,0.02)]"
         >
-            <SidebarHeader className="flex h-[64px] items-center border-b border-slate-200/70">
+            <SidebarHeader className="flex h-[72px] items-center border-b border-[#73AD86]/10 px-6 pt-4 pb-2">
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild>
+                        <SidebarMenuButton
+                            size="lg"
+                            asChild
+                            className="active:bg-[#427452]/10"
+                        >
                             <Link
                                 href="/dashboard"
                                 prefetch
-                                className="flex items-center gap-2"
+                                className="flex items-center gap-3.5"
                             >
-                                <AppLogo />
-                                <span className="font-semibold tracking-tight text-slate-900">
-                                    ARDANA
-                                </span>
+                                <div className="mr-2 flex h-[72px] items-center">
+                                    <AppLogo />
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="font-sans text-xl leading-none font-extrabold tracking-tight text-[#427452]">
+                                        ARDANA
+                                    </span>
+                                    {/* <span className="text-[10px] font-medium text-[#427452]/80 tracking-widest uppercase">
+                                        Workspace
+                                    </span> */}
+                                </div>
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
 
-            <SidebarContent className="py-3">
+            <SidebarContent className="overflow-hidden px-3 py-6">
                 {/* Notification Icon */}
-                <SidebarMenu className="px-2">
+                <SidebarMenu className="mb-4 px-2">
                     <SidebarMenuItem>
                         <SidebarMenuButton
                             asChild
                             tooltip={{ children: 'Notifikasi' }}
+                            className="h-10 rounded-xl px-4 py-2.5 text-[#427452]/90 transition-all duration-300 hover:bg-[#427452]/10 hover:pl-5 hover:text-[#427452] hover:shadow-sm data-[active=true]:bg-gradient-to-r data-[active=true]:from-[#427452] data-[active=true]:to-[#365d42] data-[active=true]:font-semibold data-[active=true]:text-white data-[active=true]:shadow-md data-[active=true]:ring-0 data-[active=true]:shadow-[#427452]/20"
                         >
-                            <Link href="/dashboard/notifikasi" prefetch>
-                                <Bell />
-                                <span>Notifikasi</span>
+                            <Link
+                                href="/dashboard/notifikasi"
+                                prefetch
+                                className="flex items-center gap-3"
+                            >
+                                <div className="relative">
+                                    <Bell className="size-5 items-center justify-center" />
+                                </div>
+                                <span className="font-semibold tracking-wide">
+                                    Notifikasi
+                                </span>
                             </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
@@ -160,15 +180,15 @@ export function AppSidebar() {
                 <NavMain items={mainNavItems} />
             </SidebarContent>
 
-            <SidebarFooter className="mt-auto flex flex-col gap-1 border-t border-slate-200/70 px-2 pt-2 pb-2">
+            <SidebarFooter className="mt-auto flex flex-col gap-1 border-t border-[#73AD86]/10 bg-white/50 px-4 py-2 backdrop-blur-sm">
                 <NavFooter items={footerNavItems} className="mt-auto" />
 
                 <NavUser />
 
-                <div className="mt-1 flex w-full justify-center text-[11px] text-slate-400">
-                    <span className="whitespace-nowrap">
+                <div className="flex w-full justify-center text-[10px] font-semibold tracking-widest text-[#427452]/60 uppercase">
+                    {/* <span className="whitespace-nowrap">
                         &copy; {new Date().getFullYear()} Ardana
-                    </span>
+                    </span> */}
                 </div>
             </SidebarFooter>
         </Sidebar>

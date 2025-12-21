@@ -220,7 +220,6 @@ class SubmisiController extends Controller
                 'hasil_kegiatan' => $validatedData['hasil_kegiatan'],
             ];
 
-            // Get and add the locked pic_id from the parent TOR
             $parentTor = $submisi->parentTor()->with('detailSubmisi')->first();
             if ($parentTor && $parentTor->detailSubmisi) {
                 $dbData['pic_id'] = $parentTor->detailSubmisi->pic_id;
@@ -305,20 +304,18 @@ class SubmisiController extends Controller
                 'hasil_kegiatan' => $validatedData['hasil_kegiatan'],
             ];
 
-            // Get and add the locked pic_id from the parent TOR
             $parentTor = $submisi->parentTor()->with('detailSubmisi')->first();
             if ($parentTor && $parentTor->detailSubmisi) {
                 $dbData['pic_id'] = $parentTor->detailSubmisi->pic_id;
             }
+
         } else {
-            // Added error handling for consistency, though less likely to be hit here
             Log::error('storeNewVersion failed: Unrecognized submission type.', ['type' => $submisi->type]);
 
             return Redirect::back()->with('error', 'Tipe submisi tidak dikenal dan tidak bisa disimpan.');
         }
 
         DB::transaction(function () use ($submisi, $dbData) {
-            // Always create a new version for this method
             $submisi->detailSubmisi()->create($dbData);
         });
 
