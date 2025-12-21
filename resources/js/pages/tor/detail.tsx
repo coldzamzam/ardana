@@ -455,7 +455,7 @@ export default function TorDetail({
                 <DetailBiaya submisi={submisi} isEditable={isEditable} />
 
                 {/* BAGIAN BUTTON PALING BAWAH */}
-                <div className="flex flex-col items-start pt-4 pb-10">
+                <div className="flex flex-col items-end pt-4 pb-10">
                     {isEditable && !isSubmittable && (
                         <p className="pb-2 text-xs text-slate-600">
                             Silakan simpan detail submisi terbaru untuk mengirim
@@ -463,7 +463,7 @@ export default function TorDetail({
                         </p>
                     )}
 
-                    <div className="flex items-center justify-start gap-3">
+                    <div className="flex w-full items-center justify-end gap-3">
                         {isEditable ? (
                             <>
                                 <Button
