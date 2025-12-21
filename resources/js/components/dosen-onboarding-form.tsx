@@ -211,13 +211,9 @@ export default function DosenOnboardingForm() {
                                     Dengan membuat akun dan menggunakan platform
                                     ARDANA (Sistem Manajemen Pengelolaan Dana
                                     Kegiatan Jurusan), Anda sebagai
-                                    Dosen/Pegawai (selanjutnya disebut{' '}
-                                    <span className="font-semibold">
-                                        "Pengguna"
-                                    </span>
-                                    ) menyatakan telah membaca, memahami, dan
-                                    menyetujui setiap poin dalam Syarat dan
-                                    Ketentuan ini.
+                                    Dosen/Pegawai menyatakan telah membaca,
+                                    memahami, dan menyetujui setiap poin dalam
+                                    Syarat dan Ketentuan ini.
                                 </p>
 
                                 <ol className="space-y-4">

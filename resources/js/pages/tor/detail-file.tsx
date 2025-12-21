@@ -75,7 +75,6 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
     const fileInputRef = React.useRef<HTMLInputElement>(null);
 
     React.useEffect(() => {
-        // Combine all errors into a single string for display
         if (Object.keys(errors).length > 0) {
             const messages = Object.values(errors).join(' ');
             setValidationError(messages);
@@ -101,7 +100,8 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
             setValidationError('Semua field wajib diisi.');
             return;
         }
-        setValidationError(null); // Clear client-side error before posting
+        setValidationError(null);
+
         post('/dashboard/submisi-file', {
             onSuccess: () => {
                 setIsAdding(false);
@@ -138,7 +138,8 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
             setValidationError('Syarat semua field wajib diisi itu');
             return;
         }
-        setValidationError(null); // Clear client-side error before posting
+        setValidationError(null);
+
         router.post(
             `/dashboard/submisi-file/${data.id}`,
             {
@@ -166,21 +167,42 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
 
     const getFileIcon = (fileName: string) => {
         const extension = fileName.split('.').pop()?.toLowerCase();
+
+        // "block" biar gak kebawa baseline text (yang sering bikin keliatan geser kiri/atas)
         if (extension === 'pdf') {
-            return <img src="/images/pdf.svg" alt="PDF" className="h-6 w-6" />;
+            return (
+                <img
+                    src="/images/pdf.svg"
+                    alt="PDF"
+                    className="block h-6 w-6"
+                />
+            );
         } else if (['jpg', 'jpeg'].includes(extension || '')) {
-            return <img src="/images/jpg.svg" alt="JPG" className="h-6 w-6" />;
+            return (
+                <img
+                    src="/images/jpg.svg"
+                    alt="JPG"
+                    className="block h-6 w-6"
+                />
+            );
         } else if (extension === 'png') {
-            return <img src="/images/png.svg" alt="PNG" className="h-6 w-6" />;
+            return (
+                <img
+                    src="/images/png.svg"
+                    alt="PNG"
+                    className="block h-6 w-6"
+                />
+            );
         }
+
         return <File className="h-6 w-6" />;
     };
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0] || null;
-        setData((prevData) => ({
-            ...prevData,
-            file: file,
+        setData((prev) => ({
+            ...prev,
+            file,
             nama: file ? file.name : '',
         }));
     };
@@ -190,7 +212,6 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
             <Card className="overflow-hidden rounded-2xl border border-[#73AD86]/40 shadow-sm">
                 <CollapsibleTrigger asChild>
                     <CardHeader className="flex cursor-pointer flex-row items-center justify-between">
-                        {/* Kiri: title + info */}
                         <CardTitle className="flex items-center gap-1 text-xl font-semibold text-[#427452]">
                             Lampiran File
                             <TooltipProvider delayDuration={100}>
@@ -216,13 +237,13 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                             </TooltipProvider>
                         </CardTitle>
 
-                        {/* Kanan: tombol collapse */}
                         <Button variant="ghost" size="sm" className="w-9 px-0">
                             <ChevronsUpDown className="h-4 w-4" />
                             <span className="sr-only">Toggle</span>
                         </Button>
                     </CardHeader>
                 </CollapsibleTrigger>
+
                 <CollapsibleContent>
                     <CardContent>
                         <Table className="[&_td]:text-center [&_th]:text-center">
@@ -235,6 +256,7 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                                     {isEditable && <TableHead>Aksi</TableHead>}
                                 </TableRow>
                             </TableHeader>
+
                             <TableBody>
                                 {submisi.submisi_file?.map((file, index) => (
                                     <TableRow key={file.id}>
@@ -244,45 +266,52 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                                                 <TableCell>
                                                     {index + 1}
                                                 </TableCell>
+
+                                                {/* FILE (EDIT MODE) - dibikin center */}
                                                 <TableCell>
-                                                    {data.file ? (
-                                                        <div className="flex items-center gap-2">
-                                                            {getFileIcon(
-                                                                data.file.name,
-                                                            )}
+                                                    <div className="flex w-full items-center justify-center">
+                                                        {data.file ? (
+                                                            <div className="flex items-center justify-center gap-2">
+                                                                {getFileIcon(
+                                                                    data.file
+                                                                        .name,
+                                                                )}
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    size="sm"
+                                                                    onClick={() =>
+                                                                        setData(
+                                                                            'file',
+                                                                            null,
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <X className="h-4 w-4" />
+                                                                </Button>
+                                                            </div>
+                                                        ) : (
                                                             <Button
-                                                                variant="ghost"
-                                                                size="sm"
+                                                                variant="outline"
                                                                 onClick={() =>
-                                                                    setData(
-                                                                        'file',
-                                                                        null,
-                                                                    )
+                                                                    fileInputRef.current?.click()
                                                                 }
                                                             >
-                                                                <X className="h-4 w-4" />
+                                                                Pilih File
                                                             </Button>
-                                                        </div>
-                                                    ) : (
-                                                        <Button
-                                                            variant="outline"
-                                                            onClick={() =>
-                                                                fileInputRef.current?.click()
+                                                        )}
+
+                                                        <Input
+                                                            ref={fileInputRef}
+                                                            type="file"
+                                                            className="hidden"
+                                                            onChange={
+                                                                handleFileChange
                                                             }
-                                                        >
-                                                            Pilih File
-                                                        </Button>
-                                                    )}
-                                                    <Input
-                                                        ref={fileInputRef}
-                                                        type="file"
-                                                        className="hidden"
-                                                        onChange={
-                                                            handleFileChange
-                                                        }
-                                                        accept=".pdf,.jpg,.jpeg,.png"
-                                                    />
+                                                            accept=".pdf,.jpg,.jpeg,.png"
+                                                        />
+                                                    </div>
                                                 </TableCell>
+
                                                 <TableCell>
                                                     <Input
                                                         value={data.nama}
@@ -294,6 +323,7 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                                                         }
                                                     />
                                                 </TableCell>
+
                                                 <TableCell>
                                                     <Input
                                                         value={data.deskripsi}
@@ -305,22 +335,27 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                                                         }
                                                     />
                                                 </TableCell>
+
                                                 <TableCell>
-                                                    <Button
-                                                        size="sm"
-                                                        onClick={handleUpdate}
-                                                    >
-                                                        <Save className="h-4 w-4" />
-                                                    </Button>
-                                                    <Button
-                                                        size="sm"
-                                                        variant="ghost"
-                                                        onClick={
-                                                            handleCancelEdit
-                                                        }
-                                                    >
-                                                        <X className="h-4 w-4" />
-                                                    </Button>
+                                                    <div className="flex items-center justify-center gap-2">
+                                                        <Button
+                                                            size="sm"
+                                                            onClick={
+                                                                handleUpdate
+                                                            }
+                                                        >
+                                                            <Save className="h-4 w-4" />
+                                                        </Button>
+                                                        <Button
+                                                            size="sm"
+                                                            variant="ghost"
+                                                            onClick={
+                                                                handleCancelEdit
+                                                            }
+                                                        >
+                                                            <X className="h-4 w-4" />
+                                                        </Button>
+                                                    </div>
                                                 </TableCell>
                                             </>
                                         ) : (
@@ -328,21 +363,31 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                                                 <TableCell>
                                                     {index + 1}
                                                 </TableCell>
+
+                                                {/* FILE (VIEW MODE) - FIX: icon bener-bener di tengah */}
                                                 <TableCell>
-                                                    <a
-                                                        href={`/dashboard/submisi-file/${file.id}/download`}
-                                                        target="_blank"
-                                                        rel="noopener noreferrer"
-                                                    >
-                                                        {getFileIcon(file.nama)}
-                                                    </a>
+                                                    <div className="flex w-full items-center justify-center">
+                                                        <a
+                                                            href={`/dashboard/submisi-file/${file.id}/download`}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="inline-flex items-center justify-center"
+                                                        >
+                                                            {getFileIcon(
+                                                                file.nama,
+                                                            )}
+                                                        </a>
+                                                    </div>
                                                 </TableCell>
+
                                                 <TableCell>
                                                     {file.nama}
                                                 </TableCell>
+
                                                 <TableCell>
                                                     {file.deskripsi}
                                                 </TableCell>
+
                                                 {isEditable && (
                                                     <TableCell>
                                                         <div className="flex items-center justify-center gap-3">
@@ -359,6 +404,7 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                                                             >
                                                                 <Edit className="h-4 w-4" />
                                                             </Button>
+
                                                             <AlertDialog>
                                                                 <AlertDialogTrigger
                                                                     asChild
@@ -373,6 +419,7 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                                                                         <Trash2 className="h-4 w-4" />
                                                                     </Button>
                                                                 </AlertDialogTrigger>
+
                                                                 <AlertDialogContent>
                                                                     <AlertDialogHeader>
                                                                         <AlertDialogTitle>
@@ -395,6 +442,7 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                                                                             file.
                                                                         </AlertDialogDescription>
                                                                     </AlertDialogHeader>
+
                                                                     <AlertDialogFooter>
                                                                         <AlertDialogCancel>
                                                                             Cancel
@@ -418,6 +466,7 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                                         )}
                                     </TableRow>
                                 ))}
+
                                 {isAdding && isEditable && (
                                     <TableRow>
                                         <TableCell>
@@ -426,43 +475,49 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                                                   1
                                                 : 1}
                                         </TableCell>
+
+                                        {/* FILE (ADD MODE) - dibikin center */}
                                         <TableCell>
-                                            {data.file ? (
-                                                <div className="flex items-center gap-2">
-                                                    {getFileIcon(
-                                                        data.file.name,
-                                                    )}
+                                            <div className="flex w-full items-center justify-center">
+                                                {data.file ? (
+                                                    <div className="flex items-center justify-center gap-2">
+                                                        {getFileIcon(
+                                                            data.file.name,
+                                                        )}
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="sm"
+                                                            onClick={() =>
+                                                                setData(
+                                                                    'file',
+                                                                    null,
+                                                                )
+                                                            }
+                                                        >
+                                                            <X className="h-4 w-4" />
+                                                        </Button>
+                                                    </div>
+                                                ) : (
                                                     <Button
-                                                        variant="ghost"
-                                                        size="sm"
+                                                        variant="outline"
                                                         onClick={() =>
-                                                            setData(
-                                                                'file',
-                                                                null,
-                                                            )
+                                                            fileInputRef.current?.click()
                                                         }
                                                     >
-                                                        <X className="h-4 w-4" />
+                                                        Pilih File
                                                     </Button>
-                                                </div>
-                                            ) : (
-                                                <Button
-                                                    variant="outline"
-                                                    onClick={() =>
-                                                        fileInputRef.current?.click()
-                                                    }
-                                                >
-                                                    Pilih File
-                                                </Button>
-                                            )}
-                                            <Input
-                                                ref={fileInputRef}
-                                                type="file"
-                                                className="hidden"
-                                                onChange={handleFileChange}
-                                                accept=".pdf,.jpg,.jpeg,.png"
-                                            />
+                                                )}
+
+                                                <Input
+                                                    ref={fileInputRef}
+                                                    type="file"
+                                                    className="hidden"
+                                                    onChange={handleFileChange}
+                                                    accept=".pdf,.jpg,.jpeg,.png"
+                                                />
+                                            </div>
                                         </TableCell>
+
                                         <TableCell>
                                             <Input
                                                 placeholder="Nama file"
@@ -476,6 +531,7 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                                                 disabled={!data.file}
                                             />
                                         </TableCell>
+
                                         <TableCell>
                                             <Input
                                                 placeholder="Deskripsi file"
@@ -488,23 +544,27 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                                                 }
                                             />
                                         </TableCell>
+
                                         <TableCell>
-                                            <Button
-                                                size="sm"
-                                                onClick={handleSaveNew}
-                                            >
-                                                <Save className="h-4 w-4" />
-                                            </Button>
-                                            <Button
-                                                size="sm"
-                                                variant="ghost"
-                                                onClick={handleCancelAddNew}
-                                            >
-                                                <X className="h-4 w-4" />
-                                            </Button>
+                                            <div className="flex items-center justify-center gap-2">
+                                                <Button
+                                                    size="sm"
+                                                    onClick={handleSaveNew}
+                                                >
+                                                    <Save className="h-4 w-4" />
+                                                </Button>
+                                                <Button
+                                                    size="sm"
+                                                    variant="ghost"
+                                                    onClick={handleCancelAddNew}
+                                                >
+                                                    <X className="h-4 w-4" />
+                                                </Button>
+                                            </div>
                                         </TableCell>
                                     </TableRow>
                                 )}
+
                                 {validationError && (
                                     <TableRow>
                                         <TableCell
@@ -517,6 +577,7 @@ export default function DetailFile({ submisi, isEditable }: DetailFileProps) {
                                 )}
                             </TableBody>
                         </Table>
+
                         {isEditable && (
                             <div className="mt-4 flex justify-end">
                                 <Button

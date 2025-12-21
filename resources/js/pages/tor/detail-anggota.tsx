@@ -70,8 +70,12 @@ export default function DetailAnggota({
 
             const data = await res.json();
             setMahasiswaResult(data);
-        } catch (error: any) {
-            setSearchError(error.message);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                setSearchError(error.message);
+            } else {
+                setSearchError(String(error));
+            }
         } finally {
             setIsSearching(false);
         }
@@ -240,7 +244,7 @@ export default function DetailAnggota({
                                                 <Loader2 className="h-6 w-6 animate-spin text-gray-500" />
                                             </div>
                                         ) : mahasiswaResult ? (
-                                            <Table className="">
+                                            <Table className="[&_td]:text-center [&_th]:text-center">
                                                 <TableHeader>
                                                     <TableRow>
                                                         <TableHead>

@@ -16,41 +16,35 @@ export default function OnboardingModal({ role }: OnboardingModalProps) {
     return (
         <Dialog open={true}>
             <DialogContent
+                // ✅ mobile-safe: width ikut layar, tinggi ikut dvh, konten di-manage scroll
+                className="max-h-[calc(100dvh-1.5rem)] w-[calc(100vw-1.5rem)] overflow-hidden rounded-3xl border border-[#73AD86]/40 bg-[#F8FFFB] p-0 shadow-xl sm:max-w-[520px]"
                 onInteractOutside={(e) => e.preventDefault()}
-                className={[
-                    // ukuran & style
-                    'rounded-3xl border border-[#73AD86]/40 bg-[#F8FFFB] shadow-xl',
-
-                    // MOBILE: full width minus margin, nempel atas, bukan center
-                    'w-[calc(100vw-1.5rem)] max-w-[520px]',
-                    'top-3 left-1/2 translate-x-[-50%] translate-y-0',
-
-                    // tinggi aman + bisa scroll
-                    'p-6 sm:p-8',
-                    'overflow-y-auto',
-
-                    // fallback: 100vh, dan kalau browser support 100dvh pakai itu
-                    'max-h-[calc(100vh-1.5rem)]',
-                    'supports-[height:100dvh]:max-h-[calc(100dvh-1.5rem)]',
-
-                    // DESKTOP: baru center
-                    'sm:top-1/2 sm:-translate-y-1/2',
-                ].join(' ')}
             >
-                <DialogHeader className="space-y-3 text-left">
-                    <DialogTitle className="text-2xl font-semibold text-[#427452]">
-                        Lengkapi Profil Anda{' '}
-                        {role === 'mahasiswa' ? 'Mahasiswa' : 'Dosen'}
-                    </DialogTitle>
+                {/* WRAPPER flex column */}
+                <div className="flex max-h-[calc(100dvh-1.5rem)] flex-col">
+                    {/* HEADER fixed */}
+                    <div className="shrink-0 px-6 pt-6 sm:px-8 sm:pt-8">
+                        <DialogHeader className="space-y-3 text-left">
+                            <DialogTitle className="text-2xl font-semibold text-[#427452]">
+                                Lengkapi Profil Anda{' '}
+                                {role === 'mahasiswa' ? 'Mahasiswa' : 'Dosen'}
+                            </DialogTitle>
 
-                    <DialogDescription className="text-base leading-relaxed text-slate-700">
-                        NIM/NIP tidak dapat diubah setelah disimpan.
-                    </DialogDescription>
-                </DialogHeader>
+                            <DialogDescription className="text-base leading-relaxed text-slate-700">
+                                NIM/NIP tidak dapat diubah setelah disimpan.
+                            </DialogDescription>
+                        </DialogHeader>
+                    </div>
 
-                <div className="mt-4 space-y-4">
-                    {role === 'mahasiswa' && <MahasiswaOnboardingForm />}
-                    {role === 'dosen' && <DosenOnboardingForm />}
+                    {/* BODY scroll tunggal */}
+                    <div className="min-h-0 flex-1 overflow-y-auto px-6 pt-4 pb-6 sm:px-8 sm:pb-8">
+                        <div className="space-y-4">
+                            {role === 'mahasiswa' && (
+                                <MahasiswaOnboardingForm />
+                            )}
+                            {role === 'dosen' && <DosenOnboardingForm />}
+                        </div>
+                    </div>
                 </div>
             </DialogContent>
         </Dialog>

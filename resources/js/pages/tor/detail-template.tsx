@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem, Submisi } from '@/types';
 
+// --- TYPES ---
 type TorDetail = {
     tanggal_mulai?: string | null;
     tanggal_selesai?: string | null;
@@ -66,19 +67,13 @@ type BiayaRow = {
 };
 
 type SubmisiWithRelations = Submisi & {
-    // relasi kegiatan (sesuaikan kalau nama relasi berbeda)
     kegiatanType?: { nama?: string | null } | null;
     kegiatan_type?: { nama?: string | null } | null;
-
-    // data template
     detail_submisi?: TorDetail | null;
-
-    // lampiran
     indikator_kinerja?: IndikatorRow[] | null;
     anggota_tim?: AnggotaRow[] | null;
     submisi_file?: FileRow[] | null;
     biaya?: BiayaRow[] | null;
-
     total_anggaran?: number | null;
 };
 
@@ -100,6 +95,8 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
         ? new Date(detail.tanggal_mulai).getFullYear()
         : new Date().getFullYear();
 
+    // --- HELPER FUNCTIONS ---
+
     const formatTanggalID = (dateStr?: string | null) => {
         if (!dateStr) return '-';
         const d = new Date(dateStr);
@@ -116,6 +113,16 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
             style: 'currency',
             currency: 'IDR',
         }).format(n);
+
+    const getExt = (name?: string | null) =>
+        (name ?? '').split('.').pop()?.toLowerCase() ?? '';
+
+    const getPreviewUrl = (id: string | number) => {
+        return `/dashboard/submisi-file/${id}/download`;
+    };
+
+    const isImageExt = (ext: string) => ['jpg', 'jpeg', 'png'].includes(ext);
+    const isPdfExt = (ext: string) => ext === 'pdf';
 
     const stripHtml = (html?: string | null) => {
         if (!html) return '';
@@ -157,7 +164,6 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
     const ikuLabel = detail?.iku || detail?.indikator_kinerja || '';
 
     const handleDownloadTor = () => {
-        // versi simpel dulu: print dialog => user save as PDF
         window.print();
     };
 
@@ -166,14 +172,18 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
     const fileRows = sub.submisi_file ?? [];
     const biayaRows = sub.biaya ?? [];
     const totalAnggaran = Number(sub.total_anggaran ?? 0);
+    const maxTarget = indikatorRows.length
+        ? Math.max(...indikatorRows.map((r) => Number(r.target ?? 0)))
+        : null;
 
-    // ====== helper komponen untuk print ======
+    // --- HELPER COMPONENTS ---
+
     const Page: React.FC<{
         children: React.ReactNode;
         breakAfter?: boolean;
     }> = ({ children, breakAfter = true }) => (
         <div
-            className="mx-auto my-4 min-h-[1123px] w-[794px] bg-white shadow-md"
+            className="mx-auto my-4 min-h-[1123px] w-[794px] bg-white shadow-md print:shadow-none"
             style={{
                 pageBreakAfter: breakAfter ? 'always' : 'auto',
                 fontFamily: '"Times New Roman", serif',
@@ -213,23 +223,18 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
         return (
             <div
                 className={`mt-1 ml-6 text-justify text-[14px] leading-relaxed ${className}`}
-                // html berasal dari editor (anggap sudah disanitasi server-side kalau perlu)
                 dangerouslySetInnerHTML={{ __html: html ?? '' }}
             />
         );
     };
 
-    const maxTarget = indikatorRows.length
-        ? Math.max(...indikatorRows.map((r) => Number(r.target ?? 0)))
-        : null;
-
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title={`Template TOR - ${submisi.judul}`} />
 
-            <div className="flex h-full flex-1 flex-col gap-6 overflow-y-auto bg-slate-100 p-4 text-black print:bg-white">
+            <div className="flex h-full flex-1 flex-col gap-6 overflow-y-auto bg-slate-100 p-4 text-black print:bg-white print:p-0">
                 {/* BUTTON DOWNLOAD */}
-                <div className="fixed right-6 bottom-6 print:hidden">
+                <div className="fixed right-6 bottom-6 z-50 print:hidden">
                     <Button
                         type="button"
                         className="bg-[#2B6CB0] px-6 py-3 text-white shadow-lg hover:bg-[#245a94]"
@@ -270,7 +275,6 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
                             <div className="mt-20 space-y-2 text-2xl">
                                 <p>Kementerian Pendidikan Tinggi,</p>
                                 <p>Sains, dan Teknologi</p>
-
                                 <p className="mt-8 text-2xl">Tahun {year}</p>
                             </div>
                         </div>
@@ -694,8 +698,8 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
                     </div>
                 </Page>
 
-                {/* ================= HALAMAN 4 – ANGGOTA + LAMPIRAN ================= */}
-                <Page breakAfter={false}>
+                {/* ================= HALAMAN 4 – ANGGOTA + DAFTAR LAMPIRAN ================= */}
+                <Page>
                     <div className="min-h-[1123px] px-16 py-12 text-black">
                         <section className="text-[14px] leading-relaxed">
                             <SectionTitle>F. Lampiran</SectionTitle>
@@ -757,8 +761,8 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
                                 </table>
                             </div>
 
-                            {/* Lampiran File */}
-                            <SubTitle>2. Lampiran File</SubTitle>
+                            {/* Lampiran File (Tabel List) */}
+                            <SubTitle>2. Daftar Lampiran File</SubTitle>
                             <div className="mt-2 ml-6">
                                 <table className="w-full border-collapse border border-black text-[13px]">
                                     <thead>
@@ -807,6 +811,50 @@ export default function DetailTemplate({ submisi }: DetailTemplateProps) {
                         </section>
                     </div>
                 </Page>
+                {/* ================= HALAMAN TAMBAHAN – MERGE PREVIEW FILE ================= */}
+                {fileRows.map((file, index) => {
+                    const ext = getExt(file.nama);
+                    const previewUrl = getPreviewUrl(file.id!);
+
+                    // Jika file bukan gambar atau PDF, skip rendering halaman ini
+                    if (!isImageExt(ext) && !isPdfExt(ext)) return null;
+
+                    return (
+                        <Page
+                            key={`merged-file-${file.id ?? index}`}
+                            breakAfter={true}
+                        >
+                            <div className="min-h-[1123px] px-16 py-12 text-black">
+                                <SectionTitle>
+                                    Lampiran {index + 1}: {file.nama}
+                                </SectionTitle>
+                                <p className="mb-4 text-sm text-gray-600 italic">
+                                    {file.deskripsi}
+                                </p>
+
+                                <div className="flex justify-center border border-slate-200 p-2">
+                                    {isImageExt(ext) ? (
+                                        <img
+                                            src={previewUrl}
+                                            alt={file.nama || ''}
+                                            className="max-h-[850px] w-auto object-contain"
+                                        />
+                                    ) : isPdfExt(ext) ? (
+                                        <iframe
+                                            src={`${previewUrl}#toolbar=0&navpanes=0&scrollbar=0`}
+                                            className="h-[900px] w-full"
+                                            title={file.nama || ''}
+                                            style={{
+                                                border: 'none',
+                                                overflow: 'hidden',
+                                            }}
+                                        />
+                                    ) : null}
+                                </div>
+                            </div>
+                        </Page>
+                    );
+                })}
             </div>
         </AppLayout>
     );

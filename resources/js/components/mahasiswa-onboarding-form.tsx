@@ -252,13 +252,9 @@ export default function MahasiswaOnboardingForm() {
                                 <p className="text-justify">
                                     Dengan membuat akun dan menggunakan platform
                                     ARDANA (Sistem Manajemen Pengelolaan Dana
-                                    Kegiatan Jurusan), Anda (selanjutnya disebut{' '}
-                                    <span className="font-semibold">
-                                        "Pengguna"
-                                    </span>
-                                    ) menyatakan telah membaca, memahami, dan
-                                    menyetujui setiap poin dalam Syarat dan
-                                    Ketentuan ini.
+                                    Kegiatan Jurusan), Anda menyatakan telah
+                                    membaca, memahami, dan menyetujui setiap
+                                    poin dalam Syarat dan Ketentuan ini.
                                 </p>
 
                                 {/* LIST dengan penomoran badge */}
