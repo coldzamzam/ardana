@@ -92,6 +92,7 @@ export default function TorDetail({
         !latestStatus || latestStatus.status_type.nama.trim() === 'Revisi';
 
     const isRevision = latestStatus?.status_type.nama.trim() === 'Revisi';
+    const isApproved = latestStatus?.status_type.nama.trim() === 'Disetujui';
 
     const hasNewDetailForRevision =
         isRevision &&
@@ -464,11 +465,12 @@ export default function TorDetail({
                     )}
 
                     <div className="flex w-full items-center justify-end gap-3">
-                        {/* ✅ SELALU TAMPIL */}
+                        {/* ✅ HANYA AKTIF JIKA DISETUJUI */}
                         <Button
                             type="button"
                             className="bg-[#5D41D9] text-white hover:bg-[#392885]"
                             onClick={handleGenerateTemplateTor}
+                            disabled={!isApproved}
                         >
                             Buat Template TOR
                         </Button>
